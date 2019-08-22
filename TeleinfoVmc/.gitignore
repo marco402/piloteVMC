@@ -1,0 +1,26 @@
+#teleinfovmc
+/**
+!/js
+!/js/*
+!/css
+!/css/*
+!/images
+!/images/*
+!/modele config_perso.php.php
+!/*.html
+!/*.js
+!/*.xml
+!/json.php
+!/modele config_perso.php
+!/queries.php
+!/structure.ecodevice_tempo.php
+!/structure.timestp.php
+!/tarifs.php
+!/teleinfo.php
+!/config.php
+!/*.md
+!/*.zip
+!/*.ico
+!/*.json
+!/.gitignore
+!/README.md

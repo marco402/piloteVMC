@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="fr">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta content="no-cache" http-equiv="Pragma">
+        <title>Graph Conso &Eacute;lectrique</title>
+
+        <!-- JQuery 1.11.0 // Only for IE 6/7/8 compatibility -->
+        <!--<script type="text/javascript" src="./vendor/js/jquery/jquery-1.11.0.min.js"></script>-->
+
+        <!-- JQuery 2.1.0 // Not compatible with old browsers -->
+        <script type="text/javascript" src="./vendor/js/jquery/jquery-2.1.0.min.js"></script>
+        <!-- JQuery resize plugin (used with JQPlot, Flot) -->
+        <script type="text/javascript" src="./vendor/js/jquery/jquery.ba-resize.min.js"></script>
+
+        <!-- JQuery UI -->
+        <!-- JS minified with http://closure-compiler.appspot.com/home -->
+        <!-- CSS minified with http://cssminifier.com/minify -->
+        <script type="text/javascript" src="./vendor/js/jquery/jquery-ui-1.12.1.min.js"></script>
+        <script type="text/javascript" src="./vendor/js/jquery/jquery-ui-i18n-1.12.1.min.js"></script>
+        <link rel="stylesheet" href="./vendor/css/jquery/ui-hightness/jquery-ui-1.12.1.min.css">
+
+        <!-- excanvas plugin (used with JQPlot, Flot) -->
+        <!--[if lte IE 8]><script type="text/javascript" src="./vendor/js/excanvas/excanvas.min.js"></script><![endif]-->
+
+         <!-- HighCharts -->
+       <!-- <script type="text/javascript" src="./vendor/js/highcharts/highstock.js"></script>-->
+       <!-- <script type="text/javascript" src="./vendor/js/highcharts/highcharts-more.js"></script>-->
+       <!-- <script type="text/javascript" src="./vendor/js/highcharts/highcharts-3d.js"></script>-->
+       <script type="text/javascript" src="./vendor/js/highcharts/code/highstock.js"></script>
+       <script type="text/javascript" src="./vendor/js/highcharts/code/highcharts-more.js"></script>
+       <script type="text/javascript" src="./vendor/js/highcharts/code/highcharts-3d.js"></script><!-- -->
+       
+        <link rel="shortcut icon" href="./favicon.ico">
+
+        <link rel="stylesheet" href="./css/module_highcharts.css">
+        <script type='text/javascript' src="./js/module_highcharts.js"></script> <!-- -->
+
+
+        <link rel="stylesheet" href="./css/teleinfo.css">
+        <script type='text/javascript' src="./js/teleinfo.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div> <!-- Chart0 -->
+                <div class="button_group">
+                    <button class="button_chart0" id="chart0_refresh" value="now" title="R&eacute;actualiser">Rafra&icirc;chir</button>
+                </div>
+                <div class="chart_legende" id="chart0_legende">...</div>
+                <div class="chart" id="chart0"></div>
+            </div>
+
+            <div> <!-- Chart1 -->
+                <div class="button_group">
+                    <input type="text" class="datepicker" id="chart1_date" />
+                    <button class="button_chart1" id="chart1_date_prec" value="1prec" title="Jour pr&eacute;c&eacute;dent">- 24h</button>
+                    <button class="button_chart1" id="chart1_date_select" value="date" title="S&eacute;lectionner un jour">Jour</button>
+                    <button class="button_chart1" id="chart1_date_suiv" value="1suiv" title="Jour suivant">+ 24h</button>
+                </div>
+                <div class="chart_legende" id="chart1_legende">...</div>
+                <div class="chart" id="chart1"></div>
+            </div>
+
+            <div> <!-- Chart2 -->
+                <div class="button_group">
+                    <select class="select_chart2" id="duree" title="Nombre">
+                        <option value="1">1</option>
+                        <option value="8">8</option>
+                        <option value="14">14</option>
+                    </select>
+                    <select class="select_chart2" id="periode" title="P&eacute;riode">
+                        <option value="jours">Jour(s)</option>
+                        <option value="semaines">Semaine(s)</option>
+                        <option value="mois">Mois(s)</option>
+                        <option value="ans">An(s)</option>
+                    </select>
+                </div>
+                <div class="button_group">
+                    <button class="button_chart2" id="chart2_date_prec" value="1prec" title="Reculer">-1 jour</button>
+                    <button class="button_chart2" id="chart2_date_now" value="now" title="Aujourd'hui">Aujourd'hui</button>
+                    <!--<button class="button_chart2" id="chart2_date_select" value="date" title="S&eacute;lectionner une date">Date</button>-->
+                    <button class="button_chart2" id="chart2_date_suiv" value="1suiv" title="Avancer">+1 jour</button>
+                </div>
+                <div class="chart_legende" id="chart2_legende">Coût sur la période ...</div>
+                <div class="chart" id="chart2"></div>
+            </div>
+            <div id="page3"> <!-- Chart3 -->
+                <div class="button_group">
+                    <input type="text" class="datepicker" id="chart3_date" />
+                    <button class="button_chart3" id="chart3_date_prec" value="1prec" title="Jour pr&eacute;c&eacute;dent">- 24h</button>
+                    <button class="button_chart3" id="chart3_date_select" value="date" title="S&eacute;lectionner un jour">Jour</button>
+                    <button class="button_chart3" id="chart3_date_suiv" value="1suiv" title="Jour suivant">+ 24h</button>
+                </div>
+                <div class="chart_legende" id="chart3_legende">...</div>
+                <div class="chart" id="chart3"></div>
+            </div>
+			 <div id="page4"> <!-- Chart4 -->
+                <div class="button_group">
+                    <input type="text" class="datepicker" id="chart4_date" />
+                    <button class="button_chart4" id="chart4_date_prec" value="1prec" title="Jour pr&eacute;c&eacute;dent">- 24h</button>
+                    <button class="button_chart4" id="chart4_date_select" value="date" title="S&eacute;lectionner un jour">Jour</button>
+                    <button class="button_chart4" id="chart4_date_suiv" value="1suiv" title="Jour suivant">+ 24h</button>
+                </div>
+                <div class="chart_legende" id="chart4_legende">...</div>
+                <div class="chart" id="chart4"></div>
+            </div>			
+
+
+
+        </div> <!-- /container -->
+        <div class="wait"></div>
+    </body>
+</html>

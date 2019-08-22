@@ -1,0 +1,14 @@
+#projet  piloteVmc
+#
+receptionTempo.ini
+#base sql
+!/sql
+!/sql/*
+
+!/README.md
+
+face_avant/**
+messagesPiloteVmcVersSql ok avant classes/**
+reception messages vmc tempo vers base sql/**
+squetchup/**
+documentation/**

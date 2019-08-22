@@ -1,0 +1,16 @@
+#projet partie schémas designspark
+/**
+!/carte_relais_V2
+!/carte_relais_V2/relais.sch
+!/carte_relais_V2/relais.pdf
+!/affichage_V2_st7735
+!/affichage_V2_st7735/affichage_v2.sch
+!/affichage_V2_st7735/affichage_v2.pdf
+!/traitement
+!/traitement/Traitement.sch
+!/traitement/Traitement.pdf
+!/User
+!/User/*
+!/.gitignore
+!/README.md
+

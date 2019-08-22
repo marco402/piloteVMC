@@ -1,0 +1,284 @@
+// **********************************************************************************
+// ESP8266 Teleinfo WEB Server configuration Include file
+// **********************************************************************************
+// Creative Commons Attrib Share-Alike License
+// You are free to use/extend this library but please abide with the CC-BY-SA license:
+// Attribution-NonCommercial-ShareAlike 4.0 International License
+// http://creativecommons.org/licenses/by-nc-sa/4.0/
+//
+// For any explanation about teleinfo ou use , see my blog
+// http://hallard.me/category/tinfo
+//
+// This program works with the Wifinfo board
+// see schematic here https://github.com/hallard/teleinfo/tree/master/Wifinfo
+//
+// Written by Charles-Henri Hallard (http://hallard.me)
+//
+// History : V1.00 2015-06-14 - First release
+//
+// All text above must be included in any redistribution.
+//
+//Using library EEPROM version 1.0
+//
+// **********************************************************************************
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
+#include <Arduino.h>
+#include "constantes.h"
+#include "wifinfo.h"
+#include "configWifi.h"
+
+
+#define CFG_SSID_SIZE 		32
+#define CFG_PSK_SIZE  		64
+#define CFG_HOSTNAME_SIZE   16
+
+#define CFG_EMON_HOST_SIZE 		32
+#define CFG_EMON_APIKEY_SIZE 	32
+#define CFG_EMON_URL_SIZE 		32
+#define CFG_EMON_DEFAULT_PORT 80
+#define CFG_EMON_DEFAULT_HOST "192.168.1.69"
+#define CFG_EMON_DEFAULT_URL  "/emoncms/input/post.json"
+#define CFG_EMON_DEFAULT_NODE_ID  99
+
+#define CFG_JDOM_HOST_SIZE    32
+#define CFG_JDOM_APIKEY_SIZE  48
+#define CFG_JDOM_URL_SIZE     64
+#define CFG_JDOM_ADCO_SIZE    12
+#define CFG_JDOM_DEFAULT_PORT 80
+#define CFG_JDOM_DEFAULT_HOST "jeedom.local"
+#define CFG_JDOM_DEFAULT_URL  "/plugins/teleinfo/core/php/jeeTeleinfo.php"
+#define CFG_JDOM_DEFAULT_ADCO "0000111122223333"
+
+#define CFG_HTTPREQ_HOST_SIZE    32
+#define CFG_HTTPREQ_PATH_SIZE    150
+#define CFG_HTTPREQ_DEFAULT_PORT 80
+#define CFG_HTTPREQ_DEFAULT_HOST "127.0.0.1"
+#define CFG_HTTPREQ_DEFAULT_PATH  "/json.htm?type=command&param=udevice&idx=1&nvalue=0&svalue=%HCHP%;%HCHC%;0;0;%PAPP%;0"
+#define CFG_TEMPO_HOST_SIZE    32
+
+// Port pour l'OTA
+#define DEFAULT_OTA_PORT     8266
+//#define DEFAULT_OTA_AUTH     ""
+#define DEFAULT_SYSLOG_PORT  514
+
+// Bit definition for different configuration modes
+#define CFG_LCD				  0x0001	// Enable display
+#define CFG_DEBUG			  0x0002	// Enable serial debug
+#define CFG_RGB_LED     0x0004  // Enable RGB LED	#define CFG_PRESENT			  0x0008	// à 1 si présent
+#define CFG_BAD_CRC     0x8000  // Bad CRC when reading configuration
+
+// Web Interface Configuration Form field names
+#define CFG_FORM_SSID     FPSTR("ssid")
+#define CFG_FORM_PSK      FPSTR("psk")
+#define CFG_FORM_HOST     FPSTR("host")
+#define CFG_FORM_AP_PSK   FPSTR("ap_psk")
+#define CFG_FORM_OTA_AUTH FPSTR("ota_auth")
+#define CFG_FORM_OTA_PORT FPSTR("ota_port")
+#define CFG_FORM_SYSLOG_HOST FPSTR("syslog_host")
+#define CFG_FORM_SYSLOG_PORT FPSTR("syslog_port")
+
+
+#define CFG_FORM_EMON_HOST  FPSTR("emon_host")
+#define CFG_FORM_EMON_PORT  FPSTR("emon_port")
+#define CFG_FORM_EMON_URL   FPSTR("emon_url")
+#define CFG_FORM_EMON_KEY   FPSTR("emon_apikey")
+#define CFG_FORM_EMON_NODE  FPSTR("emon_node")
+#define CFG_FORM_EMON_FREQ  FPSTR("emon_freq")
+
+#define CFG_FORM_JDOM_HOST  FPSTR("jdom_host")
+#define CFG_FORM_JDOM_PORT  FPSTR("jdom_port")
+#define CFG_FORM_JDOM_URL   FPSTR("jdom_url")
+#define CFG_FORM_JDOM_KEY   FPSTR("jdom_apikey")
+#define CFG_FORM_JDOM_ADCO  FPSTR("jdom_adco")
+#define CFG_FORM_JDOM_FREQ  FPSTR("jdom_freq")
+
+#define CFG_FORM_HTTPREQ_HOST  FPSTR("httpreq_host")
+#define CFG_FORM_HTTPREQ_PORT  FPSTR("httpreq_port")
+#define CFG_FORM_HTTPREQ_PATH  FPSTR("httpreq_path")
+#define CFG_FORM_HTTPREQ_FREQ  FPSTR("httpreq_freq")
+#define CFG_FORM_HTTPREQ_SWIDX FPSTR("httpreq_swidx")
+
+#define CFG_DEF_CORRECTION_TEMP_EXT_PAR10 0
+#define CFG_DEF_CORRECTION_H_SDB 0
+#define CFG_DEF_CORRECTION_H_CUISINE 0
+#define CFG_DEF_CORRECTION_T_SDB_PAR10 0
+#define CFG_DEF_CORRECTION_T_CUISINE_PAR10 0
+#define CFG_DEF_PERIODE_VMC 300
+#define CFG_DEF_DUREE_FORCAGE_SEC 600
+#define CFG_DEF_DUREE_MINI_SEC 3600
+#define CFG_DEF_SEUILTEMPERATUREFROIDENDIXIEMES  230
+#define CFG_DEF_POURCENT_HUMIDITE  15				   //plus seuil mais delta
+#define CFG_DEF_SEUILTEMPERATURECHAUDENDIXIEMES  250
+
+
+#define CFG_FORM_TEMPO_SEUILTEMPERATUREFROIDENDIXIEMES FPSTR("seuil_temp_froid")
+#define CFG_FORM_TEMPO_POURCENT_HUMIDITE FPSTR("pourcent_hum")
+#define CFG_FORM_TEMPO_SEUILTEMPERATURECHAUDENDIXIEMES FPSTR("seuil_temp_chaud")
+#define CFG_FORM_TEMPO_CORRECTION_TEMP_EXT_ENDIXIEMES FPSTR("cor_temp_ext")
+#define CFG_FORM_TEMPO_CORRECTION_T_CUISINE_ENDIXIEMES FPSTR("cor_temp_cuis")
+#define CFG_FORM_TEMPO_CORRECTION_T_SDB_ENDIXIEMES FPSTR("cor_temp_sdb")
+#define CFG_FORM_TEMPO_CORRECTION_H_CUISINE FPSTR("cor_hum_cuis")
+#define CFG_FORM_TEMPO_CORRECTION_H_SDB FPSTR("cor_hum_sdb")
+#define CFG_FORM_TEMPO_DUREE_FORCAGE FPSTR("duree_forc")
+#define CFG_FORM_TEMPO_DUREE_MINI FPSTR("duree_mini")
+#define CFG_FORM_TEMPO_PERIODE_VMC FPSTR("periode_vmc")
+
+
+#define CFG_FORM_TEMPO_DEPART_WIFI FPSTR("depart_wifi")
+#define CFG_FORM_TEMPO_FIN_WIFI FPSTR("fin_wifi")
+#define CFG_FORM_TEMPO_PERIODE_ENR FPSTR("periode_enr")
+//#define CFG_FORM_TEMPO_PRESENT FPSTR("present")
+#define CFG_FORM_TEMPO_ARRET_WIFI FPSTR("arret_wifi")
+#define CFG_FORM_TEMPO_HOST_ENR FPSTR("host_enr")
+#define CFG_FORM_TEMPO_PORT_ENR FPSTR("portEnr")
+//#define CFG_FORM_TEMPO_ACQUITEMENT_ENR FPSTR("acquitement_enr")
+#define CFG_FORM_TEMPO_LUMINOSITE_LEDS_RGB FPSTR("lum_leds_rgb")
+#define CFG_FORM_IP  FPSTR("wifi_ip");
+#define CFG_FORM_GW  FPSTR("wifi_gw");
+#define CFG_FORM_MSK FPSTR("wifi_msk");
+
+//#define CFG_DEF_TEMP_MIN_BLEU_PRESENT_J 190   // 19° 0.32 + 0.0047 * temp;
+//#define CFG_DEF_TEMP_MIN_BLANC_PRESENT_J 170  // 17
+//#define CFG_DEF_TEMP_MIN_ROUGE_PRESENT_J 90   // 9
+//#define CFG_DEF_TEMP_MIN_BLEU_ABSENT_J 170    // 17
+//#define CFG_DEF_TEMP_MIN_BLANC_ABSENT_J 150   // 15
+//#define CFG_DEF_TEMP_MIN_ROUGE_ABSENT_J 90    // 9
+////TEMPERATURES_NUIT
+//#define CFG_DEF_TEMP_MIN_BLEU_PRESENT_N 170   // 17
+//#define CFG_DEF_TEMP_MIN_BLANC_PRESENT_N 150  // 15
+//#define CFG_DEF_TEMP_MIN_ROUGE_PRESENT_N 90   // 9
+//#define CFG_DEF_TEMP_MIN_BLEU_ABSENT_N 150    // 15
+//#define CFG_DEF_TEMP_MIN_BLANC_ABSENT_N 130   // 13
+//#define CFG_DEF_TEMP_MIN_ROUGE_ABSENT_N 90    // 9
+
+
+
+
+#define CFG_DEF_PERIODE_ENR  300
+#define CFG_DEF_DEFART_WIFI  0
+#define CFG_DEF_FIN_WIFI   23
+#define CFG_DEF_PORT_ENR   8887
+#define CFG_DEF_HOST_ENR   "192.168.1.69"
+#define CFG_DEF_ARRET_WIFI  0
+#define CFG_DEF_LUM_LED_RGB     10
+//#define CFG_DEF_ACQUITEMENT_ENR     1
+
+
+
+#define TEMPSVMCMINIPARJOURMINUTES  30
+
+
+#pragma pack(push)  // push current alignment to stack
+#pragma pack(1)     // set alignment to 1 byte boundary
+
+
+// Config pour tempo
+typedef struct 
+{
+ //int temperatures[12];  //en degres,à *10 à l'arrivee et /10 au départ
+
+	int8_t cor_temp_ext_dixieme_degres;
+	int8_t cor_temp_cuis_dixieme_degres;
+	int8_t cor_temp_sdb_dixieme_degres;
+	int8_t cor_hum_cuis_pourcent;
+
+	int8_t cor_hum_sdb_pourcent;
+	uint16_t periode_vmc_sec;
+	uint16_t duree_forcage_sec;
+	uint16_t duree_mini_sec;
+	uint16_t seuil_temp_froid_dixieme_degres;
+	uint8_t pourcent_hum;
+	uint16_t seuil_temp_chaud_dixieme_degres;
+
+	uint16_t periode_enr;		//en seconde
+ uint8_t depart_wifi;	//en heure 0 à 23
+ uint8_t fin_wifi;		//en heure 0 à 23
+ uint16_t portEnr;		//
+ //int host_enr;		//adresse IP
+ char  host_enr[CFG_TEMPO_HOST_SIZE + 1];	//adresse IP
+ boolean arret_wifi;	
+// boolean acquitementEnr;
+ uint8_t luminositeeLedsRgb;
+  //ETAT_JOUR present;	    //voir etat
+ uint8_t  filler[20];   
+} _tempo;
+
+// Config for emoncms
+// 128 Bytes
+typedef struct 
+{
+  char  host[CFG_EMON_HOST_SIZE+1]; 		// FQDN 
+  char  apikey[CFG_EMON_APIKEY_SIZE+1]; // Secret
+  char  url[CFG_EMON_URL_SIZE+1];  			// Post URL
+  uint16_t port;    								    // Protocol port (HTTP/HTTPS)
+  uint8_t  node;     									  // optional node
+  uint32_t freq;                        // refresh rate
+  uint8_t  filler[22];  							  // in case adding data in config avoiding loosing current conf by bad crc*/
+} _emoncms;
+
+// Config for jeedom
+// 256 Bytes
+typedef struct 
+{
+  char  host[CFG_JDOM_HOST_SIZE+1];     // FQDN 
+  char  apikey[CFG_JDOM_APIKEY_SIZE+1]; // Secret
+  char  url[CFG_JDOM_URL_SIZE+1];       // Post URL
+  char  adco[CFG_JDOM_ADCO_SIZE+1];     // Identifiant compteur
+  uint16_t port;                         // Protocol port (HTTP/HTTPS)
+  uint32_t freq;                        // refresh rate
+  uint8_t filler[90];                   // in case adding data in config avoiding loosing current conf by bad crc*/
+} _jeedom;
+
+// Config for http request
+// 256 Bytes
+typedef struct 
+{
+  char  host[CFG_HTTPREQ_HOST_SIZE+1];  // FQDN 
+  char  path[CFG_HTTPREQ_PATH_SIZE+1];  // Path
+  uint16_t port;                        // Protocol port (HTTP/HTTPS) 
+  uint32_t freq;                        // refresh rate
+  uint16_t swidx;                       // Switch index (into Domoticz)
+  uint8_t filler[22];                   // in case adding data in config avoiding loosing current conf by bad crc*/
+} _httpRequest;
+
+// Config saved into eeprom
+// 1024 bytes total including CRC
+typedef struct 
+{
+  char  ssid[CFG_SSID_SIZE+1]; 		 // SSID     
+  char  psk[CFG_PSK_SIZE+1]; 		   // Pre shared key
+  char  host[CFG_HOSTNAME_SIZE+1]; // Hostname 
+  char  ap_psk[CFG_PSK_SIZE+1];    // Access Point Pre shared key
+  char  ota_auth[CFG_PSK_SIZE+1];  // OTA Authentication password
+  uint32_t config;           		   // Bit field register 
+  uint16_t ota_port;         		   // OTA port 
+  char     syslog_host[64];        // Adresse IP ou DNS du serveur rsyslog
+  uint16_t syslog_port;            // port rsyslog (generalement 514)
+  uint8_t  filler[65];      		   // in case adding data in config avoiding loosing current conf by bad crc
+  _emoncms emoncms;                // Emoncms configuration
+  _jeedom  jeedom;                 // jeedom configuration
+  _httpRequest httpReq;            // HTTP request
+  _tempo tempo;                // tempo configuration   80 bytes   982+80=1052>1024--->1024+128 --->setup
+  uint16_t crc;
+} _Config;
+#pragma pack(pop)
+
+class configuration
+{
+public:
+	bool saveConfig(void);
+	void initConfig(void);
+	void showConfig(void);
+	void ResetConfig(void);
+	_Config      config;
+private:
+	bool readConfig(bool clear_on_error = true);
+	uint16_t crc16Update(uint16_t crc, uint8_t a);
+	void eepromDump(uint8_t bytesPerRow);
+};
+extern configuration CONFIGURATION;
+
+#endif 
+

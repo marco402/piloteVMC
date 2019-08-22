@@ -1,0 +1,19 @@
+#projet  traitement C++ visual studio visual micro esp8266
+/**
+!/*.cpp
+!/*.h
+!/*.ino
+!/configWifi.h
+!/prog_can_modifie
+!/prog_can_modifie/*
+#page web
+!/data
+!/data/**
+!/js
+!/js/*
+!/fonts
+!/fonts/*
+!/css
+!/css/*
+!/.gitignore
+!/README.md

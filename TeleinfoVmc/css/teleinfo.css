@@ -1,0 +1,302 @@
+/******************************************************************************
+            Surcharge des styles JQuery UI
+******************************************************************************/
+/* @import url("module_highcharts.css") */
+
+/* Ordre des données "padding"
+   top right bottom left;
+   top right+left bottom;
+   top+bottom right+left;
+*/
+
+/* Convention de nommage des couleurs
+   https://drafts.csswg.org/css-color/
+   http://jsperf.com/css-color-names-vs-hex-codes/25
+*/
+
+/* Display waiting animation while loading data
+   http://www.ajaxload.info
+   http://preloaders.net
+*/
+
+/* Ajax loading icon */
+.ui-icon-loading {
+    background: url("../images/ajax-loader.png") no-repeat center !important;
+    height: 128px !important;
+    width: 128px !important;
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    margin: -64px 0 0 -64px  !important;
+}
+
+/* Remplace la couleur de base (bleu) par un noir détouré de bleu */
+/*.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-button:hover,
+.ui-button:focus {
+    background: #343640;
+    background: -moz-linear-gradient(top,#343640,#15161a);
+    background: -webkit-gradient(linear,left top,left bottom,from(#343640),to(#15161a));
+}*/
+
+/* Remplace la couleur de base (orange) par un noir détouré de orange */
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
+    background: blue;
+   /* background: -moz-linear-gradient(top,#343640,#15161a);
+    background: -webkit-gradient(linear,left top,left bottom,from(#343640),to(#15161a));*/
+}
+
+/* Tabs : Pour avoir l'icône toujours visible, on affiche les icones clairs et pas sombres */
+/*.ui-state-active .ui-icon {
+	background-image: url("jquery/ui-darkness/images/ui-icons_ffffff_256x240.png");
+}*/
+
+/* Icônes des onglets de navigation */
+.ui-tabs-nav .ui-icon {
+    margin-right: 5px;
+    display: inline-block;
+}
+
+/* Infobulle 
+.ui-tooltip {
+    font-size: 0.8em;
+    padding: 5px 20px;
+	backgroundColor: 'rgba(255,255,128,0.9)';
+}*/
+
+/* Ombre des widgets (Infobulles) */
+.ui-widget-shadow {
+	-webkit-box-shadow: 0px 0px 8px #cccccc;
+	box-shadow: 0px 0px 8px #cccccc;
+}
+
+/* Taille des widgets (Button, SelectMenu) */
+.ui-widget .ui-widget {
+	font-size: 0.8em;
+}
+
+/* Boutons & SelectMenu */
+/*.ui-selectmenu-button,*/
+.ui-button {
+    /*text-align: center !important;*/
+    width: 125px !important;
+    /*height: 30px !important;*/
+    padding: .4em 0.4em !important;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 1px #000;
+       -moz-box-shadow: 0px 0px 1px #000;
+            box-shadow: 0px 0px 1px #000;
+}
+
+.ui-button:hover { background-color : gray;}
+.ui-button:focus { border : 3px dotted green; }
+.ui-button:active { color : #d4860c; }
+
+/* Alignement interne du SelectMenu */
+.ui-selectmenu-text {
+    /*padding:0.4em 1.5em 0.4em 1.6em !important;*/
+    text-align: center !important;
+    line-height: 1.4em !important;
+}
+
+/* Liste déroulante du SelectMenu */
+.ui-selectmenu-open li {
+    font-size: 0.9em;
+    color: #cecece;
+}
+
+.ui-selectmenu-open .ui-state-focus {
+    color: #cecece;
+    font-weight: bold;
+}
+
+.ui-selectmenu-overflow {
+    height: 200px;
+}
+
+/* Hide datepicked input (keep only button) */
+.hasDatepicker,
+.ui-datepicker-trigger {
+    display: none !important;
+}
+
+/* Si on utilise le bouton standard datepicker
+voci une implémentation de l'image en mode "sprite"
+
+.ui-datepicker-trigger {
+    width:32px !important;
+    margin-left:20px;
+    background-image:url("images/tango icons/X-office-calendar-ui-darkness.png");
+    background-repeat:no-repeat;
+    background-position:0px 0px;
+}
+
+.ui-datepicker-trigger:hover {
+    background-position:-32px 0px;
+}*/
+
+/******************************************************************************
+            Styles de la page (hors JQueryUI et hors Charts)
+******************************************************************************/
+
+/* Alignement des boutons (au sein d'un button_group) */
+.button_group {
+    text-align: center;
+    display: block; /* Sinon la version mobile n'est plus centrée */
+}
+
+/******************************************************************************
+            Styles communs aux graphiques
+******************************************************************************/
+
+/* Légende du graphique (complément d'information) */
+.chart_legende {
+    display: none;
+    text-align: center;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+
+/* Chrono du graphique */
+.chart_chrono {
+    /*font: bold italic 12px Verdana, sans-serif !important;*/
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+    font-family: Verdana, Geneva, sans-serif !important;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Apparence globale de tous les graphiques */
+.chart {
+    /* Centre le graphique sur la page */
+    margin: 0 auto;
+    margin-bottom: 20px !important;
+    /* Fond blanc */
+    background: rgb(255, 255, 255);
+    /* Bords arrondis */
+    border: 2px solid #EBBA95;
+    -webkit-border-radius: 10px;
+       -moz-border-radius: 10px;
+            border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 1px #000;
+       -moz-box-shadow: 0px 0px 1px #000;
+            box-shadow: 0px 0px 1px #000;
+}
+
+/******************************************************************************
+            Styles spécifiques à chaque graphique
+******************************************************************************/
+
+/* Résolutions jusqu'à 560px */
+@media (max-width: 560px) {
+    .chart_gauge,
+    .chart_gauge0,
+    .chart_gauge1 {
+        float: none;
+        margin: 0 auto;
+        width: 100% !important; /*400px;*/
+        height: 40% !important; /*240px;*/
+    }
+    #chart0 {
+        width: 100%;
+        height: 600px;
+    }
+    #chart1 {
+        width: 100%;
+    }
+    #chart2 {
+        width: 100%;
+    }
+    #chart3 {
+        width: 100%;
+    }
+    #chart4 {
+        width: 100%;
+    }
+}
+
+/* Résolutions à partir de 560px et jusqu'à 900px */
+@media (min-width: 560px) and (max-width: 880px) {
+    .chart_gauge {
+        text-align: center;
+        width: 100%; /*250px;*/
+        height: 75%; /*220px;*/
+    }
+    .chart_gauge0 {
+        float: left;
+        width: 50% !important; /*250px;*/
+        height: 75% !important; /*220px;*/
+    }
+    .chart_gauge1 {
+        float: right;
+        width: 50% !important; /*250px;*/
+        height: 75% !important; /*220px;*/
+    }
+    #chart0 {
+        width: 500px;
+        height: 300px;
+    }
+    #chart1 {
+        width: 100%;
+    }
+    #chart2 {
+        width: 100%;
+    }
+    #chart3 {
+        width: 100%;
+    }
+    #chart4 {
+        width: 100%;
+    }
+}
+
+/* Résolutions à partir de 900px */
+@media (min-width: 880px) {
+    .chart_gauge {
+        text-align: center;
+        width: 100%; /*250px;*/
+        height: 75%; /*220px;*/
+    }
+    .chart_gauge0 {
+        float: left;
+        width: 50% !important; /*250px;*/
+        height: 75% !important; /*220px;*/
+    }
+    .chart_gauge1 {
+        float: right;
+        width: 50% !important; /*250px;*/
+        height: 75% !important; /*220px;*/
+    }
+    #chart0 {
+        width: 500px;
+        height: 300px;
+    }
+    #chart1 {
+        width: 90%;   /*800*/
+        height: 90%;
+    }
+    #chart3 {
+        width: 90%;   /*800*/
+        height: 90%;
+    }
+    #chart4 {
+        width: 90%;   /*800*/
+        height: 90%;
+    }
+}

@@ -1,0 +1,15 @@
+#projet messagesPiloteVmcVersSql C++ QT QT créator ou visual studio
+.vs/**
+debug/**
+release/**
+x64/**
+GeneratedFiles/**
+receptionTempo.ini
+ui_FormReceptionTempo.h
+.* 
+FormReceptionTempo.vcxproj*
+*.sln
+!.gitignore
+!/README.md
+
+
