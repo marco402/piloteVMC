@@ -21,25 +21,25 @@ ClassMySql::ClassMySql(FormReceptionTempo* parent) : QObject(parent)
 	laFormReceptionTempo = parent;
 	timerTestDatabase.start(3000, this);
 }
-bool ClassMySql::testConnexion(void)
-{
-	if (connection->isValid())
-	{
-		Statement *stmt;
-		try {
-			stmt = connection->createStatement();
-		}
-		catch (SQLException &ex) {
-			laFormReceptionTempo->plainTextEditMessages->appendPlainText("erreur sql getCptDernierEnregistrement : " + QString(ex.what()));
-			//textEditMessages->setText(textEditMessages->text() + "Exception occurred ErrorCode:" + QString::number(ex.getErrorCode()) + "\n");
-			//textEditMessages->setText(textEditMessages->text() + "Exception occurred SQLState:" +  ex.getSQLStateCStr() + "\n");
-			delete stmt;
-			return false;
-		}
-		return true;
-	}
-	return false;
-}
+//bool ClassMySql::testConnexion(void)
+//{
+//	if (connection->isValid())
+//	{
+//		Statement *stmt;
+//		try {
+//			stmt = connection->createStatement();
+//		}
+//		catch (SQLException &ex) {
+//			laFormReceptionTempo->plainTextEditMessages->appendPlainText("erreur sql getCptDernierEnregistrement : " + QString(ex.what()));
+//			//textEditMessages->setText(textEditMessages->text() + "Exception occurred ErrorCode:" + QString::number(ex.getErrorCode()) + "\n");
+//			//textEditMessages->setText(textEditMessages->text() + "Exception occurred SQLState:" +  ex.getSQLStateCStr() + "\n");
+//			delete stmt;
+//			return false;
+//		}
+//		return true;
+//	}
+//	return false;
+//}
 bool ClassMySql::getCptDernierEnregistrement()
 {
 	if (connection->isValid())
@@ -98,7 +98,6 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 	prep_stmt->setUInt(4, compteur[3]);
 	prep_stmt->setUInt(6, compteur[4]);
 	prep_stmt->setUInt(8, compteur[5]);
-
 	int typeJour = leMessageVersBase->etatTempo & 7;
 	if (typeJour != ((leMessageVersBase->etatTempo >>3) & 7))   //sinon erreur sur puissance
 		ptec.append("XXXX");
@@ -106,7 +105,6 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 		ptec.append(etatPtec[typeJour]);
 	prep_stmt->setBoolean(20, !typeHeure[typeJour]);
 	prep_stmt->setBoolean(21, typeHeure[typeJour]);
-
 	switch (typeJour)
 	{
 	case 0:
@@ -128,15 +126,10 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 		prep_stmt->setUInt(8, compteur[5]);
 		break;
 	}
-
-
 	compteur[(leMessageVersBase->etatTempo >> 3) & 0xf] = leMessageVersBase->compteur; //mise a jour pour les cgt de compteur
 	prep_stmt->setUInt(1, leMessageVersBase->timestamp);
 	prep_stmt->setString(2, ptec);
-
-
 	prep_stmt->setUInt(10, leMessageVersBase->dureeMax);
-
 	prep_stmt->setInt(12, leMessageVersBase->tempExt);
 	prep_stmt->setInt(13, leMessageVersBase->tempCuis);
 	prep_stmt->setInt(14, leMessageVersBase->tempSdb);
@@ -147,7 +140,6 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 	prep_stmt->setInt(17, (leMessageVersBase->etatVmc >> 2) & 7);
 	prep_stmt->setInt(18, (leMessageVersBase->etatVmc >> 1) & 1);
 	prep_stmt->setInt(19, leMessageVersBase->etatVmc & 1);
-
 	try
 	{
 		prep_stmt->execute();
@@ -169,7 +161,6 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 }
 bool  ClassMySql::initialisationSql()
 {
-
 	sqlStop();
 
 	SQLString host = getSqlString(laFormReceptionTempo->lineEditDatasource->text());
@@ -180,17 +171,19 @@ bool  ClassMySql::initialisationSql()
 		driver = get_driver_instance();
 		connection = driver->connect(host, user, pass);
 		connection->setSchema(base);
+		connexionOK = true;
 	}
 	catch (SQLException &ex) {
 		laFormReceptionTempo->plainTextEditMessages->appendPlainText("ERREUR : " + QString::fromLatin1(ex.what()));
 		connexionOK = false;
 		return false;
 	}
+
 	return true;
 }
 void  ClassMySql::sqlStop()
 {
-	if (connexionOK) {
+	if (connexionOK) {		//sinon erreur de lecture
 		connection->close();
 	}
 	connexionOK = false;
@@ -218,7 +211,9 @@ void ClassMySql::timerEvent(QTimerEvent *event)
 		else
 		{
 			if (initialisationSql())
+			{ 
 				laFormReceptionTempo->frame_Sql->setStyleSheet(QString::fromUtf8("QFrame#frame_Sql {border-style: outset;border-width: 4px;border-radius: 10px;border-color:green;}"));
+			}
 			else
 				laFormReceptionTempo->frame_Sql->setStyleSheet(QString::fromUtf8("QFrame#frame_Sql {border-style: outset;border-width: 4px;border-radius: 10px;border-color:orange;}"));
 		}

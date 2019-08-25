@@ -80,10 +80,7 @@ extern "C" {
 	#define APP_NAME "Wifinfo"
 #endif
 
-#define EMISSION_ENREGISTREMENT_VB
-//#define EMISSION_ENREGISTREMENT_PHP
-
-
+#define EMISSION_ENREGISTREMENT
 #define WIFIOK ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP))
 #define WIFINOOKET ((WiFi.status() != WL_CONNECTED) && (wifi_station_get_connect_status() != STATION_GOT_IP))
 #define WIFINOOKOU ((WiFi.status() != WL_CONNECTED) || (wifi_station_get_connect_status() != STATION_GOT_IP))

@@ -237,23 +237,21 @@ void loop()
 	unsigned long duree = 0;
 	static uint16_t dureeMax = 0; 
   start = millis();
+
+//**************************************Traitement des entrées****************************************************
   if (MYTINFO.getEtResetImax())
   {
   char  valeurs[] = { "\0" };
   CAPTEURIINST.traiteMaxi(atoi(TINFO.valueGet(&TableauTempoName[TEMPO_UTILISE::ETU_IINST][0], &valeurs[0])));
   }
-//**************************************Traitement des entrées****************************************************
 #ifdef COMP_CAN_BUS
   CAN_BUS.traiteReception();
- #endif
+#endif
 //************************************************1 fois par seconde*************************************************************************************
   // Only once task per loop, let system do its own task
  if (MYSNTP.getCycle1Seconde()) {
 	  WEBSERVER.handleClient();
 	  MYOTA.handle();
-////#ifdef AVEC_NTP
-////	  NTP.refreshTimeIfMidi();		//si midi et wifi :remise a l'heure
-////#endif
 	  //**************************************Traitement enregistrement****************************************************
 	  MYSNTP.TestSiMinuit();
 	  boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur();
@@ -279,11 +277,10 @@ void loop()
 //**************************************Traitement des sorties****************************************************
 #ifdef COMP_CAN_BUS
 	CAN_BUS.TRAITEMENTEMISSIONCAN();
-	//émission de 1 à 10 enregistrement en mémoire
 	if (WIFIOK)
 	{
-#ifdef EMISSION_ENREGISTREMENT_VB
-		ENREGISTREMENT.traitementEmissionMessageTempoVMC();     //passe un cycle pour acquitement de la commande
+#ifdef EMISSION_ENREGISTREMENT
+		ENREGISTREMENT.traitementEmissionMessageTempoVMC();     //passe un cycle pour acquitement de la commande,émission de 1 à 10 enregistrement en mémoire
 #endif
 		MYTINFO.setEtatWifi(true); 
 	}

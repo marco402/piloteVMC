@@ -81,8 +81,6 @@ boolean can_bus::traitementReception(void )
 					 reception.heures = rxBuf[MESSAGE_TYPE_0::HEURE];
 					 reception.minutes = rxBuf[MESSAGE_TYPE_0::MINUTE];
 					 reception.secondes = rxBuf[MESSAGE_TYPE_0::SECONDE];
-					 //union Leds lesLeds;
-					 //reception.etatDesLeds = rxBuf[MESSAGE_TYPE_0::LES_LEDS];
 					 reception.etatLeds = rxBuf[MESSAGE_TYPE_0::LES_LEDS];
 					 reception.mode = rxBuf[MESSAGE_TYPE_0::MODE];
 					 POUSSOIR.setLemode((reception.mode));	//sinon on revient sur le mode forcé en fin de tempo

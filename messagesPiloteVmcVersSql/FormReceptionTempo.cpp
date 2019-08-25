@@ -69,15 +69,23 @@ void FormReceptionTempo::on_pushButtonDepart_clicked()
 		myClassThReceptionUdp->setPort(port);
 		if (checkBoxEnregistrement->isChecked())
 		{
-			if (myClassMySql->initialisationSql())
+			if (myClassMySql->connexionIsOK())
 			{
-				if(!myClassMySql->getCptDernierEnregistrement())  //vérifier base vide
+				if (!myClassMySql->getCptDernierEnregistrement())  //vérifier base vide
 					return;
 			}
 			else
 			{
-				plainTextEditMessages->appendPlainText(QString::fromLatin1("Problème de connexion à la base avec demande d'enregistrement->abandon."));
-				return;
+				if (myClassMySql->initialisationSql())
+				{
+					if (!myClassMySql->getCptDernierEnregistrement())  //vérifier base vide
+						return;
+				}
+				else
+				{
+					plainTextEditMessages->appendPlainText(QString::fromLatin1("Problème de connexion à la base avec demande d'enregistrement->abandon."));
+					return;
+				}
 			}
 		}
 		plainTextEditMessages->appendPlainText("Connexion en cours...");

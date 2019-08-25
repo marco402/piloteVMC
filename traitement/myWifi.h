@@ -30,11 +30,8 @@
 
 #ifndef myWifi_h
 #define myWifi_h
-
 #include <Arduino.h>
 #include "Wifinfo.h"
-
-
 class myWifi
 {
 public:
@@ -48,6 +45,7 @@ public:
 private:
 	void on(void);
 	void off(void);
+	//état de la liaison wifi coupure externe(box...) ou coupure utilisateur
 	bool wifi = false;
 	int nb_reconnect = 0;
 	int cptBoot = 3600;			//wifi 60 minutes au boot-->affiche pageweb,OTA....

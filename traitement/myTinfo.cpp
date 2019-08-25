@@ -221,7 +221,7 @@ void myTinfo::setEtatWifi(bool etatWifi)
 			NTP.init();
 		}
 	}*/
-	etatWifi = etatWifi;
+	this->etatWifi = etatWifi;
 
 }
 bool myTinfo::getEtatWifi(void) const

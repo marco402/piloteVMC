@@ -61,7 +61,7 @@ void ClassReceptionUdp::donneesRecues()
 		else
 		{
 			data.append("0");
-			laFormReceptionTempo->plainTextEditMessages->appendPlainText((QString::fromLatin1("redemande le même paquet")));
+			laFormReceptionTempo->plainTextEditMessages->appendPlainText((QString::fromLatin1("demande un paquet")));
 		}
 		acquitement(data);
 	}

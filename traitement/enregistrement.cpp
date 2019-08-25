@@ -40,7 +40,7 @@ enregistrement::enregistrement()
 {}
 void ICACHE_FLASH_ATTR enregistrement::init()
 {
-#ifndef EMISSION_ENREGISTREMENT_VB
+#ifndef EMISSION_ENREGISTREMENT
 	nbMessageEmis = 1; //limite a 1 message
 #endif
 	udpEnr.begin(CONFIGURATION.config.tempo.portEnr);  //port a ecouter localement;//pointeurChar = 0;
@@ -57,7 +57,7 @@ void enregistrement::TRAITEENREGISTREMENT( boolean nouvelleTrame,   boolean cgtC
 		enregistreMessageTempoVmc( dureeMax, cgtCompteur);  //
 	}
 	incCptSecPeriodeEnregistrement();
-#ifdef EMISSION_ENREGISTREMENT_VB
+#ifdef EMISSION_ENREGISTREMENT
 	if (WIFIOK)
 	{
 		testAcquitementMessage();

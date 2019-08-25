@@ -61,14 +61,14 @@ void loop()
 	CAN_BUS.initialiseCanBus(); //a chaque cycle,si le distant est branché en second,inutile avec alimentation par le distant...
 //#####################################Traitement des entrées######################################
  if(CAN_BUS.traitementReception()||(task_1_sec==3)) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
-	  task_1_sec=0;
-	  retour = POUSSOIR.traitement();
-		BUZZER.setBuzzer(retour);
-		DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
-		DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls
-		//au niveau affichage,le capteur est lu et envoyé sans correction à chaque cycle.
-		retour = DHTCUISINE.lectureCapteur();
-		BUZZER.setBuzzer(!retour);
+	task_1_sec=0;
+	retour = POUSSOIR.traitement();
+	BUZZER.setBuzzer(retour);
+	DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
+	DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls
+	//au niveau affichage,le capteur est lu et envoyé sans correction à chaque cycle.
+	retour = DHTCUISINE.lectureCapteur();
+	BUZZER.setBuzzer(!retour);
 //########################################Traitement Affichage##########################################
 	LEDS_RGB_SERIAL.traitement(CAN_BUS.getStructReception());  //3 appels,compteur "en dur" dans getEtatReceptionInfos
 	retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());

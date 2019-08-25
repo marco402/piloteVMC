@@ -44,11 +44,13 @@ public:
 	bool getEtResetCgtCompteur(void);
 	bool getNouvelleTrame(void) const;
 	void clrNouvelleTrame(void);
+	//chaque seconde : true si  ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP)) sinon false
 	void setEtatWifi(bool etat);
 	bool getEtatWifi(void) const;
 	uint8_t getEtResetErreur(void);
 private:
-	bool etatWifi;
+	//chaque seconde : true si  ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP)) sinon false
+	bool etatWifi;	
 	uint8_t erreur = 0;
 };
 extern myTinfo MYTINFO;

@@ -42,9 +42,9 @@
 #include "mySNTP.h"
 #include "myWifi.h"
 
-
-//#ifdef START_STOP_WIFI
 //**************************************WiFiOn**********************************
+//essaye de redémarrer la liaison wifi retour=true si ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP)) sinon false
+//si true->augmente le nombre de reconnexion affichée sur la page web onglet système.
 bool myWifi::WiFiOn() {
 	uint8_t timeout;
 	timeout = 50;			//>500ms.
@@ -67,13 +67,12 @@ bool myWifi::WiFiOn() {
 		nb_reconnect++;
 		return true;
 	}
-		DebugF("wifi timeout pb out sleep");
-		return false;
-
+	DebugF("wifi timeout pb out sleep");
+	return false;
 }
 
 //**************************************WiFiOff**********************************
-void myWifi::WiFiOff() {
+//arret de la wifi
 	uint8_t timeout;
 	wifi_station_disconnect();
 	timeout = 50; // > 500ms.
@@ -82,10 +81,8 @@ void myWifi::WiFiOff() {
 		delay(10);
 		--timeout;
 	} 
-	//ajout
 	wifi_set_opmode(NULL_MODE);
 	wifi_set_sleep_type(MODEM_SLEEP_T);
-	//
 	wifi_fpm_open();
 }
 
@@ -100,7 +97,9 @@ bool myWifi::getWifi(void)
 {
 	return wifi;
 }
-
+//test la coupure wifi programmée par l'utilisateur
+//quelquesoit la programmation horaire:maintient la liaison pendant 1 heure après un démarrage(cptBoot).
+//en fonction de la programmation horaire, appelle la fonction on ou off.
 void myWifi::testWifi()
 {
 	if (cptBoot)   //1 heure de wifi après un démarrage
@@ -126,7 +125,7 @@ void myWifi::testWifi()
 			off();
 	}
 }
-
+//si wifi=false:essaye de démarrer la wifi->wifi=true si ok
 void myWifi::on(void)
 {
 	if (!wifi)
@@ -135,6 +134,7 @@ void myWifi::on(void)
 		delay(1);
 	}
 }
+//si wifi=true:arrete la wifi->wifi=false
 void myWifi::off(void)
 {
 	if (wifi)
