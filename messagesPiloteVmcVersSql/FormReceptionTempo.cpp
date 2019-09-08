@@ -44,14 +44,14 @@ void FormReceptionTempo::on_pushButtonDepart_clicked()
 {
 	if(pushButtonDepart->text() == QString::fromLatin1("Départ"))
 	{
-		 bool ok;
-		 port = lineEditPort->text().toUShort(&ok, 10);
+		bool ok;
+		uint16_t port  = lineEditPort->text().toUShort(&ok, 10);
 		if (port < 0 || port > 65535)
 		{
 			plainTextEditMessages->appendPlainText(QString::fromLatin1("port hors limites(1 à 65535).\n"));
 			return;
 		}
-		adresseIp = lineEditAdresseip->text().trimmed();
+		QString adresseIp = lineEditAdresseip->text().trimmed();
 		if(!validateIpAdress(adresseIp))
 		{
 			plainTextEditMessages->appendPlainText(QString::fromLatin1("adresse ip non conforme(0.0.0.0 à 255.255.255.255) "));

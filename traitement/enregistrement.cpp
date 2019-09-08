@@ -109,7 +109,7 @@ void enregistrement::enregistreMessageTempoVmc( uint16_t  dureeMax, bool cgtComp
 		//DebugF("Vitesse:"); Debugln((uint8_t)RELAIS.getEtatRelaisVitesse());
 		//DebugF("AM:"); Debugln((uint8_t)RELAIS.getEtatReelRelaisMarcheArret());
 		//DebugF("etatVmc:"); Debugln(lesMessages[pointeurEcritureMessage].etatVmc);
-		lesMessages[pointeurEcritureMessage].etatWifi = WIFI.getWifi() | (MYTINFO.getEtatWifi() << 1);
+		lesMessages[pointeurEcritureMessage].etatWifi = WIFI.getWifiUser() | (MYTINFO.getEtatWifi() << 1);
 		pointeurEcritureMessage += 1;
 		if (pointeurEcritureMessage >= NBMESSAGE)
 			pointeurEcritureMessage = 0;
@@ -384,7 +384,7 @@ ST_message  enregistrement::getEnregistrementTempsReel(void)
 	leMessage.humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 à 100--->7 bits
 	leMessage.humSdb = DHTSDB.DHT_H.getMoyennePeriodeLsb();
 	leMessage.etatVmc = (VMC.getLeMode() << 2) | (RELAIS.getEtatReelRelaisMarcheArret() << 1) | RELAIS.getEtatRelaisVitesse();
-	leMessage.etatWifi = WIFI.getWifi();
+	leMessage.etatWifi = WIFI.getWifiUser();
 	return leMessage;
 }
 void enregistrement::setdernierMessageEmisOK()

@@ -34,6 +34,7 @@ RgbColor blue(0, 0, colorSaturation);
 RgbColor white(colorSaturation);
 RgbColor yellow(colorSaturation,colorSaturation,0);
 RgbColor orange(colorSaturation,85,0);
+RgbColor gris(150, 150, 150);
 ledsRgbSerial::ledsRgbSerial(void)
 {
 }
@@ -69,7 +70,7 @@ switch  (etat)
 		rgb_led.SetPixelColor(indiceLedRGB, red);
 		break;
 	case COULEUR_JOUR::COULEUR_JOUR_INIT:
-		rgb_led.SetPixelColor(indiceLedRGB, green);
+		rgb_led.SetPixelColor(indiceLedRGB, gris);
 	}
 	rgb_led.Show();
 }

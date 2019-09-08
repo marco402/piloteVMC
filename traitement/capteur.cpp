@@ -139,18 +139,18 @@ void  capteur::traiteMoyennePeriode(boolean seuilDynamique)
 		dessous += 1;
 	else
 		dessus += 1;
-	compteurCycleMoyennePourSeuil += 1;
-		char  buffer[132];
-		if (seuilDynamique && idClasse == ID_CLASSES::ID_DHTSDB_H)
-		{
-			sprintf(buffer, "B:%d\t%d\t%d\t%d\t%d\t%d\n", moyennePeriode, moyennePourSeuil, compteurCycleMoyennePourSeuil, pourcentageSeuil, dessous, dessus);
-			Debugln(buffer);
-		}
-	else if (seuilDynamique && idClasse == ID_CLASSES::ID_DHTCUISINE_H)
-		{
-			sprintf(buffer, "C:%d\t%d\t%d\t%d\t%d\t%d\n", moyennePeriode, moyennePourSeuil, compteurCycleMoyennePourSeuil, pourcentageSeuil, dessous, dessus);
-			Debugln(buffer);
-		}
+		compteurCycleMoyennePourSeuil += 1;
+		////////char  buffer[132];
+		////////if (seuilDynamique && idClasse == ID_CLASSES::ID_DHTSDB_H)
+		////////{
+		////////	sprintf(buffer, "B:%d\t%d\t%d\t%d\t%d\t%d\n", moyennePeriode, moyennePourSeuil, compteurCycleMoyennePourSeuil, pourcentageSeuil, dessous, dessus);
+		////////	Debugln(buffer);
+		////////}
+		////////else if (seuilDynamique && idClasse == ID_CLASSES::ID_DHTCUISINE_H)
+		////////	{
+		////////		sprintf(buffer, "C:%d\t%d\t%d\t%d\t%d\t%d\n", moyennePeriode, moyennePourSeuil, compteurCycleMoyennePourSeuil, pourcentageSeuil, dessous, dessus);
+		////////		Debugln(buffer);
+		////////	}
 	if (compteurCycleMoyennePourSeuil > NBCYCLESOKMOINS1)
 	{	
 		//traitement dynamique pour les seuils humidité

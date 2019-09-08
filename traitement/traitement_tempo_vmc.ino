@@ -250,11 +250,11 @@ void loop()
 //************************************************1 fois par seconde*************************************************************************************
   // Only once task per loop, let system do its own task
  if (MYSNTP.getCycle1Seconde()) {
-	  WEBSERVER.handleClient();
-	  MYOTA.handle();
-	  //**************************************Traitement enregistrement****************************************************
-	  MYSNTP.TestSiMinuit();
-	  boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur();
+	WEBSERVER.handleClient();
+	MYOTA.handle();
+	//**************************************Traitement enregistrement****************************************************
+	MYSNTP.TestSiMinuit();
+	boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur();
 	if(MYSNTP.getMinuit() && CgtCompteur)
 	{
 		ENREGISTREMENT.clrPremierEnregistrement();	//envoi des 6 compteurs

@@ -48,10 +48,10 @@ private:
 	ClassMySql *myClassMySql;
 	QBasicTimer timerFinColorDemandeMessage;
 	QBasicTimer timerDemandeMessage;
-	uint16_t port;
-	QString adresseIp;
+	uint16_t port=0;
+	QString adresseIp="";
 	QUdpSocket *socket;
-	quint16 tailleMessage;
+	quint16 tailleMessage=0;
 	void acquitement(QByteArray data);
 };
 

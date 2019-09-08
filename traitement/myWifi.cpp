@@ -73,6 +73,8 @@ bool myWifi::WiFiOn() {
 
 //**************************************WiFiOff**********************************
 //arret de la wifi
+void myWifi::WiFiOff(void)
+{
 	uint8_t timeout;
 	wifi_station_disconnect();
 	timeout = 50; // > 500ms.
@@ -93,9 +95,9 @@ void myWifi::WIFI_printStatus()
 	DebugF("WiFi.status()=");Debugln((int)WiFi.status());
 }
 
-bool myWifi::getWifi(void)
+bool myWifi::getWifiUser(void)
 {
-	return wifi;
+	return wifiUser;
 }
 //test la coupure wifi programmée par l'utilisateur
 //quelquesoit la programmation horaire:maintient la liaison pendant 1 heure après un démarrage(cptBoot).
@@ -128,19 +130,19 @@ void myWifi::testWifi()
 //si wifi=false:essaye de démarrer la wifi->wifi=true si ok
 void myWifi::on(void)
 {
-	if (!wifi)
+	if (!wifiUser)
 	{
-		wifi = WiFiOn();
+		wifiUser = WiFiOn();
 		delay(1);
 	}
 }
 //si wifi=true:arrete la wifi->wifi=false
 void myWifi::off(void)
 {
-	if (wifi)
+	if (wifiUser)
 	{
 		WiFiOff();
-		wifi = false;
+		wifiUser = false;
 		delay(1);
 	}
 }
@@ -302,7 +304,7 @@ int myWifi::WifiHandleConn(boolean setup = false)
 #endif
 
 //#ifdef START_STOP_WIFI
-		wifi = true;
+		wifiUser = true;
 //#endif
 
 		// Set OTA parameters

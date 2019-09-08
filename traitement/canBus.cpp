@@ -203,7 +203,7 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_4::AFF_CUISINE_T_LSB] = DHTCUISINE_T.getMesureCycleLsb();
 			buf[MESSAGE_TYPE_4::AFF_CUISINE_H_MSB] = DHTCUISINE_H.getMesureCycleMsb() ;
 			buf[MESSAGE_TYPE_4::AFF_CUISINE_H_LSB] = DHTCUISINE_H.getMesureCycleLsb();
-			buf[MESSAGE_TYPE_4::ETAT_WIFI] = WIFI.getWifi() | (MYTINFO.getEtatWifi() << 1);
+			buf[MESSAGE_TYPE_4::ETAT_WIFI] = WIFI.getWifiUser() | (MYTINFO.getEtatWifi() << 1);
 			buf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB] = CONFIGURATION.config.tempo.luminositeeLedsRgb;
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_4, 0, MESSAGE_TYPE_4::FIN_MESSAGE_TYPE_4, buf);
 		}

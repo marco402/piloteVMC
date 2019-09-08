@@ -41,8 +41,6 @@ class FormReceptionTempo : public QWidget, public Ui::FormReceptionVmcTempo
 		ClassMySql *myClassMySql;
 		ClassReceptionUdp *myClassThReceptionUdp;
 		void setStateWidget(bool etat);
-		uint16_t port;
-		QString adresseIp;
 		bool validateIpAdress(QString adresseIp);
 		//****setting************
 		void loadSettings(void);

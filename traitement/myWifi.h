@@ -41,12 +41,12 @@ public:
 	int WifiHandleConn(boolean setup);
 	void testWifi(void);
 	int getNb_reconnect(void) const;
-	bool getWifi(void);
+	bool getWifiUser(void);
 private:
 	void on(void);
 	void off(void);
 	//état de la liaison wifi coupure externe(box...) ou coupure utilisateur
-	bool wifi = false;
+	bool wifiUser = false;
 	int nb_reconnect = 0;
 	int cptBoot = 3600;			//wifi 60 minutes au boot-->affiche pageweb,OTA....
 };

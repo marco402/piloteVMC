@@ -60,7 +60,7 @@ private:
 	Connection *connection;
 	bool connexionOK = false;
 	QBasicTimer timerTestDatabase;
-	sql::PreparedStatement  *prep_stmt;
+	PreparedStatement  *prep_stmt;
 public:
 	ClassMySql(FormReceptionTempo* parent);
 	~ClassMySql();

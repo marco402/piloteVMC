@@ -46,8 +46,7 @@ char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FO
 char CAS_AUTO[][12] = { "           ","A-temp ext>","A-temp ext<","M-hum cuis>","M-hum  sdb>","cas inex   "};  //      ,"   arret   " ,"SHC","SHB","SCHAUD","SFROID"};
 #define NO_DEBUG_ST7735
 #define NO_HORIZONTAL		//je n'ai par intégré les dernières modif en horizontal...
-bool changeModePrec = false;	
-uint8_t clignote = 12;
+
 st7735::st7735() : Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RESET)						//-------->cycle d'affichage autour de 800ms.
 {
 }
@@ -321,13 +320,13 @@ void st7735::casNormal(struct_reception R)
 		//char HeureCourante[9];   //reception.NbMinuteActiveJourCourant
 		//sprintf(HeureCourante, "%02u:%02u:%02u", R.heures, R.minutes, R.secondes);  //ATTENTION aux sprintf, cause des pb leds
 		fillRect(V_COLHEURE, V_TXTLIGNEHEURE, WIDTH-V_COLHEURE-1, HAUTLIGNE - 2, COLORSCREEN);
+		setTextColor(COLORVARIABLESFORE, COLORSCREEN);
 		setCursor(V_COLHEURE, V_TXTLIGNEHEURE);
 		print(R.heures);
 		print(":");
 		print(R.minutes);
 		print(":");
 		print(R.secondes);
-		setTextColor(COLORVARIABLESFORE, COLORSCREEN);
 		//**************************affichage erreur******************************
 		if (R.Rbuzzer != 0)				// on reste sur la dernière erreur
 		{
@@ -357,7 +356,7 @@ void st7735::casNormal(struct_reception R)
 }
 void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
 {
-	//pour utiliser le meme parametre ecran et led rgb
+	//pour utiliser le meme parametre ecran et led rgb--> pas cablé pour le st7735
 	analogWrite(TFT_LEDA, (reception.luminositeeLeds-5)*63);  //0 à 255   5-->0  7-->128    9-->255
 	//return;
 //132*162
@@ -396,33 +395,41 @@ void st7735::TraiteLigneEtat(struct_reception reception)
 	fillRect(XPAVELABELWIFI, V_TXTLIGNEETAT, 79, HAUTLIGNE - 5, COLORSCREEN);
 	setTextSize(1);
 	setCursor(XPAVELABELWIFI, V_TXTLIGNEETAT + 5);
-	if ((reception.etatWifi & 3) < 3)		//pas de wifi
+	tourniquet -= 1;
+	if (!tourniquet)
+		tourniquet = 4;
+	switch (tourniquet)
 	{
-		print("Wi");
-		fillRect(XPAVEWIFI + 10, V_TXTLIGNEETAT + 2, 14, HAUTLIGNE - 8, couleursWIFI[reception.etatWifi & 3]);
-	}
-	else
-	{
+	case 1:
+		if ((reception.etatWifi & 3) < 3)		//pas de wifi
+		{
+			print("Wi");
+			fillRect(XPAVEWIFI + 10, V_TXTLIGNEETAT + 2, 14, HAUTLIGNE - 8, couleursWIFI[reception.etatWifi & 3]);
+		}
+		break;
+	case 2:
 		//**********************traitement seuil et cas auto********************
 		if (reception.decompteTempoArretMarcheForce > 0)
 		{
 			print("dec:");
 			print(reception.decompteTempoArretMarcheForce);
 		}
-		else if (reception.casAuto == CASSTATUS::ST_START || reception.mode != 3)
+		break;
+	case 3:
+		if (reception.casAuto == CASSTATUS::ST_START || reception.mode != 3)
 		{
 			//**********************traitement temps restant********************
 			print("tvmc:");
 			print(reception.NbMinuteActiveJourCourant);
 		}
-		else   //etat mode auto
-		{
+		break;
+	case 4://etat mode auto
 			CASSTATUS cas =(CASSTATUS) reception.casAuto;
 			if (cas > CASSTATUS::ST_FIN)
 				cas = CASSTATUS::ST_FIN;
 			print(CAS_AUTO[cas]);
 			print(reception.seuilAuto);
-		}
+		break;
 	}
 	setTextSize(2);
 }

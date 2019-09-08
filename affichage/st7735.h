@@ -108,6 +108,9 @@ class st7735 : public Adafruit_ST7735
 		void changementMode(void);
 		void decompteCgtVitesse(struct_reception R);
 		void casNormal(struct_reception R);
+		bool changeModePrec = false;
+		uint8_t clignote = 12;
+		uint8_t tourniquet = 4;
 };
 extern st7735 AFFICHEUR;
 #endif /* ST7735_H_ */
