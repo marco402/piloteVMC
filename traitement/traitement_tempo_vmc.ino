@@ -287,7 +287,7 @@ void loop()
 	else
 		MYTINFO.setEtatWifi(false);
 #endif 
-	WIFI.testWifi();			//test debut et fin wifi
+	//WIFI.testWifi();			//test debut et fin wifi supprimé,si le retour a lieu pendant la coupure horaire de la box, le programme n'est plus traité...solution???
 #ifdef SIMUTRAMETEMPO
 	SIMU_TEMPO.traite1Trame(Clock.getTimeSeconds());                      //(NTP.getSeconds1970());
 #endif

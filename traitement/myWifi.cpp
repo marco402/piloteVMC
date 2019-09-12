@@ -41,50 +41,57 @@
 #include "myOTA.h"
 #include "mySNTP.h"
 #include "myWifi.h"
-
+//#define FPM_SLEEP_MAX_TIME 0xFFFFFFF
 //**************************************WiFiOn**********************************
 //essaye de redémarrer la liaison wifi retour=true si ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP)) sinon false
 //si true->augmente le nombre de reconnexion affichée sur la page web onglet système.
 bool myWifi::WiFiOn() {
-	uint8_t timeout;
-	timeout = 50;			//>500ms.
-	wifi_fpm_do_wakeup();
-	wifi_fpm_close();
-	//ajout
-	wifi_set_opmode(STATION_MODE);
-	wifi_station_connect();
-	//
-	ESP.wdtFeed();
-	while (!WIFIOK || timeout>0)
+	if (!WIFIOK)
 	{
-		--timeout;
-		yield();
-		delay(10);
-	}
-	if (WIFIOK)
-	{
-		DebugF("wifi out sleep");
-		nb_reconnect++;
-		return true;
-	}
-	DebugF("wifi timeout pb out sleep");
-	return false;
+		//if(testMySsid())
+		//{
+			//DebuglnF("testMySsid=true");
+			uint16_t timeout;
+			timeout = 500;
+			//Wake ESP8266 up from MODEM_SLEEP_T force sleep.
+			//	Attention
+			//	This API can only be called when MODEM_SLEEP_T force sleep function is enabled, after calling wifi_fpm_open.This API can not be called after calling wifi_fpm_close.
+			wifi_fpm_do_wakeup();
+			//Disable force sleep function.
+			wifi_fpm_close();
+			wifi_set_opmode(STATION_MODE);
+			wifi_station_connect();
+			ESP.wdtFeed();
+			while ((WiFi.status() != WL_CONNECTED) && timeout)    //300 a 400 boucles avec wifi box
+			{
+				--timeout;
+				yield();
+				delay(10);
+			}
+			if (WIFIOK)
+			{
+				DebuglnF("wifi out sleep");
+				nb_reconnect++;
+				return true;
+			}
+			DebuglnF("wifi timeout pb out sleep");
+		//}
+		return false;
+		}
+	return true;
 }
 
 //**************************************WiFiOff**********************************
 //arret de la wifi
 void myWifi::WiFiOff(void)
 {
-	uint8_t timeout;
-	wifi_station_disconnect();
-	timeout = 50; // > 500ms.
-	while ((wifi_station_get_connect_status() != STATION_IDLE) && timeout)
-	{
-		delay(10);
-		--timeout;
-	} 
+	wifi_station_disconnect();   //direct idle,pas d'attente
 	wifi_set_opmode(NULL_MODE);
+	//Set sleep type for force sleep function.
+	//	Attention
+	//	This API can only be called before wifi_fpm_open.
 	wifi_set_sleep_type(MODEM_SLEEP_T);
+	//Enable force sleep function.
 	wifi_fpm_open();
 }
 
@@ -93,6 +100,33 @@ void myWifi::WIFI_printStatus()
 	DebugF("wifi_get_opmode()=");Debugln((int)wifi_get_opmode());
 	DebugF("wifi_station_get_connect_status()=");Debugln((int)wifi_station_get_connect_status());
 	DebugF("WiFi.status()=");Debugln((int)WiFi.status());
+	String response = "";
+	bool first = true;
+	int n = WiFi.scanNetworks();
+	for (uint8_t i = 0; i < n; ++i)
+	{
+		int8_t rssi = WiFi.RSSI(i);
+		if (first)
+			first = false;
+		else
+			response += F(",");
+		response += F("-");
+		response += WiFi.SSID(i);
+		response += F(":");
+		response += rssi;
+	}
+	Debugln(response);
+}
+
+bool myWifi::testMySsid(void)
+{
+	int n = WiFi.scanNetworks();
+	for (uint8_t i = 0; i < n; ++i)
+	{
+		if (!WiFi.SSID(i).compareTo(CONFIGURATION.config.ssid))
+			return true;
+	}
+	return false;
 }
 
 bool myWifi::getWifiUser(void)
@@ -104,7 +138,7 @@ bool myWifi::getWifiUser(void)
 //en fonction de la programmation horaire, appelle la fonction on ou off.
 void myWifi::testWifi()
 {
-	if (cptBoot)   //1 heure de wifi après un démarrage
+	if (cptBoot)   //5 minutes de wifi après un démarrage
 	{
 		cptBoot--;
 		on();
@@ -130,11 +164,12 @@ void myWifi::testWifi()
 //si wifi=false:essaye de démarrer la wifi->wifi=true si ok
 void myWifi::on(void)
 {
-	if (!wifiUser)
-	{
-		wifiUser = WiFiOn();
-		delay(1);
-	}
+	//if (!wifiUser)
+	//{
+		wifiUser = true;
+		WiFiOn();
+		//delay(1);
+	//}
 }
 //si wifi=true:arrete la wifi->wifi=false
 void myWifi::off(void)
@@ -143,7 +178,7 @@ void myWifi::off(void)
 	{
 		WiFiOff();
 		wifiUser = false;
-		delay(1);
+		//delay(1);
 	}
 }
 
@@ -216,16 +251,16 @@ int myWifi::WifiHandleConn(boolean setup = false)
 			// Do wa have a PSK ?
 			if (*CONFIGURATION.config.psk) {
 				// protected network
-			   /* Debug(F(" with key '"));
-				Debug(config.psk);
+			    Debug(F(" with key '"));
+				Debug(CONFIGURATION.config.psk);
 				Debug(F("'..."));
-				Debugflush();*/
-				WiFi.begin(CFG_DEF_SSID, CFG_DEF_PSK);
+				Debugflush();
+				WiFi.begin(CFG_DEF_SSID, CFG_DEF_PSK); //si pb config...
 				//WiFi.begin(CONFIGURATION.config.ssid, CONFIGURATION.config.psk);
 			}
 			else {
 				// Open network
-				Debug(F("unsecure AP"));
+				Debugln(F("unsecure AP"));
 				Debugflush();
 				WiFi.begin(CONFIGURATION.config.ssid);
 			}

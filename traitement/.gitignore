@@ -3,7 +3,7 @@
 !/*.cpp
 !/*.h
 !/*.ino
-!/configWifi.h
+configWifi.h
 !/prog_can_modifie
 !/prog_can_modifie/*
 #page web

@@ -45,10 +45,11 @@ public:
 private:
 	void on(void);
 	void off(void);
+	bool testMySsid(void);
 	//état de la liaison wifi coupure externe(box...) ou coupure utilisateur
 	bool wifiUser = false;
 	int nb_reconnect = 0;
-	int cptBoot = 3600;			//wifi 60 minutes au boot-->affiche pageweb,OTA....
+	int cptBoot = 300;			//wifi 5 minutes au boot-->affiche pageweb,OTA....
 };
 extern myWifi WIFI;
 #endif
