@@ -38,7 +38,7 @@ poussoir POUSSOIR;
 buzzer BUZZER;
 ///###################################initialisations globales##################################  
 int8_t task_1_sec = 0;
-unsigned long memoTempsMilli=millis()+1000;  //cycle de 1 seconde sans RTC,on pourrait se caler sur la reception...
+unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrait se caler sur la reception...
 //######################################setup#####################################
 void setup()
 {
@@ -85,9 +85,9 @@ void loop()
  //#################################################################################################################   
   } //1 sec
 //########################################Traitement durée du cycle##########################################
-  if(millis()>= memoTempsMilli)
+  if((millis()- memoTempsMilli) > 1000)
   {
-    memoTempsMilli=millis()+1000;
+    memoTempsMilli=millis();
     task_1_sec+=1;
   }
 //##############################################################################################################

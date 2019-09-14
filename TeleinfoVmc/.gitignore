@@ -1,15 +1,21 @@
 #teleinfovmc
+
 /**
+
 !/js
 !/js/*
 !/css
 !/css/*
 !/images
 !/images/*
+
+
 !/modele config_perso.php.php
+!/.gitignore
 !/*.html
 !/*.js
 !/*.xml
+
 !/json.php
 !/modele config_perso.php
 !/queries.php
@@ -22,5 +28,4 @@
 !/*.zip
 !/*.ico
 !/*.json
-!/.gitignore
-!/README.md
+

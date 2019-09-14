@@ -336,6 +336,9 @@ function daily () {
         
         while ($row = $result->fetch_array()) {
             $ts = intval($row["TIMESTAMP"]);
+          //quelquefois:grosse saute de puissance lorsqu'on est hors cycle.  
+          //la puissance est identique aux précedentes mais le temps est plus court...
+          //a revoir avec la modif des compteurs du 14/09/2019
             $curptec = $teleinfo["PTEC"][$row["PTEC"]];
             if ($curptec!==null) 
             { 

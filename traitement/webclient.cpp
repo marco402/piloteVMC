@@ -102,7 +102,7 @@ boolean webClient::httpPost(char * host, uint16_t port, char * url)
 	HTTPClient http;
 	bool ret = false;
 
-	unsigned long start = millis();
+	//unsigned long start = millis();
 
 	// configure traged server and url
 	http.setTimeout(200);   //1500
@@ -112,7 +112,7 @@ boolean webClient::httpPost(char * host, uint16_t port, char * url)
 
   
 	String errorMes;
-	  char  buffer[TAILLEBUFEMONCMS];  //marc 132-->400
+	  //char  buffer[TAILLEBUFEMONCMS];  //marc 132-->400
 	  //plantage  uc, message trop long pour syslog? a voir
 	  //if (strlen(url) + CFG_EMON_HOST_SIZE + 27 < TAILLEBUFEMONCMS)
 	  //{
@@ -146,8 +146,8 @@ boolean webClient::httpPost(char * host, uint16_t port, char * url)
 	
 	Debug(errorMes);
 
-	sprintf(buffer, " in %ld ms\r\n", millis() - start);
-		Debugln(buffer);
+	//sprintf(buffer, " in %ld ms\r\n", millis() - start);
+	//	Debugln(buffer);
 	http.end();		//marc
 	return ret;
 }

@@ -146,9 +146,10 @@ void ta12::lectureCapteur(void)
 #endif
 uint16_t ta12::ta12_lectureTA12(void)
 {
-	unsigned long fin = millis() + DUREE_LECTURE_MS;
+	//http://arlotto.univ-tln.fr/arduino/article/utilisez-correctement-la-fonction millis()
+	unsigned long fin = millis();
 	int16_t  courant_max = 0;
-	while(millis()<fin)
+	while(millis()-fin > DUREE_LECTURE_MS)
 	{
 		int courant = analogRead(pin);   //maxi=1V en entrée
 

@@ -108,22 +108,22 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 	switch (typeJour)
 	{
 	case 0:
-		prep_stmt->setUInt(3, compteur[0]);
+		prep_stmt->setUInt(3, leMessageVersBase->compteur);
 		break;
 	case 1:
-		prep_stmt->setUInt(5, compteur[1]);
+		prep_stmt->setUInt(5, leMessageVersBase->compteur);
 		break;
 	case 2:
-		prep_stmt->setUInt(7, compteur[2]);
+		prep_stmt->setUInt(7, leMessageVersBase->compteur);
 		break;
 	case 3:
-		prep_stmt->setUInt(4, compteur[3]);
+		prep_stmt->setUInt(4, leMessageVersBase->compteur);
 		break;
 	case 4:
-		prep_stmt->setUInt(6, compteur[4]);
+		prep_stmt->setUInt(6, leMessageVersBase->compteur);
 		break;
 	case 5:
-		prep_stmt->setUInt(8, compteur[5]);
+		prep_stmt->setUInt(8, leMessageVersBase->compteur);
 		break;
 	}
 	compteur[(leMessageVersBase->etatTempo >> 3) & 0xf] = leMessageVersBase->compteur; //mise a jour pour les cgt de compteur
@@ -204,16 +204,12 @@ void ClassMySql::timerEvent(QTimerEvent *event)
 			if (connection->isValid())
 				laFormReceptionTempo->frame_Sql->setStyleSheet(QString::fromUtf8("QFrame#frame_Sql {border-style: outset;border-width: 4px;border-radius: 10px;border-color:green;}"));
 			else
-			{
 				laFormReceptionTempo->frame_Sql->setStyleSheet(QString::fromUtf8("QFrame#frame_Sql {border-style: outset;border-width: 4px;border-radius: 10px;border-color:orange;}"));
-			}
 		}
 		else
 		{
 			if (initialisationSql())
-			{ 
 				laFormReceptionTempo->frame_Sql->setStyleSheet(QString::fromUtf8("QFrame#frame_Sql {border-style: outset;border-width: 4px;border-radius: 10px;border-color:green;}"));
-			}
 			else
 				laFormReceptionTempo->frame_Sql->setStyleSheet(QString::fromUtf8("QFrame#frame_Sql {border-style: outset;border-width: 4px;border-radius: 10px;border-color:orange;}"));
 		}

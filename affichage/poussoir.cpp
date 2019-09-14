@@ -28,9 +28,9 @@ boolean poussoir::traitement()
 {
 	static boolean  transitoirePoussoir=false;
 	boolean buzzer=false;
-	if (millis() >= tempsMilli)
+	if ((millis()- tempsMilli) > 1000)
 	{
-		tempsMilli = millis() + 1000;
+		tempsMilli = millis();
 		uint8_t LecturePoussoir=digitalRead(PIN_POUSSOIR_MODE);
 		if (LecturePoussoir==HIGH)   //5v sur appui
 		{
