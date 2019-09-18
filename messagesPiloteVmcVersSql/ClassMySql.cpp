@@ -91,41 +91,22 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 {
 	SQLString etatPtec[] = { "HCJB","HCJW","HCJR","HPJB","HPJW","HPJR" };
 	bool typeHeure[] = { 1,1,1,0,0,0 };
+	int ordreCompteurSQL[] { 3,5,7,4,6,8 };
 	SQLString ptec;
-	prep_stmt->setUInt(3, compteur[0]);
-	prep_stmt->setUInt(5, compteur[1]);
-	prep_stmt->setUInt(7, compteur[2]);
-	prep_stmt->setUInt(4, compteur[3]);
-	prep_stmt->setUInt(6, compteur[4]);
-	prep_stmt->setUInt(8, compteur[5]);
+	for(int cpt=0;cpt<6;cpt++)
+		prep_stmt->setUInt(ordreCompteurSQL[cpt], compteur[cpt]);
+	//etattempo: 2 cas
+	//soit  3 bits lsb ptec  3 bits suivant ptec: cas normal
+	//soit  3 bits lsb ptec  3 bits ptec 3 bits suivant N° compteur:cas forcage des 6 compteurs
 	int typeJour = leMessageVersBase->etatTempo & 7;
-	if (typeJour != ((leMessageVersBase->etatTempo >>3) & 7))   //sinon erreur sur puissance
+	int compteurCourant = (leMessageVersBase->etatTempo >> 3) & 7;
+	if (typeJour != compteurCourant)   //cas forcage des 6 compteurs                 sinon erreur sur puissance
 		ptec.append("XXXX");
-	else
-		ptec.append(etatPtec[typeJour]);
-	prep_stmt->setBoolean(20, !typeHeure[typeJour]);
-	prep_stmt->setBoolean(21, typeHeure[typeJour]);
-	switch (typeJour)
-	{
-	case 0:
-		prep_stmt->setUInt(3, leMessageVersBase->compteur);
-		break;
-	case 1:
-		prep_stmt->setUInt(5, leMessageVersBase->compteur);
-		break;
-	case 2:
-		prep_stmt->setUInt(7, leMessageVersBase->compteur);
-		break;
-	case 3:
-		prep_stmt->setUInt(4, leMessageVersBase->compteur);
-		break;
-	case 4:
-		prep_stmt->setUInt(6, leMessageVersBase->compteur);
-		break;
-	case 5:
-		prep_stmt->setUInt(8, leMessageVersBase->compteur);
-		break;
-	}
+	else                        //cas normal
+		ptec.append(etatPtec[compteurCourant]);
+	prep_stmt->setBoolean(20, !typeHeure[compteurCourant]);
+	prep_stmt->setBoolean(21, typeHeure[compteurCourant]);
+	prep_stmt->setUInt(ordreCompteurSQL[compteurCourant], leMessageVersBase->compteur);
 	compteur[(leMessageVersBase->etatTempo >> 3) & 0xf] = leMessageVersBase->compteur; //mise a jour pour les cgt de compteur
 	prep_stmt->setUInt(1, leMessageVersBase->timestamp);
 	prep_stmt->setString(2, ptec);
@@ -162,7 +143,6 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 bool  ClassMySql::initialisationSql()
 {
 	sqlStop();
-
 	SQLString host = getSqlString(laFormReceptionTempo->lineEditDatasource->text());
 	SQLString user = getSqlString(laFormReceptionTempo->lineEditUtilisateur->text());
 	SQLString pass = getSqlString(laFormReceptionTempo->lineEditMotDePasse->text());
@@ -178,7 +158,6 @@ bool  ClassMySql::initialisationSql()
 		connexionOK = false;
 		return false;
 	}
-
 	return true;
 }
 void  ClassMySql::sqlStop()
@@ -229,7 +208,6 @@ bool ClassMySql::traitementMessageS(QByteArray lesMessages, quint32 *delta) {
 		laFormReceptionTempo->plainTextEditMessages->appendPlainText("ERREUR : " + QString::fromLatin1(ex.what()));
 		return false;
 	}
-
 	int nbMessage = int(lesMessages.count() / 24);
 	for (int m = 0; m < nbMessage; m++)
 	{

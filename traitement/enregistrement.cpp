@@ -145,7 +145,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, bool cgtCompteu
 				memset(valeurs, 0, sizeof(valeurs));
 				if (premEnr > 5)   //cas normal
 				{
-					leMessage->etatTempo = HcHpCouleur | (HcHpCouleur << 3);  //3 bits lsb ptec  3 bits suivant compteur
+					leMessage->etatTempo = HcHpCouleur | (HcHpCouleur << 3);  //3 bits lsb ptec  3 bits suivant ptec
 					TINFO.valueGet(&TableauTempoName[HcHpCouleur][0], &valeurs[0]);
 					if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 					{
@@ -157,7 +157,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, bool cgtCompteu
 				}
 				else
 				{
-					leMessage->etatTempo = HcHpCouleur | (premEnr << 3); //3 bits lsb ptec  3 bits suivant compteur
+					leMessage->etatTempo = HcHpCouleur | (premEnr << 3); //3 bits lsb ptec 3 bits suivant N° compteur
 					TINFO.valueGet(&TableauTempoName[premEnr][0], &valeurs[0]);
 					if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 					{
