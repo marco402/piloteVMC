@@ -32,6 +32,9 @@ const sint8 TIMEZONE = 0;   //heure TU
 //si m_daylight ajoute 0 ou 3600 suivant été hiver							*
 //retourne la structure localTime
 //***************************************************************************
+//10 heures
+#define SNTP_UPDATE_DELAY           36000000
+
 void ClockCbFunction()
 {
 	tm cbLocalTimeStruct;
@@ -64,7 +67,6 @@ void ICACHE_FLASH_ATTR mySntp::init(void)
 	//attache secondTicker interval 1 seconde								*
 	//retourne l'heure tu 1970												*
 	//le serveur sera de nouveau interrogé toutes les heures par défaut,	*
-	//j'ai mis 10 heures dans sntp.c->SNTP_UPDATE_DELAY						*
 	//***********************************************************************
 	Clock.begin("de.pool.ntp.org", 3600, 1);  //3600 décalage Paris / TU (heure d'hiver) 1 heure d'été
 	ClockCbFunction();

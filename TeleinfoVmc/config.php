@@ -80,8 +80,8 @@ $teleinfo["LIBELLES"] = array(
         "DUREECYCLESVMC"   => "durée entre 2 enregistrements",
 
         "MODE" => "mode",                        //mettre les noms identiques dans structure.timestamp->PERIODES
-        "MARCHE" => "1:marche",
-        "VITESSE" =>  "1:rapide",
+        "MARCHE" => "marche",
+        "VITESSE" =>  "rapide",
         "TEMPEXT" =>  "température extérieur",
         "TEMPCUIS" =>  "température cuisine",
         "HUMCUIS" =>  "humidité cuisine",

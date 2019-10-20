@@ -205,8 +205,6 @@ void ICACHE_FLASH_ATTR setup() {
 #endif
 #ifdef SIMUTRAMETEMPO
 	SIMU_TEMPO.initSimuTrameTempo();
-#endif
-#ifdef SIMUTRAMETEMPO
 	SerialSimu.begin(VITESSE_SIMUTRAMETEMPO);	//19200, SERIAL_7E1
 #endif
 MYTINFO.init(MODE_HISTORIQUE);
@@ -277,6 +275,7 @@ void loop()
 //**************************************Traitement des sorties****************************************************
 #ifdef COMP_CAN_BUS
 	CAN_BUS.TRAITEMENTEMISSIONCAN();
+#endif 	
 	if (WIFIOK)
 	{
 #ifdef EMISSION_ENREGISTREMENT
@@ -286,7 +285,6 @@ void loop()
 	}
 	else
 		MYTINFO.setEtatWifi(false);
-#endif 
 	//WIFI.testWifi();			//test debut et fin wifi supprimé,si le retour a lieu pendant la coupure horaire de la box, le programme n'est plus traité...solution???
 #ifdef SIMUTRAMETEMPO
 	SIMU_TEMPO.traite1Trame(Clock.getTimeSeconds());                      //(NTP.getSeconds1970());

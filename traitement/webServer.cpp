@@ -958,8 +958,8 @@ void webServer::getSysJSONData(String & response)
 	response += "{\"na\":\"Uptime\",\"va\":\"";
 	response += Clock.getDateTimeStr();       //NTP.sysinfo.sys_uptime;
 	response += "\"},\r\n";
-	tm t = *Clock.getTimeStruct();
-	sprintf_P(buffer,"t %i-%02i-%02i %02i:%02i:%02i\r\n",	t.tm_year, t.tm_mon + MONTH_START, t.tm_mday,t.tm_hour, t.tm_min, t.tm_sec);
+	//tm t = *Clock.getTimeStruct();
+	//sprintf_P(buffer,"t %i-%02i-%02i %02i:%02i:%02i\r\n",	t.tm_year, t.tm_mon + MONTH_START, t.tm_mday,t.tm_hour, t.tm_min, t.tm_sec);
 	//Debugln(buffer);
 #ifdef SENSOR
 	response += "{\"na\":\"Switch\",\"va\":\"";

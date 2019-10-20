@@ -219,7 +219,45 @@ var passe=false;
                 tooltip ='<span style= "font-size: 0.85em;">' + "Le " + tipDate +"(" + courbe.x/1000 +")</span>  </b><br/>";
                 passe=true
             }
-            tooltip +='<span  style="color:' + courbe.color + '; font-size: 0.85em;">'  + courbe.series.name + ':'+ Number.parseFloat(courbe.y).toFixed(2) + ' </span> </b><br/>';
+            tooltip +='<span  style="color:' + courbe.color + '; font-size: 0.85em;">'  + courbe.series.name + ':';
+            if(courbe.series.name.indexOf('mode')!=-1)
+            {
+                if(courbe.y==0)
+                    tooltip +='arrêt';
+                else if(courbe.y==1)
+                    tooltip +='lent';
+                else if(courbe.y==2)
+                    tooltip +='rapide';
+                else if(courbe.y==3)
+                    tooltip +='auto';
+                else if(courbe.y==4)
+                    tooltip +='forçé lent';
+                else if(courbe.y==5)
+                    tooltip +='forçé rapide';
+                else if(courbe.y==6)
+                    tooltip +='forçé arrêt';
+                else
+                    tooltip +='cas inex';
+            }
+            else if(courbe.series.name.indexOf('marche')!=-1)
+            {
+                if(courbe.y==0)
+                    tooltip +='arrêt';
+                else
+                    tooltip +='marche';
+            }
+            else if(courbe.series.name.indexOf('rapide') !=-1)
+            {
+                if(courbe.y==0)
+                    tooltip +='lent';
+                else
+                    tooltip +='rapide';
+            }
+            else 
+                tooltip += Number.parseFloat(courbe.y).toFixed(2) ;
+
+            tooltip +=' </span> </b><br/>';
+            //tooltip +='<span  style="color:' + courbe.color + '; font-size: 0.85em;">'  + courbe.series.name + ':'+ Number.parseFloat(courbe.y).toFixed(2) + ' </span> </b><br/>';
       });
  
  

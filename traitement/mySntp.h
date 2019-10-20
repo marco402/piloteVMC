@@ -7,7 +7,6 @@
 #include "Wifinfo.h" 
 #include "SNTPTime.h"
 #include "SNTPClock.h"
-#include "mySntp.h"
 
 extern SNTPClock Clock;
 void Task_1_Sec(void);
