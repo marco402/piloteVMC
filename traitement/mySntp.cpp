@@ -5,7 +5,8 @@
 #include <SNTPTime.h>
 #include <SNTPClock.h>
 #include "mySntp.h"
-
+//********************ATTENTION CORRECTIF DANS SNTPTIME.CPP*********************************
+//ligne 142 if (t.tm_mday - t.tm_wday >= 25 && (t.tm_wday || (t.tm_hour >= 2)))  //marc add two brackets
 extern "C" {
 #include <sntp.h>
 }
@@ -68,6 +69,7 @@ void ICACHE_FLASH_ATTR mySntp::init(void)
 	//retourne l'heure tu 1970												*
 	//le serveur sera de nouveau interrogé toutes les heures par défaut,	*
 	//***********************************************************************
+	//--daylight=1: prise en compte heure d'été(+3600) heure d'hiver(+0)
 	Clock.begin("de.pool.ntp.org", 3600, 1);  //3600 décalage Paris / TU (heure d'hiver) 1 heure d'été
 	ClockCbFunction();
 }

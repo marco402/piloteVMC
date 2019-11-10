@@ -6,6 +6,8 @@
 configWifi.h
 !/prog_can_modifie
 !/prog_can_modifie/*
+!/esp8266-SNTPClock-master
+!/esp8266-SNTPClock-master/*
 #page web
 !/data
 !/data/**
