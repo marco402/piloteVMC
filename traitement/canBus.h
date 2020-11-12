@@ -6,7 +6,7 @@
 // Attribution-NonCommercial-ShareAlike 4.0 International License
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
 //
@@ -34,8 +34,8 @@
 #ifndef CANBUS_H_
 #define CANBUS_H_
 #include <Arduino.h>
-#include <mcp_can.h>
-#include <mcp_can_dfs.h>
+#include "mcp_can.h"
+#include "mcp_can_dfs.h"
 
 
 #define CLOCKSPI 500000		//limitation à 500000 si adaptation 5v/3v3 avec bss138

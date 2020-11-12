@@ -312,6 +312,7 @@ void loop()
 	  if ( Serial.available() )
 			{ 
 				char c = Serial.read();          //pour test recup SPI
+				//Debug(c);   ATTENTION plante l'uc  plus d'OTA...
 				TINFO.process(c);
 		}
 	}

@@ -19,7 +19,7 @@
 #define HEADER_FENRECEPTIONTEMPO
 #include <QtGui>
 #include <QtNetwork>
-#include <QString.h>
+#include <Qstring.h>
 #include <QMessageBox>
 #include "ui_FormReceptionTempo.h"
 #include "ClassMySql.h"

@@ -1,5 +1,6 @@
 #projet  affichage C++ visual studio visual micro esp8266
 /**
+!/*.vcxproj
 !/*.cpp
 !/*.h
 !/*.ino

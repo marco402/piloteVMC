@@ -19,7 +19,7 @@
 #pragma region debut_fin
 FormReceptionTempo::FormReceptionTempo()
 {
-	setupUi(this);
+    setupUi(this);
 	QObject::connect(this, SIGNAL(WindowSizeChanged()), this, SLOT(WidgetSizeChanged()));
 	myClassMySql = new ClassMySql(this);
 	myClassThReceptionUdp = new ClassReceptionUdp(this,myClassMySql);

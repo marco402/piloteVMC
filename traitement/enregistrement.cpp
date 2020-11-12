@@ -7,7 +7,7 @@
 // Attribution-NonCommercial-ShareAlike 4.0 International License
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
 //
@@ -32,7 +32,7 @@
 #include "mySNTP.h"
 #include "myWifi.h"
 #include "webclient.h"
-#include "mySntp.h"
+//#include "mySntp.h"
 #include "myTinfo.h"
 #include "enregistrement.h"
 #define NO_DEBUGENREGISTREMENT

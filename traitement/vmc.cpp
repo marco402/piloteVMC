@@ -6,7 +6,7 @@
 // Attribution-NonCommercial-ShareAlike 4.0 International License
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
 //
@@ -30,6 +30,7 @@
 #include "enregistrement.h"
 #include "canBus.h"
 #include "vmc.h"
+#include "LibTeleinfo.h"
 vmc::vmc()
 {
 }
@@ -253,10 +254,28 @@ void vmc::traitementVMC(void)
 		//DebugF("seuil_temp_chaud_dixieme_degres: "); Debugln(CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres);
 		//DebugF("seuil_temp_froid_dixieme_degres: "); Debugln(CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres);
 		//boolean tropFroidDehors = (TEMPEXT.getMoyennePeriode() < CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres);//c'est l'hiver trop froid dehors risque de ne plus ventiler
-		boolean tropChaudDehors = (TEMPEXT.getMoyennePeriode() > CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres);
+
+	//lecture couleur du jour
+	char  valeurs[LONGMAXMOT];
+	
+	memset(valeurs, 0, sizeof(valeurs));
+	TINFO.valueGet(&TableauTempoName[TEMPO_UTILISE::ETU_PTEC][0], &valeurs[0]);
+	if (((valeurs != NULL) && (valeurs[0] != '\0')))
+	{
+		CouleurEnCours = atoi(valeurs);
+	}
+	
+	//0:bleu nuit,1:blanc nuit,2:rouge nuit,3:bleu jour,4:blanc jour,5:rouge jour
+	   	boolean tropChaudDehors = (TEMPEXT.getMoyennePeriode() > CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres);
 		boolean cuisineTropHumide = (DHTCUISINE_H.getMoyennePeriode() > SeuilHC);
 		boolean salledebainTropHumide = (DHTSDB.DHT_H.getMoyennePeriode() > SeuilHB);
-		if (tropChaudDehors)
+		if (CouleurEnCours == COULEURJOUR::ROUGE_JOUR)
+		{
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   						//arret si aucun cas demande de ventiler
+			casAuto = CASSTATUS::ST_ROUGEJOUR; //affichage du nombre de minute restante
+			seuilAuto = 0;
+		}
+		else if (tropChaudDehors)
 		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'été trop chaud dehors seuil de température qui permet de ventiler la nuit.
 			casAuto = CASSTATUS::ST_TROPCHAUD;
@@ -280,7 +299,7 @@ void vmc::traitementVMC(void)
 		else //if (RELAIS.getEtatReelRelaisMarcheArret()== ARRET_MARCHE::MARCHE_REL)
 			{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   						//arret si aucun cas demande de ventiler
-			casAuto = ST_START; //affichage du nombre de minute restante
+			casAuto = CASSTATUS::ST_START; //affichage du nombre de minute restante
 			seuilAuto= 0;
 			//DebuglnF("5");
 			}

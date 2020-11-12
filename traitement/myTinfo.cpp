@@ -46,6 +46,7 @@ volatile boolean cgtCompteur = false;
 void PTECCallback(uint8_t etatPTEC)
 {
 	DebuglnF("Changement de compteur");
+	//nouvelleTrame = false;   //essai pour problème de dernière trame
 	cgtCompteur = true;	//il faut changer de compteur et enregistrer une trame 
 
 }

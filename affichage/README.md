@@ -1,6 +1,6 @@
 ﻿
 
-# Projet affichage partie du projet PiloteVmc(Développé par Marc Prieur)
+# Projet affichage partie du projet PiloteVmc(Développé par Marc Prieur https://marco40github.wixsite.com/website)
 
 -Ce programme tourne sur un arduino mini pro.
 
@@ -14,9 +14,6 @@
 	-une prise à l'arrière du boitier permet de charger le programme par une liaison usb série.
 	
 	
-
-https://mesrealisations.000webhostapp.com/?p=400
-https://mesrealisations.000webhostapp.com/?p=521
 
 
 

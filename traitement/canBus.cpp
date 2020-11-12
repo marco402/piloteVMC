@@ -6,7 +6,7 @@
 // Attribution-NonCommercial-ShareAlike 4.0 International License
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
 //
@@ -30,7 +30,7 @@
 //
 // **********************************************************************************
 #include <Arduino.h>
-#include <mcp_can.h>
+#include "mcp_can.h"
 #include "Wifinfo.h"
 #include "mySyslog.h"
 #include "dht.h"

@@ -1,9 +1,15 @@
 #projet  traitement C++ visual studio visual micro esp8266
+#on suprime tout
 /**
+#on ajoute ce qu'on garde
+!/.gitignore
+!/README.md
 !/*.cpp
 !/*.h
 !/*.ino
+!/*.vcxproj
 configWifi.h
+#tout le dossier
 !/prog_can_modifie
 !/prog_can_modifie/*
 !/esp8266-SNTPClock-master
@@ -11,11 +17,3 @@ configWifi.h
 #page web
 !/data
 !/data/**
-!/js
-!/js/*
-!/fonts
-!/fonts/*
-!/css
-!/css/*
-!/.gitignore
-!/README.md

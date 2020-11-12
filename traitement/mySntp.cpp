@@ -2,8 +2,8 @@
 #include <Ticker.h>
 #include "mySyslog.h"
 #include "myWifi.h"
-#include <SNTPTime.h>
-#include <SNTPClock.h>
+#include "SNTPTime.h"
+#include "SNTPClock.h"
 #include "mySntp.h"
 //********************ATTENTION CORRECTIF DANS SNTPTIME.CPP*********************************
 //ligne 142 if (t.tm_mday - t.tm_wday >= 25 && (t.tm_wday || (t.tm_hour >= 2)))  //marc add two brackets

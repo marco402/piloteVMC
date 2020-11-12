@@ -1,14 +1,23 @@
 #projet  piloteVmc
-#
-receptionTempo.ini
-#base sql
+#on suprime tout
+/**
+#on ajoute ce qu'on garde
+
+!/.gitignore
+!/README.md
+!/LICENSE
+!/todo.md
+
+
+!/affichage
+!/affichage/*
+!/designSpark
+!/designSpark/*
+!/messagesPiloteVmcVersSql
+!/messagesPiloteVmcVersSql/*
 !/sql
 !/sql/*
-
-!/README.md
-
-face_avant/**
-messagesPiloteVmcVersSql ok avant classes/**
-reception messages vmc tempo vers base sql/**
-squetchup/**
-documentation/**
+!/TeleinfoVmc
+!/TeleinfoVmc/*
+!/traitement
+!/traitement/*

@@ -189,4 +189,3 @@ void dht::simuMesure(int16_t capteurT,int16_t capteurH)
 	DHT_T.traiteMesure(capteurT);
 	DHT_H.traiteMesure(capteurH);
 }
-

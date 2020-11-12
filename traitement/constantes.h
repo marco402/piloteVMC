@@ -6,7 +6,7 @@
 // Attribution-NonCommercial-ShareAlike 4.0 International License
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
 //
@@ -50,7 +50,7 @@
 #define rgb_brightness       1        //50				//50 trop   25 trop 10 trop 0 eteint
 #define BLINK_LED_MS   50 // 50 ms blink
 
-//**************************partie liée a la partie tempo  Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)**************
+//**************************partie liée a la partie tempo  Written by Marc Prieur (https://marco40github.wixsite.com/website))**************
 
 //											pins nodemcu 1.0	pins esp8266
 
@@ -83,8 +83,9 @@
 #define	PIN_CAPTEUR_ANA_COURANT			A0								
 #define LONGMAXMOT 12
 //################################################enum##########################################################
+enum COULEURJOUR {BLEU_NUIT=0,BLANC_NUIT,ROUGE_NUIT,BLEU_JOUR,BLANC_JOUR,ROUGE_JOUR};
 enum VITESSE_RELAIS { LENT_REL = 0, RAPIDE_REL };
-enum ARRET_MARCHE { ARRET_REL = 0, MARCHE_REL };
+enum ARRET_MARCHE {  ARRET_REL = 0, MARCHE_REL };
 enum ADRESS_STATIC{ TEMPOVMC = 101, REGULTEMP, };
 enum TEMPO_UTILISE { ETU_HCJB, ETU_HCJW, ETU_HCJR, ETU_HPJB, ETU_HPJW, ETU_HPJR, ETU_PTEC, ETU_DEMAIN, ETU_IINST };
 enum ETAT_JOUR { ETAT_JOUR_BLEU = 0, ETAT_JOUR_BLANC, ETAT_JOUR_ROUGE, ETAT_JOUR_INIT, ETAT_JOUR_PRESENT = 0, ETAT_JOUR_ABSENT = 16, ETAT_JOUR_JOUR = 0, ETAT_JOUR_NUIT = 3, ETAT_JOUR_INCONNU = 10 };

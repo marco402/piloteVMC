@@ -6,7 +6,7 @@
 // Attribution-NonCommercial-ShareAlike 4.0 International License
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
 //
@@ -59,6 +59,7 @@
 		CASSTATUS  info = CASSTATUS::ST_START;  //apres le tableau MODES_AFF de st7735.cpp(affichage)
 		int16_t SeuilHC = 0;
 		int16_t SeuilHB = 0;
+		int8_t CouleurEnCours = 0;
 		//boolean cgtMode = false;
 	};
 	extern vmc VMC;

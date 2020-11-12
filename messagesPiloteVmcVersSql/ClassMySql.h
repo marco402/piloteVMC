@@ -42,7 +42,7 @@ private:
 		uchar etatTempo;    //1
 		uchar etatWifi;     //1
 		//partie vmc
-		quint16 tempExt;    //2
+		qint16 tempExt;    //2
 		quint16 tempCuis;   //2
 		quint16 tempSdb;    //2
 		uchar humCuis;      //1

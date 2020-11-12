@@ -57,7 +57,7 @@
 //***********************************************************************************************************************************
 #include <QtWidgets\QApplication>
 #include "FormReceptionTempo.h"
-#include "ui_FormReceptionTempo.h"
+
 int main(int argc, char* argv[])
 {
 #if QT_VERSION < 0x050000
