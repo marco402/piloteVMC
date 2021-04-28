@@ -7,7 +7,7 @@
 // http://creativecommons.org/licenses/by-nc-sa/4.0/
 //
 // File:ClasssMySql.cpp
-// Written by Marc Prieur (http://mesrealisations.000webhostapp.com/)
+// Written by Marc Prieur (https://marco40github.wixsite.com/website/pilotevmc)(marco40_github@sfr.fr)
 //
 //History : V1.00 2019-08-11 - First release
 //

@@ -23,12 +23,12 @@
 //RX													0	
 //TX													1	
 //INT0													2
-#define PIN_DHT22										3		//inversion smt160 et mq7 voir schéma pcb
-#define TFT_DC											4	//PIN_LED_CHAUFFAGE
+// marc a voir si remplacé par PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE #define PIN_DHT22										3		//inversion smt160 et mq7 voir schéma pcb
+#define TFT_DC											4	//
 #define PIN_LED_JOUR_NUIT								5		//passer sur 5 manque R14 utilise R13
-#define PIN_LED_PRESENT_ABSENT							6
+#define PIN_LED_PRESENT_ABSENT							6	a voir libre //
 #define PIN_CS_CAN										7		//sur test receive blink 15µs haut 15µs bas
-#define TFT_CS											8	//PIN_LED_CUMULUS
+#define TFT_CS											8	//
 #define PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE				9
 #define TFT_LEDA										10	//via 1kOhm pour extinction
 #define TFT_MOSI										11		//SPI	MOSI	sur test receive blink 0.5µs bas  1µs haut 1µs bas

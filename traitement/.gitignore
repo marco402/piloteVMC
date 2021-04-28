@@ -2,6 +2,8 @@
 #on suprime tout
 /**
 #on ajoute ce qu'on garde
+
+#fichiers
 !/.gitignore
 !/README.md
 !/*.cpp
@@ -9,6 +11,7 @@
 !/*.ino
 !/*.vcxproj
 configWifi.h
+
 #tout le dossier
 !/prog_can_modifie
 !/prog_can_modifie/*

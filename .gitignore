@@ -1,14 +1,15 @@
 #projet  piloteVmc
 #on suprime tout
 /**
-#on ajoute ce qu'on garde
 
+#on ajoute ce qu'on garde
+#fichiers
 !/.gitignore
 !/README.md
 !/LICENSE
 !/todo.md
 
-
+#dossiers
 !/affichage
 !/affichage/*
 !/designSpark
