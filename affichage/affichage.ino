@@ -16,8 +16,6 @@
 #include <NeoPixelBrightnessBus.h>
 #include <NeoPixelAnimator.h>
 #include <SPI.h>
-#include <mcp_can_dfs.h>
-#include <mcp_can.h>
 #include <NewTone.h>
 #include "constantes.h"
 #include "dht.h"

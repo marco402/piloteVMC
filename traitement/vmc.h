@@ -60,6 +60,8 @@
 		int16_t SeuilHC = 0;
 		int16_t SeuilHB = 0;
 		int8_t CouleurEnCours = 0;
+		void traiteEte();
+		void traiteHiver();
 		//boolean cgtMode = false;
 	};
 	extern vmc VMC;

@@ -24,13 +24,13 @@
 //TX													1	
 //INT0													2
 // marc a voir si remplacé par PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE #define PIN_DHT22										3		//inversion smt160 et mq7 voir schéma pcb
-#define TFT_DC											4	//
+#define TFT_DC											4	    //
 #define PIN_LED_JOUR_NUIT								5		//passer sur 5 manque R14 utilise R13
-#define PIN_LED_PRESENT_ABSENT							6	a voir libre //
+#define TFT_LEDA							            6	    //via 2n2222 and 2N2907
 #define PIN_CS_CAN										7		//sur test receive blink 15µs haut 15µs bas
-#define TFT_CS											8	//
+#define TFT_CS											8	    //
 #define PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE				9
-#define TFT_LEDA										10	//via 1kOhm pour extinction
+//#define TFT_LEDA										10
 #define TFT_MOSI										11		//SPI	MOSI	sur test receive blink 0.5µs bas  1µs haut 1µs bas
 //														12		//SPI	MISO	sur test receive blink
 #define TFT_SCLK										13		//SPI	CLK		PIN_LED_CARTE_PRO_MINI
@@ -45,7 +45,7 @@
 //libre													A7		//21
 ////################################################enum##########################################################
 enum COULEUR_JOUR { COULEUR_JOUR_BLEU = 0, COULEUR_JOUR_BLANC , COULEUR_JOUR_ROUGE ,COULEUR_JOUR_INIT };
-enum LES_LEDS_RGB { LES_LEDS_RGB_LED_DEMAIN,LES_LEDS_RGB_LED_JOUR ,FIN_LED};
+enum LES_LEDS_RGB { LES_LEDS_RGB_LED_DEMAIN,LES_LEDS_RGB_LED_JOUR,FIN_LED};   //LES_LEDS_RGB_LED_JOUR_NUIT,
 enum ARRET_MARCHE { ARRET_REL = 0, MARCHE_REL };
 #define NB_LEDS_RGB LES_LEDS_RGB::FIN_LED
 //################################################static const##########################################################

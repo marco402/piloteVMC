@@ -35,6 +35,7 @@ RgbColor white(colorSaturation);
 RgbColor yellow(colorSaturation,colorSaturation,0);
 RgbColor orange(colorSaturation,85,0);
 RgbColor gris(150, 150, 150);
+RgbColor black(0, 0, 0);
 ledsRgbSerial::ledsRgbSerial(void)
 {
 }
@@ -43,6 +44,7 @@ void ledsRgbSerial::init(void)
 	rgb_led.SetBrightness(brightness);
 	traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_JOUR);
 	traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_DEMAIN);
+    //traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_JOUR_NUIT);
 	rgb_led.Show();
 }
 void ledsRgbSerial::traitement(struct_reception reception)
@@ -54,6 +56,7 @@ void ledsRgbSerial::traitement(struct_reception reception)
 	etatDesLeds.etat=reception.etatLeds;
 	traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
 	traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
+	//traitementLedsRGB(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
 	}
 }
 void ledsRgbSerial::traitementLedsRGB(unsigned char etat,LES_LEDS_RGB indiceLedRGB)
@@ -70,7 +73,7 @@ switch  (etat)
 		rgb_led.SetPixelColor(indiceLedRGB, red);
 		break;
 	case COULEUR_JOUR::COULEUR_JOUR_INIT:
-		rgb_led.SetPixelColor(indiceLedRGB, gris);
+		rgb_led.SetPixelColor(indiceLedRGB, black);  //gris donne blanc
 	}
 	rgb_led.Show();
 }

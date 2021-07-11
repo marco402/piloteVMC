@@ -144,7 +144,7 @@ void can_bus::TRAITEMENTEMISSIONCAN(void)
 				if (len == FIN_MESSAGE_TYPE_3)
 				{
 					VMC.setLeMode((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
-						receptionCommandes = true;
+					receptionCommandes = true;
 				}
 				else
 				{ 

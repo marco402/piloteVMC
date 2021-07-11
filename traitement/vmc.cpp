@@ -9,7 +9,7 @@
 // Written by Marc Prieur (https://marco40github.wixsite.com/website))
 //
 // History : V1.00 2018-03-23 - First release
-//
+//				   2021 ajout mode ETE HIVER
 //
 // All text above must be included in any redistribution.
 //
@@ -36,11 +36,11 @@ vmc::vmc()
 }
 void vmc::TRAITEMENTVMC(void)
 {
-	//***************************************Gestion de la mise en marche du relais de démarrage*************************************
+	//***************************************Gestion de la mise en marche du relais de dÃ©marrage*************************************
 	RELAIS.tempoChangementEtatRelais();
 	//**************************************Traitement du mode VMC****************************************************
 	//*****************Si le mode a changer, initialisation du nouveau mode
-	//ATTENTION,le mode change ici mais le relais marche arret sera commandé 5 secondes plus tard-->en attendant:etatRelaisMarcheArret=ArretMarche::ARRET_REL;
+	//ATTENTION,le mode change ici mais le relais marche arret sera commandÃ© 5 secondes plus tard-->en attendant:etatRelaisMarcheArret=ArretMarche::ARRET_REL;
 	initialisationMode();
 	lectureCapteurs();
 	testTraitementVmc();
@@ -53,20 +53,52 @@ void vmc::testTraitementVmc(void)
 			traitePeriodeVmc();
 	}
 }
-//appelé cycliquement sans condition par main_pilote_vmc.cpp
+//appelÃ© cycliquement sans condition par main_pilote_vmc.cpp
 void vmc::setCptVmc(uint16_t T)
 {
 	cptSecondesVmcAuto = T;
 }
 void vmc::traiteRazCapteursAuto(void)
 {
-	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)  //déplacé ici sinon capteur de courant a 0
+	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)  //dÃ©placÃ© ici sinon capteur de courant a 0
 	{
 		traiteMoyennePeriode();
 		if (leMode != MODES::AUTO)   //pour continuer a traiter les moyennes a la cadence vmc
 			cptSecondesVmcAuto = 0;
 	}
 }
+void vmc::traiteEte()
+{
+	//DebugF("TEMPEXT: ");	Debugln((long)TEMPEXT.getMoyennePeriode());
+	//DebugF("DHTSDB.DHT_T: ");	Debugln((long)DHTSDB.DHT_T.getMoyennePeriode());
+	boolean entreAirFrais = (TEMPEXT.getMoyennePeriode() < (DHTSDB.DHT_T.getMoyennePeriode()));
+	//DebugF("entreAirFrais: ");	Debugln((long)entreAirFrais);
+	if (entreAirFrais)
+    {
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+    }
+	else
+    {
+		leMode = MODES::AUTO;
+		memoModes = MODES::AUTO;
+		decompteTempoArretMarcheForce = 0;
+		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
+    }
+}
+void vmc::traiteHiver()
+{
+	boolean entreAirChaud = (TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode() ));
+	if (entreAirChaud)
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+	else
+	{
+		leMode = MODES::AUTO;
+		memoModes = MODES::AUTO;
+		decompteTempoArretMarcheForce = 0;
+	}
+		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
+}
+
 void vmc::traitePeriodeVmc()
 {
 	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)
@@ -83,36 +115,40 @@ void vmc::traitePeriodeVmc()
 			TA12.traitementSeuilTa12();	//true si ok
 		}
 	}
+	if (leMode == MODES::ETE)
+	{
+		traiteEte();
+		cptSecondesVmcAuto = 0;
+	}
+	else if (leMode == MODES::HIVER)
+	{
+		traiteHiver();
+		cptSecondesVmcAuto = 0;
+	}
 }
 void vmc::incrementeCptVmc()
 {
 	cptSecondesVmcAuto++;
 }
-//appel que si on a changé de mode Marche/arret, petite/grande vitesse ou automatique...
+//appel que si on a changÃ© de mode Marche/arret, petite/grande vitesse ou automatique...
 void vmc::initialisationMode()
 {
 	//noInterrupts();	//au cas ou: framework arduino ???
-	if (getMemoModes() != getLeMode())
+	if (memoModes != leMode)
 	{
-		decompteTempoArretMarcheForce = 0;				//sinon repart en auto en fin de tempo si on a pas fini le forçage
+		decompteTempoArretMarcheForce = 0;				//sinon repart en auto en fin de tempo si on a pas fini le forÃ§age
 		switch (leMode)
 		{
 		case MODES::ARRET:
-		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret, les modes marche sont après la tempo sinon erreur sur marche/arrêt
+			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret, les modes marche sont aprÃ¨s la tempo sinon erreur sur marche/arrï¿½t
 			break;
-		}
 		case MODES::PETITE_VITESSE:
-		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
-		}
 		case MODES::GRANDE_VITESSE:
-		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::RAPIDE_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
-		}
 		case MODES::TEMPO_ARRET:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret
@@ -127,15 +163,19 @@ void vmc::initialisationMode()
 			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
 			break;
 		case MODES::AUTO:
-		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au départ
+			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au dï¿½part
 			break;
-		}
-		case BIDON:
-		{
+		case MODES::ETE:
+			traiteEte();
+			//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
-		}
+		case MODES::HIVER:
+			traiteHiver();
+			//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+			break;
+		case MODES::BIDON:
+			break;
 		}
 		setCptVmc(REINIT);	//annule l'attente pour le traitement vmc reste a cette valeur si pas en auto-->traitement a chaque cycle
 		memoModes = leMode;
@@ -153,10 +193,12 @@ int vmc::traiteArretMarcheForce()
 	{
 		return 0;
 	}
-	else if (decompteTempoArretMarcheForce == 1)
+	else if (decompteTempoArretMarcheForce ==1 )		//on perd 2 sec sur la tempo...
 	{
-		leMode = MODES::AUTO;
-		decompteTempoArretMarcheForce = 0;			//on perd 1 sec sur la tempo...
+		leMode = MODES::AUTO;		//ne repasse pas en auto a voir
+		memoModes= MODES::AUTO;
+		decompteTempoArretMarcheForce = 0;	
+		//Debugln("Fin forcage");   //------------------------>OK
 		return 1;
 	}
 	else
@@ -173,7 +215,7 @@ boolean vmc::traitementTempsMiniVMC(void)
 	// OK if (((int)(HEURE.tm.Hour*60)+HEURE.tm.Minute)>=1425)    //(1440-((int)LECTURESERIAL.tempsVmcMinParJour-(NbSecondeActiveJourCourant/60))) && (leMode==AUTO)	)        //il est temps de ventiler jusqu'a minuit
 	if (((Clock.getHour() * 60 + Clock.getMinute() ) > (1339 - CONFIGURATION.config.tempo.duree_mini_sec/60.0 + RELAIS.getNbMinuteActiveJourCourant())) && (leMode == AUTO))
 	{
-		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);   //toujours lent en mode auto ou forcé pour temps mini
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);   //toujours lent en mode auto ou forcï¿½ pour temps mini
 		return true;
 	}
 	return false;
@@ -197,42 +239,42 @@ MODES vmc::getMemoModes() const
 }
 void vmc::traitementVMC(void)
 {
-	//paramétrage via page web
+	//paramÃ©trage via page web
 		//seuil chaud(23)
 		//seuil froid(25)
 		//pourcent_hum(15)
-		//période vmc(300)
+		//pÃ©riode vmc(300)
 
 	//initialisation
 		//MoyennePourSeuil=70
 
-	//fonctions appelées:
-		//a la période vmc --->traiteMoyennePeriode(1)
+	//fonctions appelÃ©es:
+		//a la pÃ©riode vmc --->traiteMoyennePeriode(1)
 			//dans traiteMoyennePeriode(1)---> traiteMoyennePourSeuil() si compteurCycleMoyennePourSeuil == NBCYCLESOK(10)
 
 	//mode automatique
 	//	uniquement  petite vitesse
-		//cas été, limiter l'entrée d'air chaud et l'expulsion d'air plus frais-->évolution des seuils humidité	SeuilHC et SeuilHB
-	//cas traités dans l'ordre:
-		//1-cas hiver, limiter l'entrée d'air froid  et l'expulsion d'air chaud			température ext > seuil chaud------------>arret
-				//en modifiant les seuils humidité proportionellement à température cuisine - température extérieur
-		//2-cas humidité cuisine trop élevé par rapport à un seuil évolutif	SeuilHC---------------------------------------------->marche
-		//3-cas humidité salle de bain trop élevé par rapport à un seuil évolutif SeuilHB---------------------------------------->marche
+		//cas Ã©tÃ©, limiter l'entrÃ©e d'air chaud et l'expulsion d'air plus frais-->Ã©volution des seuils humiditÃ©	SeuilHC et SeuilHB
+	//cas traitÃ©s dans l'ordre:
+		//1-cas hiver, limiter l'entrÃ©e d'air froid  et l'expulsion d'air chaud			tempÃ©rature ext > seuil chaud------------>arret
+				//en modifiant les seuils humiditÃ© proportionellement Ã  tempÃ©rature cuisine - tempÃ©rature extÃ©rieur
+		//2-cas humiditÃ© cuisine trop Ã©levÃ© par rapport Ã  un seuil Ã©volutif	SeuilHC---------------------------------------------->marche
+		//3-cas humiditÃ© salle de bain trop Ã©levÃ© par rapport Ã  un seuil Ã©volutif SeuilHB---------------------------------------->marche
 		//4-sinon---------------------------------------------------------------------------------------------------------------->arret
 
-//	Pour l'humidité, le principe de seuil fixe ne fonctionne pas, il faut adapter le seuil en fonction de "l'humiditée générale"
+//	Pour l'humiditÃ©, le principe de seuil fixe ne fonctionne pas, il faut adapter le seuil en fonction de "l'humiditÃ©e gÃ©nÃ©rale"
 
 	//traitement des seuil SeuilHC et SeuilHB
-		//si la température intérieure <= seuil froid
-			//Seuil=humiditée moyenne pour seuil+(température moyenne-température extérieur)/pourcent_hum
+		//si la tempÃ©rature intÃ©rieure <= seuil froid
+			//Seuil=humiditÃ©e moyenne pour seuil+(tempÃ©rature moyenne-tempÃ©rature extÃ©rieur)/pourcent_hum
 
-	//traitement de humiditée moyenne pour seuil
-		//si la température moyenne est > température pour seuil 10 cycles vmc consécutif, le pourcentageSeuil(différent de pourcent_hum)=+1
-		//si la température moyenne est < température pour seuil 10 cycles vmc consécutif, le pourcentageSeuil =-1
+	//traitement de humiditÃ©e moyenne pour seuil
+		//si la tempÃ©rature moyenne est > tempÃ©rature pour seuil 10 cycles vmc consÃ©cutif, le pourcentageSeuil(diffÃ©rent de pourcent_hum)=+1
+		//si la tempÃ©rature moyenne est < tempÃ©rature pour seuil 10 cycles vmc consÃ©cutif, le pourcentageSeuil =-1
 		
 		//dans ces 2 cas, on recalcul la moyenne pour seuil = moyennePourSeuil + (moyennePourSeuil * pourcentageSeuil) / 100;
 
-		//le pourcentageSeuil seuil évolue donc au minimum tous les 300 * 10 secondes
+		//le pourcentageSeuil seuil Ã©volue donc au minimum tous les 300 * 10 secondes
 
 
 		//DebugF("DHTCUISINE_T.getMoyennePeriode: "); Debugln(DHTCUISINE_T.getMoyennePeriode());
@@ -243,9 +285,9 @@ void vmc::traitementVMC(void)
 		////DebugF("SeuilHBav: "); Debugln(SeuilHB);
 
 		////if ((DHTCUISINE_T.getMoyennePeriode()<= CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres) && (CONFIGURATION.config.tempo.pourcent_hum > 0))  //c'est l'hiver:moins d'air frais si...
-		////	SeuilHC += (DHTCUISINE_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixième
+		////	SeuilHC += (DHTCUISINE_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixiï¿½me
 		////if ((DHTSDB.DHT_T.getMoyennePeriode() <= CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres) && (CONFIGURATION.config.tempo.pourcent_hum > 0))  //c'est l'hiver:moins d'air frais si...
-		////	SeuilHB += (DHTSDB.DHT_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixième
+		////	SeuilHB += (DHTSDB.DHT_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixiï¿½me
 		///*	DebugF("SeuilHC: "); Debugln(SeuilHC);
 		//	DebugF("SeuilHB: "); Debugln(SeuilHB);*/
 		//DebugF("TEMPEXT.getMoyennePeriode(): "); Debugln(TEMPEXT.getMoyennePeriode());
@@ -271,27 +313,28 @@ void vmc::traitementVMC(void)
 		boolean salledebainTropHumide = (DHTSDB.DHT_H.getMoyennePeriode() > SeuilHB);
 		if (CouleurEnCours == COULEURJOUR::ROUGE_JOUR)
 		{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   						//arret si aucun cas demande de ventiler
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   
 			casAuto = CASSTATUS::ST_ROUGEJOUR; //affichage du nombre de minute restante
 			seuilAuto = 0;
 		}
-		else if (tropChaudDehors)
+		else 
+			if (tropChaudDehors)
 		{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'été trop chaud dehors seuil de température qui permet de ventiler la nuit.
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'Ã©tÃ© trop chaud dehors seuil de tempï¿½rature qui permet de ventiler la nuit.
 			casAuto = CASSTATUS::ST_TROPCHAUD;
 			seuilAuto = CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres/10;
 			//DebuglnF("2");
 		}
 		else if (cuisineTropHumide)
 		{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humidité cuisine
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humiditÃ© cuisine
 			casAuto = CASSTATUS::ST_CUISTROPHUM;
 			seuilAuto = SeuilHC;
 			//DebuglnF("3");
 		}	
 		else if (salledebainTropHumide)
 			{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humidité salle de bain
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humiditÃ© salle de bain
 			casAuto = CASSTATUS::ST_SDBTROPHUM;
 			seuilAuto = SeuilHB;
 			//DebuglnF("4");
@@ -306,7 +349,7 @@ void vmc::traitementVMC(void)
 		//DebugF("casAuto: "); Debugln(casAuto);
 		//DebugF("seuilAuto: "); Debugln(seuilAuto);
 }
-//appelé quand cptSecondesVmcAuto>=LECTURESERIAL.periode_vmc
+//appelÃ© quand cptSecondesVmcAuto>=LECTURESERIAL.periode_vmc
 void vmc::traiteMoyennePeriode(void)
 {
 		DHTSDB.DHT_T.traiteMoyennePeriode(false);
@@ -349,7 +392,3 @@ uint16_t  vmc::getSeuilHB(void)const
 {
 	return SeuilHB;
 }
-
-
-
-

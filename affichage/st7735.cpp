@@ -25,27 +25,27 @@
 #include "canBus.h"
 #include "dht.h"
 #include "st7735.h"
-//détails TFT + lien pour les couleurs en RGB565
+//dï¿½tails TFT + lien pour les couleurs en RGB565
 //http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-library-user-guide/arduino-adafruit-gfx-printing-to-the-tft-screen/
-//shield acheté:https://www.arthurwiz.com/software-development/177-inch-tft-lcd-display-with-st7735s-on-arduino-mega-2560
+//shield achetï¿½:https://www.arthurwiz.com/software-development/177-inch-tft-lcd-display-with-st7735s-on-arduino-mega-2560
 //1	GND
-//2	VCC											5V			3.1 à 6V régulateur 662k sur la carte------>3.3V
+//2	VCC											5V			3.1 ï¿½ 6V rï¿½gulateur 662k sur la carte------>3.3V
 //3	SCK		SCLK	clock						D13		adaptation 5v->3.3v		
 //4	SDA		SDA		serial data MOSI			D11		adaptation 5v->3.3v		
 //5	RES		RESX	reset						3.3V	direct
 //6	RS		D/CX	register selection			D4		adaptation 5v->3.3v		
 //7	CS		CSX		chip select					D8		adaptation 5v->3.3v		
-//8 LEDA	luminositée 3.3V ou pot. de 10k				via 1k
+//8 LEDA	luminositï¿½e 3.3V ou pot. de 10k				via 1k
 extern "C" void __cxa_pure_virtual() { while (1); }
 uint16_t couleursWIFI[] = {ST7735_RED, ST7735_RED, ST7735_ORANGE, ST7735_GREEN};
 uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, ST7735_GREEN};
 uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_BLACK };
 // print pb avec string
-char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","AT CAN BUS","cas inex" }; //blanc nécessaires pour effacer la plus longue chaine
-//String MODES_AFF[] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","AT CAN BUS" }; //blanc nécessaires pour effacer la plus longue chaine
+char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc nï¿½cessaires pour effacer la plus longue chaine
+//String MODES_AFF[] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","AT CAN BUS" }; //blanc nï¿½cessaires pour effacer la plus longue chaine
 char CAS_AUTO[][12] = { "           ","A-temp ext>","A-temp ext<","M-hum cuis>","M-hum  sdb>","cas inex   "};  //      ,"   arret   " ,"SHC","SHB","SCHAUD","SFROID"};
 #define NO_DEBUG_ST7735
-#define NO_HORIZONTAL		//je n'ai par intégré les dernières modif en horizontal...
+#define NO_HORIZONTAL		//je n'ai par intï¿½grï¿½ les derniï¿½res modif en horizontal...
 
 st7735::st7735() : Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RESET)						//-------->cycle d'affichage autour de 800ms.
 {
@@ -57,7 +57,7 @@ void st7735::initAdafruit_ST7735(void)
 }
 void st7735::initScreen(void) 
 {
-	initR(INITR_BLACKTAB);  //INITR_GREENTAB inverse les couleurs(BRG) et décale d'une ligne
+	initR(INITR_BLACKTAB);  //INITR_GREENTAB inverse les couleurs(BRG) et dï¿½cale d'une ligne
 	//commentaires lettre jaune sur fond bleu
 	setTextColor(COLORCONSTANTFORE, COLORCONSTANTBACK);
 	fillScreen(COLORSCREEN);
@@ -131,7 +131,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 {
 	//132*162
 
-	//caractères 8*5 size 1(défaut)		27 chars 14 lignes
+	//caractï¿½res 8*5 size 1(dï¿½faut)		27 chars 14 lignes
 	//			16*10 size 2			13		  7
 	//			24*15 size 3			6		  3
 
@@ -171,7 +171,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 		}
 		if (reception.decompteTempoArretMarcheForce > 0)
 		{
-			setCursor(COL2, TXTLIGNE1);  //ATTENTION:caractères en vrac avec trop de message de debug...pile???
+			setCursor(COL2, TXTLIGNE1);  //ATTENTION:caractï¿½res en vrac avec trop de message de debug...pile???
 			print(MODES_AFF[reception.mode]);
 
 			char decompte[9];
@@ -193,7 +193,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 		if (reception.infos)
 		{
 			//**********************************************************
-			setCursor(COL2, TXTLIGNE1);  //ATTENTION:caractères en vrac avec trop de message de debug...pile???
+			setCursor(COL2, TXTLIGNE1);  //ATTENTION:caractï¿½res en vrac avec trop de message de debug...pile???
 			if (reception.NbMessage)
 				print(MODES_AFF[reception.mode]);
 			else
@@ -218,7 +218,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 			//*************************************************
 			char HeureCourante[8];   //reception.NbMinuteActiveJourCourant
 			//int32_t NbMinuteActiveJourCourant=1120;
-			supprimé sprintf voir ecran vertical
+			supprimï¿½ sprintf voir ecran vertical
 			sprintf(HeureCourante, "%02u:%02u:%02u-%04u", reception.heures, reception.minutes, reception.secondes, reception.NbMinuteActiveJourCourant);
 			setCursor(COL1, TXTLIGNE7);
 			if (!reception.etat)
@@ -248,7 +248,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 				setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIPB);
 			else
 				setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIOK);
-			print(MODES_AFF[7]);
+			print(MODES_AFF[8]);
 			clignote = !clignote;
 		}
 		setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIOK);
@@ -299,8 +299,8 @@ void st7735::casNormal(struct_reception R)
 		if (R.NbMessage)
 		{
 			uint8_t mode = R.mode;
-			if (mode > 8)
-				mode = 8;		//cas inex
+			if (mode > 9)
+				mode = 10;		//cas inex
 			print(MODES_AFF[mode]);
 		}
 		else
@@ -308,7 +308,7 @@ void st7735::casNormal(struct_reception R)
 		setTextColor(COLORVARIABLESFORE, COLORSCREEN);
 		//********************traitement puissance vmc**************************************
 		afficheInt((float)puis, V_COLVARIABLES + 12, V_TXTLIGNEIVMC);
-		//******************traitement des pavés tempo et wifi*******************************	  
+		//******************traitement des pavï¿½s tempo et wifi*******************************	  
 		union leds etatDesLeds;
 		etatDesLeds.etat = R.etatLeds;
 		TraitePave(XPAVEJOUR, etatDesLeds.etatCourant.aujourdhui);
@@ -328,7 +328,7 @@ void st7735::casNormal(struct_reception R)
 		print(":");
 		print(R.secondes);
 		//**************************affichage erreur******************************
-		if (R.Rbuzzer != 0)				// on reste sur la dernière erreur
+		if (R.Rbuzzer != 0)				// on reste sur la derniï¿½re erreur
 		{
 			setCursor(V_COLERREUR, V_TXTLIGNEHEURE + 5);
 			setTextSize(1);
@@ -344,7 +344,7 @@ void st7735::casNormal(struct_reception R)
 			setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIPB);
 		else
 			setTextColor(COLORVARIABLESFORE, COLORSCREEN);
-		print(MODES_AFF[7]);
+		print(MODES_AFF[9]);
 		clignote -= 1;
 		if (!clignote)
 			clignote = 12;
@@ -356,12 +356,12 @@ void st7735::casNormal(struct_reception R)
 }
 void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
 {
-	//pour utiliser le meme parametre ecran et led rgb--> pas cablé pour le st7735
-	analogWrite(TFT_LEDA, (reception.luminositeeLeds-5)*63);  //0 à 255   5-->0  7-->128    9-->255
+	//pour utiliser le meme parametre ecran et led rgb--> pas cablÃ© pour le st7735
+	analogWrite(TFT_LEDA, reception.luminositeeLeds*25);  //param Ã  7  7-5=2*63=126=  3.3/256*126=1.62v       0 ï¿½ 255   5-->0  7-->128    9-->255
 	//return;
 //132*162
 
-//caractères 8*5 size 1(défaut)		27 chars 14 lignes
+//caractï¿½res 8*5 size 1(dï¿½faut)		27 chars 14 lignes
 //			16*10 size 2			13		  7
 //			24*15 size 3			6		  3
 
@@ -374,7 +374,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 	//********************traitement du changement de mode via poussoir**************************
 	if (changeMode)
 		changementMode();
-	//*************************traitement du décompte relais*********************************
+	//*************************traitement du dï¿½compte relais*********************************
 	else if (reception.decompteDelaiCgtVitesse > 0)
 		decompteCgtVitesse(reception);
 	//************************traitement cas courant**************************************
@@ -435,9 +435,9 @@ void st7735::TraiteLigneEtat(struct_reception reception)
 }
 void st7735::afficheDistants(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
 {
-//		température salle de bain					TEMP SDB:  18°
-//		humidité salle de bain						HUM SDB:   48%
-//		température extérieur
+//		tempï¿½rature salle de bain					TEMP SDB:  18ï¿½
+//		humiditï¿½ salle de bain						HUM SDB:   48%
+//		tempï¿½rature extï¿½rieur
 	if(reception.distants)
 	{
 	afficheFloat((float)reception.temperature_sdb_aff/10.0f, V_COLVARIABLES , V_TXTLIGNETSDB);
@@ -450,8 +450,8 @@ void st7735::afficheDistants(struct_reception reception)    //uint8_t heure,uint
 }
 void st7735::afficheLocaux(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
 {
-//		température cuisine							TEMP CUIS: 22° 
-//		humidité cuisine							HUM CUIS:  45%
+//		tempï¿½rature cuisine							TEMP CUIS: 22ï¿½ 
+//		humiditï¿½ cuisine							HUM CUIS:  45%
 	if(reception.locaux)
 	{
 		afficheFloat((float)reception.temperature_cuis_aff / 10.0f, V_COLVARIABLES, V_TXTLIGNETCUIS);
@@ -462,7 +462,7 @@ void st7735::afficheLocaux(struct_reception reception)    //uint8_t heure,uint8_
 	}
 	else
 	{
-		//en local,ne tient pas compte des corrections éventuelles
+		//en local,ne tient pas compte des corrections ï¿½ventuelles
 		afficheFloat((float)DHTCUISINE.DHT_T.getMesureCycle() / 10.0f, V_COLVARIABLES, V_TXTLIGNETCUIS);
 		afficheInt(DHTCUISINE.DHT_H.getMesureCycle(), V_COLVARIABLES+12, V_TXTLIGNEHCUIS);
 	}

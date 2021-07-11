@@ -84,6 +84,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\traitement;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries\ESP8266WiFi\src;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries\ESP8266WebServer\src;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries\ESP8266HTTPClient\src;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries\ESP8266mDNS;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries\EEPROM;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries\Ticker;$(ProjectDir)..\..\..\..\Program Files (x86)\Arduino\libraries;$(ProjectDir)..\..\arduino\libraries;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\libraries;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\cores\esp8266;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\cores\esp8266\libb64;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\cores\esp8266\spiffs;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\cores\esp8266\umm_malloc;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\variants\nodemcu;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\tools\sdk\include;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\tools\sdk\lwip2\include;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\tools\sdk\libc\xtensa-lx106-elf\include;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\xtensa-lx106-elf\include\c++\4.8.2;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\xtensa-lx106-elf\include\c++\4.8.2\xtensa-lx106-elf;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\xtensa-lx106-elf\include;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\lib\gcc\xtensa-lx106-elf\4.8.2\include;$(ProjectDir)..\..\..\..\Users\mireille\AppData\Local\arduino15\packages\esp8266\hardware\esp8266\2.4.1\tools\sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)__vm\.traitement.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <PreprocessorDefinitions>__ESP8266_esp8266__;__ESP8266_ESP8266__;__ets__;ICACHE_FLASH;F_CPU=160000000L;LWIP_OPEN_SRC;TCP_MSS=536;ARDUINO=10807;ARDUINO_ESP8266_NODEMCU;ARDUINO_ARCH_ESP8266;ESP8266;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -149,11 +150,6 @@
     <ProjectCapability Include="VisualMicro" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="traitement_tempo_vmc.ino">
-      <FileType>CppCode</FileType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="configWifi.h" />
     <ClInclude Include="buzzer.h" />
     <ClInclude Include="canBus.h" />
@@ -216,6 +212,9 @@
     <ClCompile Include="simuTempo.cpp" />
     <ClCompile Include="smt160.cpp" />
     <ClCompile Include="webclient.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="traitement.ino" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>

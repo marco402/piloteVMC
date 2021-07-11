@@ -1,3 +1,14 @@
+//paramétrage arduino
+//type de carte NodeMcu 0.9
+//cpu frequency 160Mhz
+//flash size 4M(1M spiffs)
+//rename to traitement_tempo_vmc.ino.bin  
+//C:\Users\mireille\AppData\Local\Temp\arduino_build_135849\traitement.ino.bin
+//10/07/2021->seuil air frais 25->20    pour ventiler plus la nuit en été
+
+//10/07/2021->20,5,23,-0.5,-1.8,0,-17,20,1,15,300,300,0,24,192.168.1.69,8889,10
+//10/07/2021->blanc,OTA_AUTH,8266,192.168.1.69,514
+
 //https://github.com/esp8266/Arduino
 // **********************************************************************************
 // ESP8266 Teleinfo WEB Server
@@ -267,7 +278,7 @@ void loop()
 	//lecture du courant ici pour supprimer l'effet de la commande des relais
 	//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 	VMC.traiteRazCapteursAuto();
-	TA12.traitementLectureTa12();   //retour:false->buzzer->true pour buzzer
+	//  circuit a revoir entrée hs   TA12.traitementLectureTa12();   //retour:false->buzzer->true pour buzzer
 	//DebugF("beep:TA12 "); Debugln(retour);
 	//**************************************Traitement des relais VMC****************************************************
 	VMC.TRAITEMENTVMC();
@@ -321,4 +332,3 @@ void loop()
 	if (duree > dureeMax)
 		dureeMax = (int)duree;
  }   //loop
-

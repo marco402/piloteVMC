@@ -38,7 +38,7 @@ boolean poussoir::traitement()
 			//passage par un mode transitoire pour prendre que le mode en cours au moment du relachement
 			int tempInt=(int)modeTransitoire;
 			tempInt++;
-			if (tempInt>TEMPO_ARRET)
+			if (tempInt>(MODES::BIDON-1))
 			{
 				modeTransitoire= MODES::ARRET;
 			}
@@ -70,9 +70,10 @@ return leMode;
 }
 void poussoir::setLemode(unsigned char leMode)
 {
-	leMode = (MODES)leMode;
+	tempsMilli = 0;               //forcage de la prise en compte pour le retour en mode auto apres forcage
+	this->leMode = (MODES)leMode;
 }
 void poussoir::clearLeMode(void)
 {
-	leMode = MODES::BIDON;
+	this->leMode = MODES::BIDON;
 }

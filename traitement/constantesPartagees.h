@@ -1,5 +1,5 @@
 // ***************************************************************************************
-// ESP8266 Pilotage VMC et TEMPO->Constantes commune à affichage et à traitement VMC/TEMPO
+// ESP8266 Pilotage VMC et TEMPO->Constantes commune ï¿½ affichage et ï¿½ traitement VMC/TEMPO
 // ***************************************************************************************
 // Creative Commons Attrib Share-Alike License
 // You are free to use/extend this library but please abide with the CC-BY-SA license:
@@ -15,11 +15,11 @@
 //
 // **********************************************************************************
 //#########################ATTENTION:fichier commun affichage et traitement_tempo#######################################################
-//              il faut le charger dans les 2 projets pour qu'il soit transféré dans le dossier de generation(user...)
+//              il faut le charger dans les 2 projets pour qu'il soit transfï¿½rï¿½ dans le dossier de generation(user...)
 
 #ifndef CONSTANTESPARTAGEES_h
 #define CONSTANTESPARTAGEES_h
-enum MODES { ARRET = 0, PETITE_VITESSE, GRANDE_VITESSE, AUTO, TEMPO_MARCHE_PV, TEMPO_MARCHE_GV, TEMPO_ARRET, BIDON };
+enum MODES { ARRET = 0, PETITE_VITESSE, GRANDE_VITESSE, AUTO, TEMPO_MARCHE_PV, TEMPO_MARCHE_GV, TEMPO_ARRET,ETE,HIVER,BIDON};
 enum LES_ID_CAN { ID_MESSAGE_TYPE_0 = 1, ID_MESSAGE_TYPE_1, ID_MESSAGE_TYPE_2, ID_MESSAGE_TYPE_3, ID_MESSAGE_TYPE_4, ID_MESSAGE_TYPE_5};  //11 bits maxi  2047 
 enum MESSAGE_TYPE_0 { HEURE = 0, MINUTE, SECONDE, LES_LEDS, MODE, ETAT, LEBUZZER, COURANTVMC, FIN_MESSAGE_TYPE_0 };										//infos uc vers affichage
 enum MESSAGE_TYPE_1 { DHT_SDB_T_MSB = 0, DHT_SDB_T_LSB, DHT_SDB_H_MSB, DHT_SDB_H_LSB, TEMP_EXT_MSB, TEMP_EXT_LSB, SEUILAUTO, CASAUTO, FIN_MESSAGE_TYPE_1 };     //capteurs  uc vers affichage

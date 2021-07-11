@@ -17,12 +17,12 @@
 
 #ifndef CONSTANTE_H
 #define CONSTANTE_H
-#include <pgmspace.h>
+#include <pgmspace.h>      //si erreur outils->type de carte nodemcu 0.9
 #include <ESP8266WiFi.h>
 #include <Arduino.h>
 #include "Wifinfo.h"
 
-#include "constantesPartagees.h"   //fichier identique avec affichage,il faut le charger dans les 2 projets pour qu'il soit transféré dans le dossier de generation(user...)
+#include "constantesPartagees.h"   //fichier identique avec affichage,il faut le charger dans les 2 projets pour qu'il soit transfÃ©rÃ© dans le dossier de generation(user...)
 
 
 
@@ -50,7 +50,7 @@
 #define rgb_brightness       1        //50				//50 trop   25 trop 10 trop 0 eteint
 #define BLINK_LED_MS   50 // 50 ms blink
 
-//**************************partie liée a la partie tempo  Written by Marc Prieur (https://marco40github.wixsite.com/website))**************
+//**************************partie liÃ©e a la partie tempo  Written by Marc Prieur (https://marco40github.wixsite.com/website))**************
 
 //											pins nodemcu 1.0	pins esp8266
 
@@ -60,9 +60,9 @@
 //PIN_LED_RGB
 
 //										D9			//GPIO3				RXD		reception de usb puis reception teleinfo
-#define PIN_RELAIS_VITESSE				D1			//GPIO5				CD carte mémoire SD		GPIO5	leds inline rgb	 pin récupérable si pas de leds locales	
+#define PIN_RELAIS_VITESSE				D1			//GPIO5				CD carte mÃ©moire SD		GPIO5	leds inline rgb	 pin rÃ©cupÃ©rable si pas de leds locales
 #define PIN_CAPTEUR_TEMP_HUMIDITE_SDB	D2			//GPIO4				GPIO4	int spi   puis dht22 sdb //PIN_INT_SPI
-//#define Libre pb GPIO0				D3			//					GPIO0   int spi ATTENTION pas cablée
+//#define Libre pb GPIO0				D3			//					GPIO0   int spi ATTENTION pas cablÃ©e
 #define PIN_CS_CAN						D4			//GPIO2				GPIO2	(nodemcu:12k au +3.3V)txd1	simu teleinfo      led bleue    schema sur D3...
 			
 //GPIO9				GPIO9	sd2	
@@ -72,10 +72,10 @@
 //										D7			//GPIO13			GPIO13	HMOSI(D7)	rxd2	0 vers   3.5 volts a vide	
 
 //#define PIN_CAPTEUR_TEMP_HUMIDITE_SDB	D5			//GPIO14			GPIO14	HCLOCK(D5)	cumulus 0 vers	 1.8(lolin) ou 2(0.9) volts a vide						 a voir si led rouge
-#define PIN_RELAIS_MARCHE_ARRET			D8			//GPIO15		    GPIO15	(nodemcu:12k au 0V)HCS(D8)		txd2	attention au démarrage pb sur adaptateur de niveau csCan				3 volts vers 0 à vide		
+#define PIN_RELAIS_MARCHE_ARRET			D8			//GPIO15		    GPIO15	(nodemcu:12k au 0V)HCS(D8)		txd2	attention au dÃ©marrage pb sur adaptateur de niveau csCan				3 volts vers 0 Ã  vide
 
 
-#define PIN_CAPTEUR_TEMP_EXT			D0			//GPIO16			GPIO16	user	wake(ok si pas de sleep mode)??		avec clock à 100000 et send blink  :7.5µs/15µs							a voir GPIO16 avec la led bleu
+#define PIN_CAPTEUR_TEMP_EXT			D0			//GPIO16			GPIO16	user	wake(ok si pas de sleep mode)??		avec clock Ã  100000 et send blink  :7.5Âµs/15Âµs							a voir GPIO16 avec la led bleu
 //MOSI										//GPIO8				MOSI	sd1						
 //MISO										//GPIO7				MISO	sd0						
 //CLK										//GPIO6				SCLK	clk
@@ -104,7 +104,7 @@ static const  uint16_t  REINIT = 65000;                    //ne pas mettre au ma
 static const char TableauTempoName[][8] = { "BBRHCJB","BBRHCJW","BBRHCJR","BBRHPJB","BBRHPJW","BBRHPJR","PTEC","DEMAIN","IINST" };
 static const char tableauPtec[][5] = { "HCJB", "HCJW", "HCJR", "HPJB", "HPJW", "HPJR" };
 
-PROGMEM const char MODES_AFF[][11] = { "Arret","Lent","Rapide","Auto","Force pv","Force gv","Forc arret","AT CAN BUS","cas inex" }; 
+PROGMEM const char MODES_AFF[][11] = { "Arret","Lent","Rapide","Auto","Force pv","Force gv","Forc arret","ETE","HIVER","AT CAN BUS","cas inex" };
 PROGMEM const char ETAT_REL_AFF[][7] = { "Arret","Marche" };
 PROGMEM const char VIT_REL_AFF[][7] = { "Lent","Rapide" };
 //################################################structures##########################################################
