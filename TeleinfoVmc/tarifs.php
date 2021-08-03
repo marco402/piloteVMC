@@ -185,25 +185,105 @@
         "HCJW"   => 0.1274, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
         "HPJR"   => 0.6097, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
         "HCJR"   => 0.1357, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
-        "HN"     => 1.20*0.0673, // NON REVAL. // EJP - Heures Normales
-        "HPM"    => 1.20*0.4313  // NON REVAL. // EJP - Heures de Pointe Mobile
+        "HN"     => 14.81, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 28.86  // NON REVAL. // EJP - Heures de Pointe Mobile
     );
 		    //01/08/2019
     $tarifs[mktime(0,0,0, 1, 8,2019)] = array(
         "BASE.3" => 1.20*0.0883, // 0,1372 TTC // Base 3kVA
         "BASE.6" => 1.20*0.0883, // 0,1372 TTC // Base 6kVA
         "BASE.9" => 1.20*0.0883, // 0,1372 TTC // Base 9kVA
-        "HP"     => 1.20*0.0998, // 0,1510 TTC // Heures Pleines
-        "HC"     => 1.20*0.0610, // 0,1044 TTC // Heures Creuses
+        "HP"     => 0.1710, // 0,1510 TTC // Heures Pleines
+        "HC"     => 0.1320, // 0,1044 TTC // Heures Creuses
         "HPJB"   => 0.1460, // 0,1003 TTC // Tempo - Bleu - Heures Pleines
         "HCJB"   => 0.1214, // 0,0840 TTC // Tempo - Bleu - Heures Creuses
         "HPJW"   => 0.1619, // 0,1400 TTC // Tempo - Blanc - Heures Pleines
         "HCJW"   => 0.1287, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
         "HPJR"   => 0.6182, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
         "HCJR"   => 0.1370, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
-        "HN"     => 1.20*0.0673, // NON REVAL. // EJP - Heures Normales
-        "HPM"    => 1.20*0.4313  // NON REVAL. // EJP - Heures de Pointe Mobile
+        "HN"     => 14.81, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 28.86  // NON REVAL. // EJP - Heures de Pointe Mobile
     );
+			    //01/01/2020
+    $tarifs[mktime(0,0,0, 1, 1,2020)] = array(
+        "BASE.3" => 1.20*0.0883, // 0,1372 TTC // Base 3kVA
+        "BASE.6" => 1.20*0.0883, // 0,1372 TTC // Base 6kVA
+        "BASE.9" => 1.20*0.0883, // 0,1372 TTC // Base 9kVA
+        "HP"     => 0.1711, // 0,1510 TTC // Heures Pleines
+        "HC"     => 0.1321, // 0,1044 TTC // Heures Creuses
+        "HPJB"   => 0.1462, // 0,1003 TTC // Tempo - Bleu - Heures Pleines
+        "HCJB"   => 0.1216, // 0,0840 TTC // Tempo - Bleu - Heures Creuses
+        "HPJW"   => 0.1620, // 0,1400 TTC // Tempo - Blanc - Heures Pleines
+        "HCJW"   => 0.1289, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
+        "HPJR"   => 0.6184, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
+        "HCJR"   => 0.1372, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
+        "HN"     => 14.81, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 28.86  // NON REVAL. // EJP - Heures de Pointe Mobile
+    );
+				    //01/02/2020
+    $tarifs[mktime(0,0,0, 1, 2,2020)] = array(
+        "BASE.3" => 1.20*0.0883, // 0,1372 TTC // Base 3kVA
+        "BASE.6" => 1.20*0.0883, // 0,1372 TTC // Base 6kVA
+        "BASE.9" => 1.20*0.0883, // 0,1372 TTC // Base 9kVA
+        "HP"     => 0.1781, // 0,1510 TTC // Heures Pleines
+        "HC"     => 0.1337, // 0,1044 TTC // Heures Creuses
+        "HPJB"   => 0.1531, // 0,1003 TTC // Tempo - Bleu - Heures Pleines
+        "HCJB"   => 0.1242, // 0,0840 TTC // Tempo - Bleu - Heures Creuses
+        "HPJW"   => 0.1738, // 0,1400 TTC // Tempo - Blanc - Heures Pleines
+        "HCJW"   => 0.1392, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
+        "HPJR"   => 0.6371, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
+        "HCJR"   => 0.1488, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
+        "HN"     => 0.1506, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 0.31  // NON REVAL. // EJP - Heures de Pointe Mobile
+    );
+				    //01/10/2020
+    $tarifs[mktime(0,0,0, 10, 1,2020)] = array(
+        "BASE.3" => 1.20*0.0883, // 0,1372 TTC // Base 3kVA
+        "BASE.6" => 1.20*0.0883, // 0,1372 TTC // Base 6kVA
+        "BASE.9" => 1.20*0.0883, // 0,1372 TTC // Base 9kVA
+        "HP"     => 0.1781, // 0,1510 TTC // Heures Pleines
+        "HC"     => 0.1337, // 0,1044 TTC // Heures Creuses
+        "HPJB"   => 0.1548, // 0,1003 TTC // Tempo - Bleu - Heures Pleines
+        "HCJB"   => 0.1246, // 0,0840 TTC // Tempo - Bleu - Heures Creuses
+        "HPJW"   => 0.1757, // 0,1400 TTC // Tempo - Blanc - Heures Pleines
+        "HCJW"   => 0.1397, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
+        "HPJR"   => 0.6389, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
+        "HCJR"   => 0.1491, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
+        "HN"     => 0.1506, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 0.31  // NON REVAL. // EJP - Heures de Pointe Mobile
+    );	
+				    //01/01/2021
+    $tarifs[mktime(0,0,0, 1, 1,2021)] = array(
+        "BASE.3" => 1.20*0.0883, // 0,1372 TTC // Base 3kVA
+        "BASE.6" => 1.20*0.0883, // 0,1372 TTC // Base 6kVA
+        "BASE.9" => 1.20*0.0883, // 0,1372 TTC // Base 9kVA
+        "HP"     => 0.1781, // 0,1510 TTC // Heures Pleines
+        "HC"     => 0.1337, // 0,1044 TTC // Heures Creuses
+        "HPJB"   => 0.1550, // 0,1003 TTC // Tempo - Bleu - Heures Pleines
+        "HCJB"   => 0.1247, // 0,0840 TTC // Tempo - Bleu - Heures Creuses
+        "HPJW"   => 0.1759, // 0,1400 TTC // Tempo - Blanc - Heures Pleines
+        "HCJW"   => 0.1399, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
+        "HPJR"   => 0.6391, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
+        "HCJR"   => 0.1492, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
+        "HN"     => 0.1506, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 0.31  // NON REVAL. // EJP - Heures de Pointe Mobile
+    );	
+				    //01/08/2021
+    $tarifs[mktime(0,0,0, 1, 8,2021)] = array(
+        "BASE.3" => 1.20*0.0883, // 0,1372 TTC // Base 3kVA
+        "BASE.6" => 1.20*0.0883, // 0,1372 TTC // Base 6kVA
+        "BASE.9" => 1.20*0.0883, // 0,1372 TTC // Base 9kVA
+        "HP"     => 0.1781, // 0,1510 TTC // Heures Pleines
+        "HC"     => 0.1337, // 0,1044 TTC // Heures Creuses
+        "HPJB"   => 0.1498, // 0,1003 TTC // Tempo - Bleu - Heures Pleines
+        "HCJB"   => 0.1231, // 0,0840 TTC // Tempo - Bleu - Heures Creuses
+        "HPJW"   => 0.1773, // 0,1400 TTC // Tempo - Blanc - Heures Pleines
+        "HCJW"   => 0.1412, // 0,1175 TTC // Tempo - Blanc - Heures Creuses
+        "HPJR"   => 0.6274, // 0,5593 TTC // Tempo - Rouge - Heures Pleines
+        "HCJR"   => 0.1509, // 0,2142 TTC // Tempo - Rouge - Heures Creuses
+        "HN"     => 0.1506, // NON REVAL. // EJP - Heures Normales
+        "HPM"    => 0.31  // NON REVAL. // EJP - Heures de Pointe Mobile
+    );		
     // Abonnements, TVA incluse (peut être différente selon les abonnements)
     //15/08/2009
     $abonnements[mktime(0,0,0, 8,15,2009)] = array(
@@ -410,7 +490,7 @@
         )
     );
    //01/06/2019
-    $abonnements[mktime(0,0,0, 1, 6,2019)] = array(
+    $abonnements[mktime(0,0,0, 6, 1,2019)] = array(
         "BASE" => array(
             "3"  => 1.055*38.88,
             "6"  => 1.055*66.72,
@@ -442,7 +522,7 @@
             "36" => 1.055*583.56
         ),
         "EJP" => array(
-            "9"  => 1.055*92.04,
+            "9"  => 12*11.71,
             "12" => 1.055*137.16,
             "15" => 1.055*156.12,
             "18" => 1.055*173.64,
@@ -450,7 +530,7 @@
         )
     );
 	   //01/08/2019
-    $abonnements[mktime(0,0,0, 1, 8,2019)] = array(
+    $abonnements[mktime(0,0,0, 8, 1,2019)] = array(
         "BASE" => array(
             "3"  => 1.055*38.88,
             "6"  => 1.055*66.72,
@@ -482,7 +562,207 @@
             "36" => 1.055*583.56
         ),
         "EJP" => array(
-            "9"  => 1.055*92.04,
+            "9"  => 12*11.71,
+            "12" => 1.055*137.16,
+            "15" => 1.055*156.12,
+            "18" => 1.055*173.64,
+            "36" => 1.055*521.16
+        )
+    );
+			   //01/01/2020
+    $abonnements[mktime(0,0,0, 1, 1,2020)] = array(
+        "BASE" => array(
+            "3"  => 1.055*38.88,
+            "6"  => 1.055*66.72,
+            "9"  => 12*11.97,
+            "12" => 1.055*135.00,
+            "15" => 1.055*153.84,
+            "18" => 1.055*176.76,
+            "24" => 1.055*366.72,
+            "30" => 1.055*453.96,
+            "36" => 1.055*522.84
+        ),
+        "HC" => array(
+            "6"  => 1.055*71.64,
+            "9"  => 12*13.62,
+            "12" => 1.055*156.12,
+            "15" => 1.055*180.00,
+            "18" => 1.055*201.24,
+            "24" => 1.055*420.12,
+            "30" => 1.055*492.36,
+            "36" => 1.055*562.68
+        ),
+        "BBR" => array(
+            "9"  => 12*13.21,
+            "12" => 1.055*152.76,
+            "15" => 1.055*176.04,
+            "18" => 1.055*190.92,
+            "24" => 1.055*471.84,
+            "30" => 1.055*471.84,
+            "36" => 1.055*583.56
+        ),
+        "EJP" => array(
+            "9"  => 12*11.83,
+            "12" => 1.055*137.16,
+            "15" => 1.055*156.12,
+            "18" => 1.055*173.64,
+            "36" => 1.055*521.16
+        )
+    );
+		   //01/02/2020
+    $abonnements[mktime(0,0,0, 2, 1,2020)] = array(
+        "BASE" => array(
+            "3"  => 1.055*38.88,
+            "6"  => 1.055*66.72,
+            "9"  => 12*11.97,
+            "12" => 1.055*135.00,
+            "15" => 1.055*153.84,
+            "18" => 1.055*176.76,
+            "24" => 1.055*366.72,
+            "30" => 1.055*453.96,
+            "36" => 1.055*522.84
+        ),
+        "HC" => array(
+            "6"  => 1.055*71.64,
+            "9"  => 12*13.62,
+            "12" => 1.055*156.12,
+            "15" => 1.055*180.00,
+            "18" => 1.055*201.24,
+            "24" => 1.055*420.12,
+            "30" => 1.055*492.36,
+            "36" => 1.055*562.68
+        ),
+        "BBR" => array(
+            "9"  => 12*13.34,
+            "12" => 1.055*152.76,
+            "15" => 1.055*176.04,
+            "18" => 1.055*190.92,
+            "24" => 1.055*471.84,
+            "30" => 1.055*471.84,
+            "36" => 1.055*583.56
+        ),
+        "EJP" => array(
+            "9"  => 12*11.83,
+            "12" => 1.055*137.16,
+            "15" => 1.055*156.12,
+            "18" => 1.055*173.64,
+            "36" => 1.055*521.16
+        )
+    );
+			   //01/10/2020
+    $abonnements[mktime(0,0,0, 10, 1,2020)] = array(
+        "BASE" => array(
+            "3"  => 1.055*38.88,
+            "6"  => 1.055*66.72,
+            "9"  => 12*11.97,
+            "12" => 1.055*135.00,
+            "15" => 1.055*153.84,
+            "18" => 1.055*176.76,
+            "24" => 1.055*366.72,
+            "30" => 1.055*453.96,
+            "36" => 1.055*522.84
+        ),
+        "HC" => array(
+            "6"  => 1.055*71.64,
+            "9"  => 12*13.62,
+            "12" => 1.055*156.12,
+            "15" => 1.055*180.00,
+            "18" => 1.055*201.24,
+            "24" => 1.055*420.12,
+            "30" => 1.055*492.36,
+            "36" => 1.055*562.68
+        ),
+        "BBR" => array(
+            "9"  => 12*14.13,
+            "12" => 1.055*152.76,
+            "15" => 1.055*176.04,
+            "18" => 1.055*190.92,
+            "24" => 1.055*471.84,
+            "30" => 1.055*471.84,
+            "36" => 1.055*583.56
+        ),
+        "EJP" => array(
+            "9"  => 12*11.83,
+            "12" => 1.055*137.16,
+            "15" => 1.055*156.12,
+            "18" => 1.055*173.64,
+            "36" => 1.055*521.16
+        )
+    );
+			   //01/01/2021
+    $abonnements[mktime(0,0,0, 1, 1,2021)] = array(
+        "BASE" => array(
+            "3"  => 1.055*38.88,
+            "6"  => 1.055*66.72,
+            "9"  => 12*11.97,
+            "12" => 1.055*135.00,
+            "15" => 1.055*153.84,
+            "18" => 1.055*176.76,
+            "24" => 1.055*366.72,
+            "30" => 1.055*453.96,
+            "36" => 1.055*522.84
+        ),
+        "HC" => array(
+            "6"  => 1.055*71.64,
+            "9"  => 12*13.62,
+            "12" => 1.055*156.12,
+            "15" => 1.055*180.00,
+            "18" => 1.055*201.24,
+            "24" => 1.055*420.12,
+            "30" => 1.055*492.36,
+            "36" => 1.055*562.68
+        ),
+        "BBR" => array(
+            "9"  => 12*14.13,
+            "12" => 1.055*152.76,
+            "15" => 1.055*176.04,
+            "18" => 1.055*190.92,
+            "24" => 1.055*471.84,
+            "30" => 1.055*471.84,
+            "36" => 1.055*583.56
+        ),
+        "EJP" => array(
+            "9"  => 12*11.83,
+            "12" => 1.055*137.16,
+            "15" => 1.055*156.12,
+            "18" => 1.055*173.64,
+            "36" => 1.055*521.16
+        )
+    );
+				   //01/01/2021
+    $abonnements[mktime(0,0,0, 1, 1,2021)] = array(
+        "BASE" => array(
+            "3"  => 1.055*38.88,
+            "6"  => 1.055*66.72,
+            "9"  => 12*11.97,
+            "12" => 1.055*135.00,
+            "15" => 1.055*153.84,
+            "18" => 1.055*176.76,
+            "24" => 1.055*366.72,
+            "30" => 1.055*453.96,
+            "36" => 1.055*522.84
+        ),
+        "HC" => array(
+            "6"  => 1.055*71.64,
+            "9"  => 12*13.62,
+            "12" => 1.055*156.12,
+            "15" => 1.055*180.00,
+            "18" => 1.055*201.24,
+            "24" => 1.055*420.12,
+            "30" => 1.055*492.36,
+            "36" => 1.055*562.68
+        ),
+        "BBR" => array(
+            "9"  => 12*15.24,
+            "12" => 1.055*152.76,
+            "15" => 1.055*176.04,
+            "18" => 1.055*190.92,
+            "24" => 1.055*471.84,
+            "30" => 1.055*471.84,
+            "36" => 1.055*583.56
+        ),
+        "EJP" => array(
+            "9"  => 12*11.83,
             "12" => 1.055*137.16,
             "15" => 1.055*156.12,
             "18" => 1.055*173.64,

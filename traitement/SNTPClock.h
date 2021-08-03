@@ -64,11 +64,11 @@ class SNTPClock
     int   getSecond();
     int   getMinute();
     int   getHour();
-
+    int   getMonth();
   private:
 
     int   getDay();
-    int   getMonth();
+
     int   getYear();
 
 };

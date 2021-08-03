@@ -236,6 +236,10 @@ var passe=false;
                     tooltip +='forçé rapide';
                 else if(courbe.y==6)
                     tooltip +='forçé arrêt';
+                else if(courbe.y==7)
+                    tooltip +='été';
+                else if(courbe.y==8)
+                    tooltip +='hiver';
                 else
                     tooltip +='cas inex';
             }
@@ -792,6 +796,8 @@ function afficheChart3(chart,lesSeries)
     refresh(chart);
 }
 //ATTENTION au piege,il faut que la hauteur soit suffisante pour le tooltip shared true sinon affiche que les points sans tooltip
+//ATTENTION au piege,lorsque la larger est trop grande et qu'on affiche 8 ou 14 mois en historique,parfois des couleurs s'ajoutent aux dernières colonnes
+//ok avec edge et chrome si lancé par visual studio code , pb avec IE et chrome lancé directement ??????
 function refresh(chart)
 { 
     chart.redraw();	

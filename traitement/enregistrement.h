@@ -79,6 +79,7 @@ public:
 	void stop(void);
 	void clrCptSecPeriodeEnregistrement(void);
 	void setCptSecPeriodeEnregistrement(void);
+	uint16_t getpremiersEnregistrement(void);
 	void clrPremierEnregistrement(void);
 	int16_t  getComptMessage(void) const;
 	int16_t  getPtre(void) const;
@@ -88,12 +89,13 @@ public:
 	ST_message getEnregistrementPourJson(void) ;
 	void setdernierMessageEmisOK();
 	uint8_t getEtResetErreur(void);
+	void forceEnregistrementSurMarche(void);
 private:
 	WiFiUDP udpEnr;
 	void incCptSecPeriodeEnregistrement(void);
-	void enregistreMessageTempoVmc( uint16_t  dureeMax, bool cgtCompteur);
+	void enregistreMessageTempoVmc();
 	bool send(const char* adressIP, uint32_t port, char * message);
-	bool traiteCompteursTempo(ST_message *leMessage, bool cgtCompteur, uint8_t premiersEnregistrement);
+	bool traiteCompteursTempo(ST_message *leMessage, uint8_t premiersEnregistrement);
 	void emetEnregistrementTempoVmc(void);
 	ST_message lesMessages[NBMESSAGE];
 	int16_t  comptMessage = 0;  //public pour test
@@ -105,6 +107,7 @@ private:
 	uint8_t premiersEnregistrement = 0;
 	int16_t dureeMax = 0;
 	uint8_t erreur=0;
+	boolean forceEnregistrement = false;
 };
 extern enregistrement ENREGISTREMENT;
 

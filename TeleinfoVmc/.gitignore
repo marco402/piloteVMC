@@ -1,18 +1,21 @@
 #teleinfovmc
-#tout ignoré
+
 /**
-#ajout dossiers
+
 !/js
 !/js/*
 !/css
 !/css/*
 !/images
 !/images/*
-#ajout fichiers
+
+
+!/modele config_perso.php.php
 !/.gitignore
 !/*.html
 !/*.js
 !/*.xml
+
 !/json.php
 !/modele config_perso.php
 !/queries.php

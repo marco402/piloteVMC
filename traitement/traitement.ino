@@ -240,6 +240,7 @@ Input   : -
 Output  : - 
 Comments: -
 ====================================================================== */
+bool passeMinuit = false;
 void loop()
 {
 	unsigned long start = 0;
@@ -262,14 +263,24 @@ void loop()
 	WEBSERVER.handleClient();
 	MYOTA.handle();
 	//**************************************Traitement enregistrement****************************************************
-	MYSNTP.TestSiMinuit();
-	boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur();
-	if(MYSNTP.getMinuit() && CgtCompteur)
+
+	//enregistrement des 6 compteurs à minuit pour graphiques journaliers
+
+	bool minuit=MYSNTP.TestSiMinuit();
+	boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur();   
+	if(minuit )    //&& CgtCompteur
 	{
-		ENREGISTREMENT.clrPremierEnregistrement();	//envoi des 6 compteurs
+		if(!passeMinuit)
+			ENREGISTREMENT.clrPremierEnregistrement();	//envoi des 6 compteurs
+		passeMinuit = true;
 		RELAIS.razNbSecondeActiveJourCourant();
-		MYSNTP.clrMinuit();
+		if(ENREGISTREMENT.getpremiersEnregistrement()>=6)  //les 6 ont étés envoyés
+		{
+			MYSNTP.clrMinuit();
+			passeMinuit = false;
+		}
 	}
+
 	/*ENREGISTREMENT.testAcquitementMessage();*/
 	ENREGISTREMENT.TRAITEENREGISTREMENT(MYTINFO.getNouvelleTrame(), CgtCompteur,dureeMax);
 	//DebugF(" dureeMax: "); Debugln(dureeMax);

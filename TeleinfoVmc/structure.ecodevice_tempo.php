@@ -17,7 +17,7 @@ $config_table = array (
     // Adapter les valeurs du tableau si le nom du champ est différent
     "table" => array (
         "DATE" => "TIMESTP", // => généralement, vaut soit "DATE", soit "TIMESTAMP"
-        "OPTARIF" => "'BBR'", // option tarifaire souscrite
+        "OPTARIF" => "BBR", // option tarifaire souscrite
         "ISOUSC" => "45", // intensité souscrite, adapter à son abonnement
         "BASE" => "null", // BASE
         "HP" => "null", // HCHP

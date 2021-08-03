@@ -20,7 +20,7 @@ public:
 	boolean getCycle1Seconde(void);
 	bool getMinuit(void) const;
 	void clrMinuit();
-	void TestSiMinuit(void);
+	bool TestSiMinuit(void);
 private:
 	bool minuit = false;
 };

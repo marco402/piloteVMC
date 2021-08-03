@@ -36,6 +36,8 @@
 #include "myTinfo.h"
 #include "enregistrement.h"
 #define NO_DEBUGENREGISTREMENT
+
+//boolean forceEnregistrement = false;
 enregistrement::enregistrement()
 {}
 void ICACHE_FLASH_ATTR enregistrement::init()
@@ -51,10 +53,13 @@ void ICACHE_FLASH_ATTR enregistrement::stop()
 }
 void enregistrement::TRAITEENREGISTREMENT( boolean nouvelleTrame,   boolean cgtCompteur, uint16_t dureeMax)
 {
+
+	//enregistre qu'a la premiere mise en marche relais aprï¿½s changement de compteur???
+
 	this->dureeMax = dureeMax;
-	if ((cptSecPeriodeEnregistrement >= CONFIGURATION.config.tempo.periode_enr)  || cgtCompteur  || (premiersEnregistrement < 6))   //|| nouvelleTrame
+	if ((cptSecPeriodeEnregistrement >= CONFIGURATION.config.tempo.periode_enr)  || cgtCompteur  || (premiersEnregistrement < 6)  || forceEnregistrement)   //|| nouvelleTrame
 	{
-		enregistreMessageTempoVmc( dureeMax, cgtCompteur);  //
+		enregistreMessageTempoVmc();  //
 	}
 	incCptSecPeriodeEnregistrement();
 #ifdef EMISSION_ENREGISTREMENT
@@ -63,10 +68,15 @@ void enregistrement::TRAITEENREGISTREMENT( boolean nouvelleTrame,   boolean cgtC
 		testAcquitementMessage();
 	}
 #endif
+	forceEnregistrement = false;
 }
 void enregistrement::incCptSecPeriodeEnregistrement(void)
 {
 	cptSecPeriodeEnregistrement++;
+}
+uint16_t enregistrement::getpremiersEnregistrement(void)
+{
+	return premiersEnregistrement;
 }
 void enregistrement::clrCptSecPeriodeEnregistrement(void)
 {
@@ -82,17 +92,17 @@ void enregistrement::clrPremierEnregistrement(void)
 }
 //typedef enum { E_HEURE = 0, E_MINUTES, E_SECONDES, E_JOUR_DU_MOIS, E_TEMPEXTMSB, E_TEMPEXTLSB, E_TEMPINTMSB, E_TEMPINTLSB, E_CO, E_HUMIDITE, E_MODE_RELAIS, E_TA12, E_TEMPEXTMSB_2, E_TEMPEXTLSB_2, E_TEMPINTMSB_2, E_TEMPINTLSB_2, E_CO_2, E_HUMIDITE_2, E_NBDATA }champsData;
 #define NO_TESTVMC
-void enregistrement::enregistreMessageTempoVmc( uint16_t  dureeMax, bool cgtCompteur)
+void enregistrement::enregistreMessageTempoVmc()
 {
 	//*******************************************************************
-	if (traiteCompteursTempo(&lesMessages[pointeurEcritureMessage], cgtCompteur, premiersEnregistrement))
+	if (traiteCompteursTempo(&lesMessages[pointeurEcritureMessage], premiersEnregistrement))
 	{
 		//****************************************************
 		lesMessages[pointeurEcritureMessage].heure1970 = Clock.getTimeSeconds();
-		lesMessages[pointeurEcritureMessage].dureeMax = dureeMax;
+		lesMessages[pointeurEcritureMessage].dureeMax = this->dureeMax;
 		lesMessages[pointeurEcritureMessage].tempExt = TEMPEXT.getMoyennePeriode();
 		lesMessages[pointeurEcritureMessage].tempSdb = DHTSDB.DHT_T.getMoyennePeriode();
-		lesMessages[pointeurEcritureMessage].humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 à 100--->7 bits
+		lesMessages[pointeurEcritureMessage].humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 ï¿½ 100--->7 bits
 		lesMessages[pointeurEcritureMessage].humSdb = DHTSDB.DHT_H.getMoyennePeriodeLsb();
 #ifdef TESTVMC
 		lesMessages[pointeurEcritureMessage].iInstMax = DHTSDB.DHT_H.getPourcentageSeuil();
@@ -103,8 +113,10 @@ void enregistrement::enregistreMessageTempoVmc( uint16_t  dureeMax, bool cgtComp
 		lesMessages[pointeurEcritureMessage].iInstMax = CAPTEURIINST.getMaxi();
 		lesMessages[pointeurEcritureMessage].tempCuis = DHTCUISINE_T.getMoyennePeriode();
 #endif
-		//lesMessages[pointeurEcritureMessage].iVmc = TA12.getMesureCycleLsb();	//maxi 1024  10 bits  8 bits doivent êtres suffisants---256  environ 600w
-		lesMessages[pointeurEcritureMessage].etatVmc = ((uint8_t)VMC.getLeMode() << 2) | ((uint8_t)RELAIS.getEtatReelRelaisMarcheArret() << 1) | (uint8_t)RELAIS.getEtatRelaisVitesse();
+		//lesMessages[pointeurEcritureMessage].iVmc = TA12.getMesureCycleLsb();	//maxi 1024  10 bits  8 bits doivent ï¿½tres suffisants---256  environ 600w
+		//lesMessages[pointeurEcritureMessage].humSdb = ((uint8_t)VMC.cuisineTropHumide << 4) | ((uint8_t)VMC.moisOKentreAirFrais << 3 ) | ( (uint8_t)VMC.heureOKentreAirFrais << 2) | ((uint8_t)VMC.entreAirChaudHiver << 1) | ((uint8_t)VMC.entreAirFraisEte) ;
+		//lesMessages[pointeurEcritureMessage].etatVmc = ((uint8_t)VMC.getLeMode() << 2) | ((uint8_t)RELAIS.getEtatReelRelaisMarcheArret() << 1) | (uint8_t)RELAIS.getEtatRelaisVitesse();
+lesMessages[pointeurEcritureMessage].etatVmc =((uint8_t)VMC.getLeMode() << 2) | ((uint8_t)RELAIS.getEtatReelRelaisMarcheArret() << 1) | ((uint8_t)RELAIS.getEtatRelaisVitesse());
 		//DebugF("LeMode:"); Debugln((uint8_t)VMC.getLeMode());
 		//DebugF("Vitesse:"); Debugln((uint8_t)RELAIS.getEtatRelaisVitesse());
 		//DebugF("AM:"); Debugln((uint8_t)RELAIS.getEtatReelRelaisMarcheArret());
@@ -126,7 +138,7 @@ void enregistrement::enregistreMessageTempoVmc( uint16_t  dureeMax, bool cgtComp
 		clrCptSecPeriodeEnregistrement();
 	}
 }
-bool enregistrement::traiteCompteursTempo(ST_message *leMessage, bool cgtCompteur, uint8_t premEnr)
+bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr)
 {
 	char  valeurs[LONGMAXMOT];
 		memset(valeurs, 0, sizeof(valeurs));
@@ -157,7 +169,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, bool cgtCompteu
 				}
 				else
 				{
-					leMessage->etatTempo = HcHpCouleur | (premEnr << 3); //3 bits lsb ptec 3 bits suivant N° compteur
+					leMessage->etatTempo = HcHpCouleur | (premEnr << 3); //3 bits lsb ptec 3 bits suivant Nï¿½ compteur
 					TINFO.valueGet(&TableauTempoName[premEnr][0], &valeurs[0]);
 					if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 					{
@@ -175,12 +187,12 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, bool cgtCompteu
 void enregistrement::traitementEmissionMessageTempoVMC()
 {
 	static bool premierMessage = true;
-	if (premierMessage)             //pour la reémission,les pointeurs sont mis a jour au cycle suivant si acquitement
+	if (premierMessage)             //pour la reï¿½mission,les pointeurs sont mis a jour au cycle suivant si acquitement
 	{
 		emetEnregistrementTempoVmc();
 		premierMessage = false;
 	}
-	else if (dernierMessageEmisOK== ACQUITEMENT::RECUOK)  //dernier message emis validé
+	else if (dernierMessageEmisOK== ACQUITEMENT::RECUOK)  //dernier message emis validï¿½
 	{
 		pointeurLectureMessage += nbMessageEmis;			//mise a jour des pointeurs
 		if (pointeurLectureMessage >= NBMESSAGE)  
@@ -200,7 +212,7 @@ void enregistrement::traitementEmissionMessageTempoVMC()
 	}
 	else if(dernierMessageEmisOK == ACQUITEMENT::RECUNOK)
 	{
-		if (comptMessage > 0)					//réemission du message 
+		if (comptMessage > 0)					//rï¿½emission du message 
 		{
 			emetEnregistrementTempoVmc();
 #ifdef  DEBUGENREGISTREMENT
@@ -287,7 +299,7 @@ bool enregistrement::send(const char* adresseIP, uint32_t port, char * message)
 #endif
 	return false;
 }
-//testAcquitementMessage appelé toutes les secondes
+//testAcquitementMessage appelï¿½ toutes les secondes
 void enregistrement::testAcquitementMessage(void)
 {
 	//if(CONFIGURATION.config.tempo.acquitementEnr)
@@ -333,13 +345,13 @@ ST_message  enregistrement::getEnregistrementPourJson(void)
 {
 
 	static bool premierMessage = true;
-	if (premierMessage)             //pour la reémission,les pointeurs sont mis a jour au cycle suivant si acquitement
+	if (premierMessage)             //pour la reï¿½mission,les pointeurs sont mis a jour au cycle suivant si acquitement
 	{
 		premierMessage = false;
 		dernierMessageEmisOK = ACQUITEMENT::NONRECU;
 		return lesMessages[pointeurLectureMessage];
 	}
-	else if (dernierMessageEmisOK)  //dernier message emis validé
+	else if (dernierMessageEmisOK)  //dernier message emis validï¿½
 	{
 		pointeurLectureMessage += nbMessageEmis;			//mise a jour des pointeurs
 		if (pointeurLectureMessage >= NBMESSAGE)
@@ -355,7 +367,7 @@ ST_message  enregistrement::getEnregistrementPourJson(void)
 	}
 	else
 	{
-		if (comptMessage > 0)					//réemission du message 
+		if (comptMessage > 0)					//rï¿½emission du message 
 		{
 			return lesMessages[pointeurLectureMessage];
 #ifdef  DEBUGENREGISTREMENT
@@ -372,16 +384,16 @@ ST_message  enregistrement::getEnregistrementTempsReel(void)
 {
 	ST_message leMessage;
 	//*******************************************************************
-	traiteCompteursTempo(&leMessage, false, 6);
+	traiteCompteursTempo(&leMessage, 6);
 	//****************************************************
 	leMessage.heure1970 = Clock.getTimeSeconds();
 	char  valeurs[] = { "\0" };
 	leMessage.iInstMax = atoi(TINFO.valueGet(&TableauTempoName[TEMPO_UTILISE::ETU_IINST][0], &valeurs[0]));   //CAPTEURIINST.getMaxi();
-	leMessage.dureeMax = dureeMax;
+	leMessage.dureeMax = this->dureeMax;
 	leMessage.tempExt = TEMPEXT.getMoyennePeriode();
 	leMessage.tempCuis = DHTCUISINE_T.getMoyennePeriode();
 	leMessage.tempSdb = DHTSDB.DHT_T.getMoyennePeriode();
-	leMessage.humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 à 100--->7 bits
+	leMessage.humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 ï¿½ 100--->7 bits
 	leMessage.humSdb = DHTSDB.DHT_H.getMoyennePeriodeLsb();
 	leMessage.etatVmc = (VMC.getLeMode() << 2) | (RELAIS.getEtatReelRelaisMarcheArret() << 1) | RELAIS.getEtatRelaisVitesse();
 	leMessage.etatWifi = WIFI.getWifiUser();
@@ -396,4 +408,8 @@ uint8_t enregistrement::getEtResetErreur(void)
 	uint8_t temp = erreur;
 	erreur = 0;
 	return temp;
+}
+void enregistrement::forceEnregistrementSurMarche(void)
+{
+	forceEnregistrement =true;
 }

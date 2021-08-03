@@ -16,7 +16,7 @@ const sint8 TIMEZONE = 0;   //heure TU
 //*************************ClockCbFunction***********************************
 //copy de Clock.getTimeStruct dans cbLocalTimeStruct						*
 //Clock.getTimeStruct=localtime=f(heure tu 1970,m_timezone et m_daylight)	*
-//ajoute 300 à cbLocalTimeStruct											*
+//ajoute 300 ï¿½ cbLocalTimeStruct											*
 //attachCb ClockCbFunction avec ce temps									*
 //**************************attachCb*****************************************
 // m_cbLocalTimeSec =cbLocalTimeStruct-m_timezone							*
@@ -30,7 +30,7 @@ const sint8 TIMEZONE = 0;   //heure TU
 //if heure 1970>=m_cbLocalTimeSec--->m_callback()=ClockCbFunction			*
 //***************************localtime***************************************
 //heure1900+timezone														*
-//si m_daylight ajoute 0 ou 3600 suivant été hiver							*
+//si m_daylight ajoute 0 ou 3600 suivant ï¿½tï¿½ hiver							*
 //retourne la structure localTime
 //***************************************************************************
 //10 heures
@@ -44,14 +44,14 @@ void ClockCbFunction()
 	addTimeSeconds(&cbLocalTimeStruct, 300UL); //??
 	Clock.attachCb(&cbLocalTimeStruct, (SNTPClock::callback_t)ClockCbFunction);
 }
-ICACHE_FLASH_ATTR mySntp::mySntp()
+ mySntp::mySntp() //ICACHE_FLASH_ATTR
 {
 	sntp_set_timezone(TIMEZONE);
 }
-ICACHE_FLASH_ATTR mySntp::~mySntp()
+ mySntp::~mySntp()    //ICACHE_FLASH_ATTR
 {
 }
-void ICACHE_FLASH_ATTR mySntp::init(void)
+void  mySntp::init(void)   //ICACHE_FLASH_ATTR
 {
 	//*********************sntp_init()*******************************
 	//lance un premier request sur pool.ntp.org						*
@@ -63,16 +63,23 @@ void ICACHE_FLASH_ATTR mySntp::init(void)
 	sntp_setservername(2, (char*)"time.nist.gov");
 
 	//**************************Clock.begin**********************************
-	//mémorise m_timezone=3600 et m_daylight=1								*
+	//mï¿½morise m_timezone=3600 et m_daylight=1								*
 	//interroge le serveur "de.pool.ntp.org"--> m_secsSince1900				*
 	//attache secondTicker interval 1 seconde								*
 	//retourne l'heure tu 1970												*
-	//le serveur sera de nouveau interrogé toutes les heures par défaut,	*
+	//le serveur sera de nouveau interrogï¿½ toutes les heures par dï¿½faut,	*
 	//***********************************************************************
-	//--daylight=1: prise en compte heure d'été(+3600) heure d'hiver(+0)
-	Clock.begin("de.pool.ntp.org", 3600, 1);  //3600 décalage Paris / TU (heure d'hiver) 1 heure d'été
+	//--daylight=1: prise en compte heure d'ï¿½tï¿½(+3600) heure d'hiver(+0)
+	Clock.begin("de.pool.ntp.org", 3600, 1);  //3600 dï¿½calage Paris / TU (heure d'hiver) 1 heure d'ï¿½tï¿½
 	ClockCbFunction();
 }
+/* ======================================================================
+Function: getCycle1Seconde
+	Purpose : test si seconde +1
+	Input : -
+	Output : true si seconde suivante
+	Comments : -
+	====================================================================== */
 boolean mySntp::getCycle1Seconde(void)
 {
 	uint32 this_second = Clock.getSecond();
@@ -86,25 +93,51 @@ boolean mySntp::getCycle1Seconde(void)
 bool mySntp::getMinuit(void) const {
 		return minuit;
 }
-void ICACHE_FLASH_ATTR mySntp::clrMinuit(void) {
+void  mySntp::clrMinuit(void) {      //ICACHE_FLASH_ATTR
 	minuit = false;
 }
 /* ======================================================================
 Function: TestSiMinuit
 Purpose : test si minuit
-Input   : true if first call
-		  true if needed to print on serial debug
+	-passe reste true la premiï¿½re minute
+	-minuit reste true jusqu'a l'appel de clrMinuit lors de la prise en compte de minuit(1 seul appel sinon implï¿½menter un compteur)
+Input   : -
 Output  : -
 Comments: -
 ====================================================================== */
-void mySntp::TestSiMinuit()
+bool passe = false;
+ulong memoSecondesToMidnight = 0;  //protection contre la dï¿½tection de minuit quelques cycles par jour ?
+bool mySntp::TestSiMinuit()
 {
-	static bool passe = false;
+	//static bool passe = false;
 	if ((Clock.getHour() == 0 && Clock.getMinute() == 0 && Clock.getSecond() >= 0) && !passe)   //minuit au cas ou on rate 1 seconde
 	{
 		minuit = true;
 		passe = true;
 	}
-	else if (Clock.getMinute()>0)
+	else if (Clock.getMinute() > 0)
 		passe = false;
+
+	//if ((Clock.getHour() == 0 && Clock.getMinute() == 0 && Clock.getSecond() >= 0) && !passe)   // au cas ou on rate 1 seconde
+	//{
+	//	ulong t = Clock.getTimeSeconds();
+	//	if (memoSecondesToMidnight > 0)
+	//	{
+	//		if (!(((t - memoSecondesToMidnight) < 86340) || ((t - memoSecondesToMidnight) > 86460)))
+	//		{
+	//		minuit = true;
+	//		passe = true;
+	//		memoSecondesToMidnight = t;
+	//		}
+	//	}
+	//	else  //cycle d'initialisation
+	//	{
+	//		minuit = true;
+	//		passe = true;
+	//		memoSecondesToMidnight = t;
+	//	}
+	//}
+	//if (Clock.getMinute()>0)
+	//	passe = false;
+	return minuit;
 }

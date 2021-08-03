@@ -239,6 +239,24 @@ MODES vmc::getMemoModes() const
 }
 void vmc::traitementVMC(void)
 {
+	//-Le mode automatique permet de démarrer toujours en vitesse lente ou d'arrêter la vmc
+	//	en fonction de critères prédéfinis et du paramétrage effectué a partir d'un pc.
+
+	//	- 1 - Spécifique pour entrer de l'air frais l'été de Juin à Septembre inclus   :    //et de 22 à 8 heure inclus
+	//Pour cette période, la vmc est en marche que si la température extérieur est inférieur à la température de la salle de bain
+	//et la température de la salle de bain > 21
+	//sinon toujours arrete pour ne pas entrer d'air chaud.
+
+	//	- 2 - Spécifique pour entrer de l'air chaud l'hiver de Octobre à Mai inclus et de 9 à 21 heure inclus  :
+	//Pour cette période, la vmc est en marche si la température extérieur est supérieur de 5 degrés à la température de la salle de bain.
+	//	Si ces 2 cas n'ont pas démarré la vmc, 
+	//	- 3 - Test de l'humidité cuisine puis
+	//	- 4 - Test de l'humidité salle de bain
+	//	Ces test de l'humidité ne peuvent se faire sur un seuil fixe parce que l'humidité intérieur est liée à l'humidité extérieur.
+	//	Ces test ne tiennent donc pas compte de la valeur de l'humidité mais de sa variation.
+	//	Si aucun de ces 4 tests démarre la vmc, celle - ci est arrêtée.
+
+
 	//paramétrage via page web
 		//seuil chaud(23)
 		//seuil froid(25)
@@ -298,33 +316,62 @@ void vmc::traitementVMC(void)
 		//boolean tropFroidDehors = (TEMPEXT.getMoyennePeriode() < CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres);//c'est l'hiver trop froid dehors risque de ne plus ventiler
 
 	//lecture couleur du jour
-	char  valeurs[LONGMAXMOT];
+	//char  valeurs[LONGMAXMOT];
+	//
+	//memset(valeurs, 0, sizeof(valeurs));
+	//TINFO.valueGet(&TableauTempoName[TEMPO_UTILISE::ETU_PTEC][0], &valeurs[0]);
+	//if (((valeurs != NULL) && (valeurs[0] != '\0')))
+	//{
+	//	CouleurEnCours = atoi(valeurs);
+	//}
 	
-	memset(valeurs, 0, sizeof(valeurs));
-	TINFO.valueGet(&TableauTempoName[TEMPO_UTILISE::ETU_PTEC][0], &valeurs[0]);
-	if (((valeurs != NULL) && (valeurs[0] != '\0')))
-	{
-		CouleurEnCours = atoi(valeurs);
-	}
-	
+
+
+	//DebugF("entreAirFrais: ");	Debugln((long)entreAirFrais);
+	//if (entreAirFrais)
+	//{
+	//	RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+	//}
+
+
+
 	//0:bleu nuit,1:blanc nuit,2:rouge nuit,3:bleu jour,4:blanc jour,5:rouge jour
-	   	boolean tropChaudDehors = (TEMPEXT.getMoyennePeriode() > CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres);
-		boolean cuisineTropHumide = (DHTCUISINE_H.getMoyennePeriode() > SeuilHC);
-		boolean salledebainTropHumide = (DHTSDB.DHT_H.getMoyennePeriode() > SeuilHB);
-		if (CouleurEnCours == COULEURJOUR::ROUGE_JOUR)
+	   	//boolean tropChaudDehors = (TEMPEXT.getMoyennePeriode() > CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres);
+
+		//commenté 07/2021 d'ou ça sort??
+		//if (CouleurEnCours == COULEURJOUR::ROUGE_JOUR)
+		//{
+		//	RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   
+		//	casAuto = CASSTATUS::ST_ROUGEJOUR; //affichage du nombre de minute restante
+		//	seuilAuto = 0;
+		//}
+		//else 
+		//if (tropChaudDehors)
+		//{
+		//	RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'été trop chaud dehors seuil de temp�rature qui permet de ventiler la nuit.
+		//	casAuto = CASSTATUS::ST_TROPCHAUD;
+		//	seuilAuto = CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres/10;
+		//	//DebuglnF("2");
+		//}
+		cuisineTropHumide = (DHTCUISINE_H.getMoyennePeriode() > SeuilHC);
+		salledebainTropHumide = (DHTSDB.DHT_H.getMoyennePeriode() > SeuilHB);
+		//entreAirFraisEte = ((TEMPEXT.getMoyennePeriode() < (DHTSDB.DHT_T.getMoyennePeriode())) && (DHTSDB.DHT_T.getMoyennePeriode() > 210) );
+		entreAirFraisEte = TEMPEXT.getMoyennePeriode() < DHTSDB.DHT_T.getMoyennePeriode();
+		entreAirChaudHiver = (TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode() + 50));  //50-->5°
+		heureOKentreAirFrais = Clock.getHour() < 9 ;
+		moisOKentreAirFrais =(Clock.getMonth() > 05) && (Clock.getMonth() < 10) ;
+		if (entreAirFraisEte  && moisOKentreAirFrais && (DHTSDB.DHT_T.getMoyennePeriode() > 210))     //&& heureOKentreAirFrais
+	    {
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+	    }
+		else if (!entreAirFraisEte  && moisOKentreAirFrais)     //&& heureOKentreAirFrais
 		{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   
-			casAuto = CASSTATUS::ST_ROUGEJOUR; //affichage du nombre de minute restante
-			seuilAuto = 0;
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 		}
-		else 
-			if (tropChaudDehors)
-		{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'été trop chaud dehors seuil de temp�rature qui permet de ventiler la nuit.
-			casAuto = CASSTATUS::ST_TROPCHAUD;
-			seuilAuto = CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres/10;
-			//DebuglnF("2");
-		}
+		else if (entreAirChaudHiver && !heureOKentreAirFrais && !moisOKentreAirFrais)
+	    {
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+	    }
 		else if (cuisineTropHumide)
 		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humidité cuisine

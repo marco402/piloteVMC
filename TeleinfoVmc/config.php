@@ -65,6 +65,8 @@ $teleinfo["LIBELLES"] = array(
         "PV_TEMPORISE" => "petite vitesse temporisée",
         "GV_TEMPORISE" => "grande vitesse temporisée",
         "ARRET_TEMPORISE" => "arrêt temporisée",
+		"ETE" => "été",
+		"HIVER" => "hiver",
     ),	
     "marche" => array (
         "ARRET" => "Heures de Base",

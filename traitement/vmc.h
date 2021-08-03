@@ -39,6 +39,12 @@
 		uint8_t getCasAuto(void) const;
 		uint16_t  getSeuilHC(void)const;
 		uint16_t  getSeuilHB(void)const;
+		bool cuisineTropHumide;
+		bool salledebainTropHumide;
+		bool entreAirFraisEte;
+		bool entreAirChaudHiver;
+		bool heureOKentreAirFrais;
+		bool moisOKentreAirFrais;
 	private:
 		void initialisationMode(void);
 		void lectureCapteurs(void);

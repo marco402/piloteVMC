@@ -43,7 +43,7 @@ char TRAME[][NBCHAR] = { "\x02\0",
  char tableauDemain[][5] = { "BLEU", "BLAN", "ROUG" };
 unsigned int compteur[7] = { 0,0,0,0,0,0,0 };
 #define NO_X86   //pour x86
-bool passe = false;
+
 
 //options supplémentaire du compilateur, ajouter -fpermissive 
 //ATTENTION a tabnames de webserver.cpp si version LibTeleinfo-syslog.zip
@@ -115,6 +115,7 @@ void ICACHE_FLASH_ATTR SimuTempo::initSimuTrameTempo(void)
 		}
 	}
 }
+bool passeEmetTrame = false;
 void SimuTempo::emetTrameTempo( unsigned long secondes,int compteurCourant, unsigned int  couleurDemain)
 {
 	char format12[] = { "%012lu" };
@@ -147,7 +148,7 @@ void SimuTempo::emetTrameTempo( unsigned long secondes,int compteurCourant, unsi
 #else
 				char caract[3];
 				SerialSimu.write(TRAME[i][j]);
-				if (!passe)
+				if (!passeEmetTrame)
 				{
 					if ((TRAME[i][j] > 0x20) & (TRAME[i][j] < 0x60))
 					{
@@ -167,7 +168,7 @@ void SimuTempo::emetTrameTempo( unsigned long secondes,int compteurCourant, unsi
 #ifdef X86
 				printf("\r\n");
 #else
-				if (!passe)
+				if (!passeEmetTrame)
 					DebuglnF("");
 #endif
 				break;
@@ -181,7 +182,7 @@ void SimuTempo::emetTrameTempo( unsigned long secondes,int compteurCourant, unsi
 #ifndef X86
 	delay(10);//tempo intertrame
 #endif
-	passe = true;
+	passeEmetTrame = true;
 }
 
 void SimuTempo::traite1Trame( unsigned long secondes)
