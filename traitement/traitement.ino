@@ -2,7 +2,7 @@
 //type de carte NodeMcu 0.9
 //cpu frequency 160Mhz
 //flash size 4M(1M spiffs)
-//rename to traitement_tempo_vmc.ino.bin  
+//rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"
 //C:\Users\mireille\AppData\Local\Temp\arduino_build_135849\traitement.ino.bin
 //10/07/2021->seuil air frais 25->20    pour ventiler plus la nuit en été
 
@@ -72,6 +72,11 @@
 //		V2.0.2:2019/05/01 ajout de la classe myTinfo
 //###################################includes##################################  
 //version wifinfo syslog d'origine:352 392 bytes
+
+//9/12/2021
+//remplacer les XXXX par ptec
+//emettre le dernier compteur du jour qu'on quitte
+
 #include "constantes.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>

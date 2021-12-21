@@ -23,7 +23,7 @@ poussoir::poussoir()
 {
 	pinMode(PIN_POUSSOIR_MODE, INPUT);
 }
-//appelé a chaque loop de affichage.ino
+//appelï¿½ a chaque loop de affichage.ino
 boolean poussoir::traitement()
 {
 	static boolean  transitoirePoussoir=false;
@@ -53,10 +53,11 @@ boolean poussoir::traitement()
 			buzzer=true;
 		}
 		else						//pas d'appui
-			{
+		{
 			if (transitoirePoussoir)	//relachement
 			{
-				leMode=modeTransitoire;	//validation du nouveau mode, lemode devient différent de memoModes-->InitialisationMode
+				leMode=modeTransitoire;	//validation du nouveau mode, lemode devient diffï¿½rent de memoModes-->InitialisationMode
+				//Serial.print("modeTransitoire"); Serial.println(modeTransitoire);
 				transitoirePoussoir=false;
 				AFFICHEUR.setchangeMode(false);
 			}
@@ -71,6 +72,7 @@ return leMode;
 void poussoir::setLemode(unsigned char leMode)
 {
 	tempsMilli = 0;               //forcage de la prise en compte pour le retour en mode auto apres forcage
+	//Serial.print("setLemode"); Serial.println(leMode);
 	this->leMode = (MODES)leMode;
 }
 void poussoir::clearLeMode(void)

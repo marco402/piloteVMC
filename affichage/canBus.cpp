@@ -83,6 +83,7 @@ boolean can_bus::traitementReception(void )
 					 reception.secondes = rxBuf[MESSAGE_TYPE_0::SECONDE];
 					 reception.etatLeds = rxBuf[MESSAGE_TYPE_0::LES_LEDS];
 					 reception.mode = rxBuf[MESSAGE_TYPE_0::MODE];
+					 //Serial.print("reception mode"); Serial.println(reception.mode);
 					 POUSSOIR.setLemode((reception.mode));	//sinon on revient sur le mode forcé en fin de tempo
 					 reception.etat = rxBuf[MESSAGE_TYPE_0::ETAT];  //libre
 					 reception.Rbuzzer=CAN_BUS.getEtResetErreur() | DHTCUISINE.DHT_T.getEtResetErreur() | rxBuf[MESSAGE_TYPE_0::LEBUZZER];
@@ -199,6 +200,7 @@ void can_bus::traitementEmissionMESSAGE_TYPE_3(MODES leMode)
 {
  	unsigned char buf[MESSAGE_TYPE_3::FIN_MESSAGE_TYPE_3] ;
 	buf[MESSAGE_TYPE_3::NOUV_MODE] = leMode;
+	//Serial.print("emission mode"); Serial.println(leMode);
 	emission( ID_MESSAGE_TYPE_3,MESSAGE_TYPE_3::FIN_MESSAGE_TYPE_3, buf);
 }
 void can_bus::traitementEmission(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t CuisineHMsb,uint8_t CuisineHLsb,MODES leMode)
@@ -211,7 +213,11 @@ void can_bus::traitementEmission(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t
 	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_MSB]=CuisineHMsb;
 	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_LSB]=CuisineHLsb;
 	emission(ID_MESSAGE_TYPE_2,MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2, buf);
-	traitementEmissionMESSAGE_TYPE_3(POUSSOIR.getLeMode());
+	traitementEmissionMESSAGE_TYPE_3(leMode);        //POUSSOIR.getLeMode() 
+	//le mode repasse en AUTO et revient immédiatement en FORCE,
+	//probablement au niveau affichage emission d'un message force avant la prise
+	//en compte de la réception du message AUTO=>temporiser 5 sec.avant prise en comte d'un nouveau mode
+	//DebuglnF("leMode"); Debugln(leMode);   //------------------------>
   }
 }
 struct_reception can_bus::getStructReception(void) const

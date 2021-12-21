@@ -73,7 +73,7 @@ void can_bus::TRAITEMENTEMISSIONCAN(void)
  void ICACHE_FLASH_ATTR can_bus::InitCanBus(unsigned char freq_can)
  {
 	  int nEssai = 10;
-	 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN,freq_can )) && nEssai > 0)              //ok a 100 pb à CAN_500KBPS   MCP_16MHZ(vitesse du quartz sur la carte can a confirmer)
+	 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN,freq_can )) && nEssai > 0)              //ok a 100 pb ï¿½ CAN_500KBPS   MCP_16MHZ(vitesse du quartz sur la carte can a confirmer)
 	 {
 		 nEssai--;
 		 delay(100);
@@ -86,7 +86,7 @@ void can_bus::TRAITEMENTEMISSIONCAN(void)
 	 }
 	 else
 	 {
-		 init_Mask(0, 0, 0xFFFFFFFC);                // Init first mask... accept 0 à 7  
+		 init_Mask(0, 0, 0xFFFFFFFC);                // Init first mask... accept 0 ï¿½ 7  
 		 init_Filt(0, 0, (unsigned char)ID_MESSAGE_TYPE_2);                // Init first filter...
 		 init_Filt(1, 0, (unsigned char)ID_MESSAGE_TYPE_3);                // Init second filter...
 		 enOneShotTX();
@@ -107,7 +107,7 @@ void can_bus::TRAITEMENTEMISSIONCAN(void)
 		return;
 	for (int mes = 0; mes < 2; mes++)
 	{
-		if (CAN_MSGAVAIL == checkReceive())   //pas it pour récupérer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
+		if (CAN_MSGAVAIL == checkReceive())   //pas it pour rï¿½cupï¿½rer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
 		{
 			unsigned long canId = 0;
 			unsigned char len = 0;
@@ -123,20 +123,20 @@ void can_bus::TRAITEMENTEMISSIONCAN(void)
 					motRecu.b[1] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_T_MSB];
 					motRecu.b[0] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_T_LSB];
 					//DHTCUISINE_T.traiteMesure(motRecu.capteur);
-					tCuis = motRecu.capteur;						//transfert des données en même temps que lectureCapteurs
+					tCuis = motRecu.capteur;						//transfert des donnï¿½es en mï¿½me temps que lectureCapteurs
 					motRecu.capteur = 0;
 					motRecu.b[1] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_H_MSB];
 					motRecu.b[0] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_H_LSB];
 					//DHTCUISINE_H.traiteMesure(motRecu.capteur);
-					hCuis = motRecu.capteur;						//transfert des données en même temps que lectureCapteurs
+					hCuis = motRecu.capteur;						//transfert des donnï¿½es en mï¿½me temps que lectureCapteurs
 					//DebugF("rec:DHTCUISINE_H: "); Debugln(motRecu.capteur);
 					receptionCapteurs = true;
 				}
 				else
 				{
 					erreur = ERREURS::E_CAN_BUS_TRAIT;
-					DebuglnF("Problème de longueur message type 2");
-					//Serial.println("Problème de longueur message type 2");
+					DebuglnF("Probleme de longueur message type 2");
+					//Serial.println("Probleme de longueur message type 2");
 				 }
 			}
 			else  if (canId == LES_ID_CAN::ID_MESSAGE_TYPE_3)  //tempo
@@ -144,13 +144,14 @@ void can_bus::TRAITEMENTEMISSIONCAN(void)
 				if (len == FIN_MESSAGE_TYPE_3)
 				{
 					VMC.setLeMode((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
+					//DebugF("Receive mode:"); Debugln((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
 					receptionCommandes = true;
 				}
 				else
 				{ 
 					erreur = ERREURS::E_CAN_BUS_TRAIT;
-					DebuglnF("Problème de longueur message type 3");
-					//Serial.println("Problème de longueur message type 3");
+					DebuglnF("Probleme de longueur message type 3");
+					//Serial.println("Probleme de longueur message type 3");
 				}
 			}
 		}
@@ -160,7 +161,7 @@ unsigned char  can_bus::mysendMsgBuf(unsigned long ident, unsigned char ext, uns
 {
 	return sendMsgBuf(ident, ext, len, buf);
 }
-//type=0:emission du temps,du mode, de l'état courant et du buzzer, type=1:emission de la température et humidité SDB et température exterieur.
+//type=0:emission du temps,du mode, de l'ï¿½tat courant et du buzzer, type=1:emission de la tempï¿½rature et humiditï¿½ SDB et tempï¿½rature exterieur.
 void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigned char minute, unsigned char seconde)
 	{
 	byte sndStat = 0;
@@ -180,6 +181,7 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 		BUZZER.clrBuzzer();
 		buf[MESSAGE_TYPE_0::COURANTVMC] =TA12.getPuissanceConsommee();
 		 sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_0, 0, MESSAGE_TYPE_0::FIN_MESSAGE_TYPE_0, buf);
+		//DebugF("Send mode:"); Debugln(buf[MESSAGE_TYPE_0::MODE]);
 	}
 	else if (type== ID_MESSAGE_TYPE_1)
 	{

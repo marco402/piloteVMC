@@ -73,7 +73,7 @@ switch  (etat)
 		rgb_led.SetPixelColor(indiceLedRGB, red);
 		break;
 	case COULEUR_JOUR::COULEUR_JOUR_INIT:
-		rgb_led.SetPixelColor(indiceLedRGB, black);  //gris donne blanc
+		rgb_led.SetPixelColor(indiceLedRGB, green);  //gris donne blanc
 	}
 	rgb_led.Show();
 }

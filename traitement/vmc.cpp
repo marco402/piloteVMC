@@ -63,28 +63,28 @@ void vmc::traiteRazCapteursAuto(void)
 	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)  //déplacé ici sinon capteur de courant a 0
 	{
 		traiteMoyennePeriode();
-		if (leMode != MODES::AUTO)   //pour continuer a traiter les moyennes a la cadence vmc
+		if (!(leMode == MODES::AUTO || leMode == MODES::ETE))   //pour continuer a traiter les moyennes a la cadence vmc
 			cptSecondesVmcAuto = 0;
 	}
 }
-void vmc::traiteEte()
-{
-	//DebugF("TEMPEXT: ");	Debugln((long)TEMPEXT.getMoyennePeriode());
-	//DebugF("DHTSDB.DHT_T: ");	Debugln((long)DHTSDB.DHT_T.getMoyennePeriode());
-	boolean entreAirFrais = (TEMPEXT.getMoyennePeriode() < (DHTSDB.DHT_T.getMoyennePeriode()));
-	//DebugF("entreAirFrais: ");	Debugln((long)entreAirFrais);
-	if (entreAirFrais)
-    {
-		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
-    }
-	else
-    {
-		leMode = MODES::AUTO;
-		memoModes = MODES::AUTO;
-		decompteTempoArretMarcheForce = 0;
-		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-    }
-}
+//void vmc::traiteEte()
+//{
+//	//DebugF("TEMPEXT: ");	Debugln((long)TEMPEXT.getMoyennePeriode());
+//	//DebugF("DHTSDB.DHT_T: ");	Debugln((long)DHTSDB.DHT_T.getMoyennePeriode());
+//	boolean entreAirFrais = (TEMPEXT.getMoyennePeriode() < (DHTSDB.DHT_T.getMoyennePeriode()));
+//	//DebugF("entreAirFrais: ");	Debugln((long)entreAirFrais);
+//	if (entreAirFrais)
+//    {
+//		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+//    }
+//	else
+//    {
+//		leMode = MODES::AUTO;
+//		memoModes = MODES::AUTO;
+//		decompteTempoArretMarcheForce = 0;
+//		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
+//    }
+//}
 void vmc::traiteHiver()
 {
 	boolean entreAirChaud = (TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode() ));
@@ -108,6 +108,11 @@ void vmc::traitePeriodeVmc()
 			traitementVMC();
 			cptSecondesVmcAuto = 0;
 		}
+		else if (leMode == MODES::ETE)
+		{
+			traitementVMCEte();
+			cptSecondesVmcAuto = 0;
+		}
 		else
 		{
 			casAuto = 0;	//effacement du status auto
@@ -115,12 +120,14 @@ void vmc::traitePeriodeVmc()
 			TA12.traitementSeuilTa12();	//true si ok
 		}
 	}
-	if (leMode == MODES::ETE)
-	{
-		traiteEte();
-		cptSecondesVmcAuto = 0;
-	}
-	else if (leMode == MODES::HIVER)
+	//if (leMode == MODES::ETE)
+	//{
+	//	traitementVMC();
+	//	cptSecondesVmcAuto = 0;
+	//	//traiteEte();
+	//}
+	//else 
+	if (leMode == MODES::HIVER)
 	{
 		traiteHiver();
 		cptSecondesVmcAuto = 0;
@@ -133,6 +140,8 @@ void vmc::incrementeCptVmc()
 //appel que si on a changé de mode Marche/arret, petite/grande vitesse ou automatique...
 void vmc::initialisationMode()
 {
+	//DebugF("decompteTempoArretMarcheForce:"); Debugln(decompteTempoArretMarcheForce);
+	//DebugF("tempoFinForcage:"); Debugln(tempoFinForcage);
 	//noInterrupts();	//au cas ou: framework arduino ???
 	if (memoModes != leMode)
 	{
@@ -163,11 +172,15 @@ void vmc::initialisationMode()
 			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
 			break;
 		case MODES::AUTO:
+//			modeEteEntreAirFrais = false;
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au d�part
 			break;
 		case MODES::ETE:
-			traiteEte();
+//			modeEteEntreAirFrais = true;
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
+			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au d�part
+			//traiteEte();
 			//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
 		case MODES::HIVER:
@@ -182,6 +195,8 @@ void vmc::initialisationMode()
 		TA12.clrMoyennePeriodeCourante();
 		//interrupts();
 	}
+	//if (tempoFinForcage > 0)
+		//tempoFinForcage -= 1;
 }
 uint16_t  vmc::getDecompteTempoArretMarcheForce(void)const
 {
@@ -196,9 +211,13 @@ int vmc::traiteArretMarcheForce()
 	else if (decompteTempoArretMarcheForce ==1 )		//on perd 2 sec sur la tempo...
 	{
 		leMode = MODES::AUTO;		//ne repasse pas en auto a voir
-		memoModes= MODES::AUTO;
-		decompteTempoArretMarcheForce = 0;	
-		//Debugln("Fin forcage");   //------------------------>OK
+		//memoModes= MODES::AUTO;
+		decompteTempoArretMarcheForce = 0;
+		//tempoFinForcage = 2;
+		//le mode repasse en AUTO et revient immédiatement en FORCE,
+        //probablement au niveau affichage emission d'un message force avant la prise
+        //en compte de la réception du message AUTO=>temporiser 5 sec.avant prise en comte d'un nouveau mode
+		DebuglnF("Fin forcage");   //------------------------>OK
 		return 1;
 	}
 	else
@@ -231,7 +250,8 @@ String vmc::getLeModeString() const
 }
 void vmc::setLeMode(MODES lemode)
 {
-	leMode = lemode;
+  //if (tempoFinForcage == 0)
+	   leMode = lemode;
 }
 MODES vmc::getMemoModes() const
 {
@@ -356,46 +376,70 @@ void vmc::traitementVMC(void)
 		cuisineTropHumide = (DHTCUISINE_H.getMoyennePeriode() > SeuilHC);
 		salledebainTropHumide = (DHTSDB.DHT_H.getMoyennePeriode() > SeuilHB);
 		//entreAirFraisEte = ((TEMPEXT.getMoyennePeriode() < (DHTSDB.DHT_T.getMoyennePeriode())) && (DHTSDB.DHT_T.getMoyennePeriode() > 210) );
-		entreAirFraisEte = TEMPEXT.getMoyennePeriode() < DHTSDB.DHT_T.getMoyennePeriode();
-		entreAirChaudHiver = (TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode() + 50));  //50-->5°
-		heureOKentreAirFrais = Clock.getHour() < 9 ;
-		moisOKentreAirFrais =(Clock.getMonth() > 05) && (Clock.getMonth() < 10) ;
-		if (entreAirFraisEte  && moisOKentreAirFrais && (DHTSDB.DHT_T.getMoyennePeriode() > 210))     //&& heureOKentreAirFrais
+		//entreAirFraisEte = TEMPEXT.getMoyennePeriode() < DHTSDB.DHT_T.getMoyennePeriode();
+		//entreAirChaudHiver = (TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode() + 50));  //50-->5°
+		//heureOKentreAirFrais =(Clock.getHour() < 8) || ( Clock.getHour() > 22);
+		//moisOKentreAirFrais =(Clock.getMonth() > 05) && (Clock.getMonth() < 10) ;
+		/*if (entreAirFraisEte && (DHTSDB.DHT_T.getMoyennePeriode() > 210) && heureOKentreAirFrais)
 	    {
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 	    }
-		else if (!entreAirFraisEte  && moisOKentreAirFrais)     //&& heureOKentreAirFrais
+		else if (!entreAirFraisEte && heureOKentreAirFrais)
 		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-		}
-		else if (entreAirChaudHiver && !heureOKentreAirFrais && !moisOKentreAirFrais)
-	    {
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
-	    }
-		else if (cuisineTropHumide)
+		}*/
+		//else if (entreAirChaudHiver && !heureOKentreAirFrais && !modeEteEntreAirFrais)
+	 //   {
+		//	RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+	 //   }
+		if (salledebainTropHumide)
 		{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humidité cuisine
-			casAuto = CASSTATUS::ST_CUISTROPHUM;
-			seuilAuto = SeuilHC;
-			//DebuglnF("3");
-		}	
-		else if (salledebainTropHumide)
-			{
-			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humidité salle de bain
 			casAuto = CASSTATUS::ST_SDBTROPHUM;
 			seuilAuto = SeuilHB;
-			//DebuglnF("4");
+			DebuglnF("auto 1");
+		}	
+		else if (cuisineTropHumide)
+			{
+			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);						//trop d'humidité salle de bain
+			casAuto = CASSTATUS::ST_CUISTROPHUM;
+			seuilAuto = SeuilHC;
+			DebuglnF("auto 2");
 			}
 		else //if (RELAIS.getEtatReelRelaisMarcheArret()== ARRET_MARCHE::MARCHE_REL)
 			{
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);   						//arret si aucun cas demande de ventiler
 			casAuto = CASSTATUS::ST_START; //affichage du nombre de minute restante
 			seuilAuto= 0;
-			//DebuglnF("5");
+			DebuglnF("auto 3");
 			}
 		//DebugF("casAuto: "); Debugln(casAuto);
 		//DebugF("seuilAuto: "); Debugln(seuilAuto);
 }
+void vmc::traitementVMCEte(void)
+{
+
+	entreAirFraisEte = TEMPEXT.getMoyennePeriode() < DHTSDB.DHT_T.getMoyennePeriode();
+	heureOKentreAirFrais = (Clock.getHour() < 8) || (Clock.getHour() > 21);
+	if (entreAirFraisEte  && heureOKentreAirFrais)
+	{
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+		DebuglnF("ete 1");
+	}
+	else if (!entreAirFraisEte   && heureOKentreAirFrais)
+	{
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
+		DebuglnF("ete 2");
+	}
+	else 
+	{
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL); 
+		casAuto = CASSTATUS::ST_START; //affichage du nombre de minute restante
+		seuilAuto = 0;
+		DebuglnF("ete 3");
+	}
+}
+
 //appelé quand cptSecondesVmcAuto>=LECTURESERIAL.periode_vmc
 void vmc::traiteMoyennePeriode(void)
 {

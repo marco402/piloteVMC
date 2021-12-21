@@ -41,24 +41,29 @@
 		uint16_t  getSeuilHB(void)const;
 		bool cuisineTropHumide;
 		bool salledebainTropHumide;
-		bool entreAirFraisEte;
+
+		//bool moisOKentreAirFrais;
+	private:
+		bool entreAirFraisEte=false;
 		bool entreAirChaudHiver;
 		bool heureOKentreAirFrais;
-		bool moisOKentreAirFrais;
-	private:
+//        bool modeEteEntreAirFrais;
+		//bool memoHumSdb=0;
 		void initialisationMode(void);
 		void lectureCapteurs(void);
 		void traiteMoyennePeriode(void);
 		void testTraitementVmc(void);
 		void traitementVMC(void);
+		void traitementVMCEte(void);
 		void setCptVmc(uint16_t T);
 		int traiteArretMarcheForce(void);
 		boolean traitementTempsMiniVMC(void);
 		void traitePeriodeVmc(void);
-		MODES leMode = MODES::ARRET;  //initialisation identique à affichage
+		MODES leMode = MODES::ARRET;  //initialisation identique ï¿½ affichage
 		uint8_t etat = 0; 
-		MODES memoModes = MODES::PETITE_VITESSE;    //différent de mode pour entrer dans le traitement dés le premier changement
+		MODES memoModes = MODES::PETITE_VITESSE;    //diffï¿½rent de mode pour entrer dans le traitement dï¿½s le premier changement
 		uint16_t  decompteTempoArretMarcheForce=0;
+		//uint16_t  tempoFinForcage = 0;
 		uint16_t cptSecondesVmcAuto= REINIT;
 		uint8_t seuilAuto = 0;
 		uint8_t casAuto = 0;

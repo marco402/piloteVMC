@@ -4,7 +4,13 @@
  * Created: 24/02/2019 22:18:27
  *  Author: marc Prieur
  */
- //###################################include##################################  
+ //###################################include################################## 
+//programmation: interface usb serial
+//1 en bas (orange)
+//terminal à 115200
+//choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57200)
+//charger affichage.ino
+
 #include <gfxfont.h>
 #include <Adafruit_SPITFT_Macros.h>
 #include <Adafruit_SPITFT.h>
@@ -49,6 +55,7 @@ void setup()
   BUZZER.test();
   delay(1000);
   BUZZER.test();
+  memoTempsMilli = millis();
 }
 //########################################loop##########################################
 //*********************************************BOUCLE 1 Seconde*******************************************
@@ -74,7 +81,7 @@ void loop()
 	AFFICHEUR.affiche(CAN_BUS.getStructReception());
 	BUZZER.traitement(CAN_BUS.getStructReception());  //buzzer permanent si plus de réception CAN
 //########################################Traitement des sorties##########################################
-//les moyennes seront faite au niveaux des UC
+//les moyennes se1110.ront faite au niveaux des UC
 	CAN_BUS.traitementEmission(DHTCUISINE.DHT_T.getMesureCycleMsb(),DHTCUISINE.DHT_T.getMesureCycleLsb(),DHTCUISINE.DHT_H.getMesureCycleMsb(),DHTCUISINE.DHT_H.getMesureCycleLsb(), POUSSOIR.getLeMode());
 	CAN_BUS.clearStructReception();
 //########################################Traitement temps des traitements##########################################
