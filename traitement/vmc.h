@@ -62,6 +62,7 @@
 		MODES leMode = MODES::ARRET;  //initialisation identique � affichage
 		uint8_t etat = 0; 
 		MODES memoModes = MODES::PETITE_VITESSE;    //diff�rent de mode pour entrer dans le traitement d�s le premier changement
+		MODES memoRetourForcage = MODES::PETITE_VITESSE; 
 		uint16_t  decompteTempoArretMarcheForce=0;
 		//uint16_t  tempoFinForcage = 0;
 		uint16_t cptSecondesVmcAuto= REINIT;

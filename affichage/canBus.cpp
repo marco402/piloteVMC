@@ -22,7 +22,7 @@
 #include "dht.h"
 #include "constantes.h"
 #include "poussoir.h"
-#include <mcp_can.h>
+#include <mcp_can.h>   //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries
 #include "canBus.h"
  can_bus::can_bus(unsigned char  freq_can ) : MCP_CAN(PIN_CS_CAN,CLOCKSPI)
  {

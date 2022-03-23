@@ -18,20 +18,20 @@
 //
 // **********************************************************************************
 
-//à 160-->100n haut/front 100n/300n bas/front 100n pendant 65µs    reset 50µs  entre 2 leds
-//à 80 -->200n haut/front 100n/600n bas/front 100n pendant 130µs   reset 50µs  entre 2 leds
-//avec AAPA106,il faut 0.35µs+-150ns et 1.36µs+-150ns et reset 50µs
+//ï¿½ 160-->100n haut/front 100n/300n bas/front 100n pendant 65ï¿½s    reset 50ï¿½s  entre 2 leds
+//ï¿½ 80 -->200n haut/front 100n/600n bas/front 100n pendant 130ï¿½s   reset 50ï¿½s  entre 2 leds
+//avec AAPA106,il faut 0.35ï¿½s+-150ns et 1.36ï¿½s+-150ns et reset 50ï¿½s
 
 //leds ---------->WS2812
 //#define CYCLES_800_T0H  (F_CPU / 2500000) // 0.4us    1Mhz?
 //#define CYCLES_800_T1H  (F_CPU / 1250000) // 0.8us
 //#define CYCLES_800      (F_CPU /  800000) // 1.25us per bit
 //leds ---------->APA106
-//#define CYCLES_800_T0H  (F_CPU / 1250000) // 0.35us    10Mhz?  pour APA106,il faut 0.35µs et 1.36µs
+//#define CYCLES_800_T0H  (F_CPU / 1250000) // 0.35us    10Mhz?  pour APA106,il faut 0.35ï¿½s et 1.36ï¿½s
 //#define CYCLES_800_T1H  (F_CPU / 420000) // 1.36us
 //#define CYCLES_800      (F_CPU / 1250000)+(F_CPU / 420000) // 1.71us per bit
 #include <Ticker.h>
-#include <NeoPixelBus.h>
+
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include "mySyslog.h"
@@ -40,8 +40,9 @@
 #include "constantes.h"
 #include "myTinfo.h"
 #include "ledsRGBSerial.h"
-//pas reussi à mettre dans la classe
+//pas reussi ï¿½ mettre dans la classe
 #ifdef PIN_LED_RGB
+  #include <NeoPixelBus.h>
 	NeoPixelBus<NeoRgbFeature, NeoEsp8266BitBang800KbpsMethod> rgb_led( NBLEDENSERIE , PIN_LED_RGB);  
 #endif
 	void lesLeds::TRAITEMENTLEDS(void)

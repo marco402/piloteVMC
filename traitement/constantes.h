@@ -17,7 +17,8 @@
 
 #ifndef CONSTANTE_H
 #define CONSTANTE_H
-#include <pgmspace.h>      //si erreur outils->type de carte nodemcu 0.9
+#include <pgmspace.h>      //si erreur outils->type de carte nodemcu 0.9 si nécessaire installer type de carte esp8266 
+//sélectionner nodemcu(0.9 pour moi) et cpu frequene 160Mhz
 #include <ESP8266WiFi.h>
 #include <Arduino.h>
 #include "Wifinfo.h"

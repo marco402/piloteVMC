@@ -101,12 +101,12 @@ boolean webClient::httpPost(char * host, uint16_t port, char * url)
 {
 	HTTPClient http;
 	bool ret = false;
-
+  WiFiClient client;
 	//unsigned long start = millis();
 
 	// configure traged server and url
 	http.setTimeout(200);   //1500
-	http.begin(host, port, url);
+	http.begin(client,host, port, url);
 	//exemple ok
 	//http.begin("http://192.168.1.69:80/emoncms/input/post?node=99&apikey=cc91f1942df2fb621e6901cb46c99429&json={ADCO:039801172264,OPTARIF:4,ISOUSC:45,BBRHCJB:029252680,BBRHPJB:063174800,BBRHCJW:005079009,BBRHPJW:010795471,BBRHCJR:000844643,BBRHPJR:002473349,PTEC:9,DEMAIN:10,IINST:001,IMAX:029,HHPHC:89,MOTDETAT:000000}");
 
@@ -732,5 +732,3 @@ String webClient::build_emoncms_json_vmc(ST_message leMessage)
 	url += FPSTR(FP_JSON_END);
 	return url;
 }
-
-

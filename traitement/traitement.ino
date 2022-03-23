@@ -1,3 +1,8 @@
+//version carte nodemcu 3.0.2 probleme spiffs
+//install version 2.7.4 probleme spiffs
+//install version 2.6.0 probleme spiffs
+//install version 2.5.2 spiffs ok multiple definition of `time' renommé time to time_1 to SNTPTime.cpp
+//install version 2.5.0 spiffs ok multiple definition of `time'
 //paramétrage arduino
 //type de carte NodeMcu 0.9
 //cpu frequency 160Mhz
@@ -76,7 +81,7 @@
 //9/12/2021
 //remplacer les XXXX par ptec
 //emettre le dernier compteur du jour qu'on quitte
-
+//ajouter I2S.h dans C:\Program Files (x86)\Arduino\libraries\NeoPixelBus-master\src\internal
 #include "constantes.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>

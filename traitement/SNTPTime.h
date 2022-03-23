@@ -32,17 +32,33 @@ extern "C" {
 //};
 
 // time structure represents time A.D. (e.g. year: 2015)
-struct tm {
-  int tm_sec;  /* seconds,          range 0 to 59  */
-  int tm_min;  /* minutes,          range 0 to 59  */
-  int tm_hour; /* hours,            range 0 to 23  */
-  int tm_mday; /* day of the month, range 1 to 31  */
-  int tm_mon;  /* month,            range 0 to 11  */
-  int tm_year; /* number of years   since 1900     */
-  int tm_wday; /* day of the week,  range 0 to 6   */ //sunday = 0
-  int tm_yday; /* day in the year,  range 0 to 365 */
-  int tm_isdst;/* daylight saving time             */ //no=0, yes>0
-};
+//In file included from C:\marc\developpement\vmc et tempo bus can\traitement\SNTPTime.cpp:22:
+//SNTPTime.h:35:8: error: redefinition of 'struct tm'
+//   35 | struct tm {
+//      |        ^~
+//In file included from C:\Users\mireille\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.0.2\cores\esp8266/HardwareSerial.h:31,
+//                 from C:\Users\mireille\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.0.2\cores\esp8266/Arduino.h:288,
+//                 from C:\marc\developpement\vmc et tempo bus can\traitement\SNTPTime.h:22,
+//                 from C:\marc\developpement\vmc et tempo bus can\traitement\SNTPTime.cpp:22:
+//c:\users\mireille\appdata\local\arduino15\packages\esp8266\tools\xtensa-lx106-elf-gcc\3.0.4-gcc10.3-1757bed\xtensa-lx106-elf\include\time.h:37:8: note: previous definition of 'struct tm'
+//   37 | struct tm
+//      |        ^~
+//In file included from C:\marc\developpement\vmc et tempo bus can\traitement\SNTPClock.h:23,
+//                 from C:\marc\developpement\vmc et tempo bus can\traitement\SNTPClock.cpp:23:
+//SNTPTime.h:35:8: error: redefinition of 'struct tm'
+//   35 | struct tm {
+
+//struct tm {
+//  int tm_sec;  /* seconds,          range 0 to 59  */
+//  int tm_min;  /* minutes,          range 0 to 59  */
+//  int tm_hour; /* hours,            range 0 to 23  */
+//  int tm_mday; /* day of the month, range 1 to 31  */
+//  int tm_mon;  /* month,            range 0 to 11  */
+//  int tm_year; /* number of years   since 1900     */
+//  int tm_wday; /* day of the week,  range 0 to 6   */ //sunday = 0
+//  int tm_yday; /* day in the year,  range 0 to 365 */
+//  int tm_isdst;/* daylight saving time             */ //no=0, yes>0
+//};
 
 // the one and only time instance
 static tm Time;
@@ -58,7 +74,9 @@ const int  dayOfMonth[]    PROGMEM = { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 3
 //clock_t clock(void);  // in CLOCKS_PER_SEC
 //double difftime (time_t end, time_t beginning);
 time_t mktime (struct tm * timeptr);
-time_t time (time_t * timer = NULL);
+time_t time_1 (time_t * timer = NULL);  //time doublon avec C:\Users\mireille\AppData\Local\
+//Arduino15\packages\esp8266\hardware\esp8266\2.5.2\cores\esp8266\time.cpp
+
 char * asctime (const struct tm * timeptr);
 char * ctime (const time_t * timer);
 struct tm * gmtime (const time_t * timer);

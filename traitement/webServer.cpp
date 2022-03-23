@@ -18,11 +18,11 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par marc Prieur 2019
-//		-intégré le code dans la classe webClient webServer.cpp  webServer.h
+// Modifiï¿½ par marc Prieur 2019
+//		-intï¿½grï¿½ le code dans la classe webClient webServer.cpp  webServer.h
 //
 //		-V2.0.3 
-//				-vérification du nom des champs transférés dans LibTeleinfo
+//				-vï¿½rification du nom des champs transfï¿½rï¿½s dans LibTeleinfo
 // Using library ESP8266WebServer version 1.0
 //
 // **********************************************************************************
@@ -518,6 +518,18 @@ webServer::webServer()
 
 			//ajout pour spiffs
 			int command = U_FLASH;
+
+//#ifdef ESP8266
+//command = (filename.indexOf("spiffs") > -1) ? U_FS : U_FLASH;
+//if(command =U_FS)
+//  DebuglnF("command = U_FS");
+//else
+//  DebuglnF("command = U_FLASH");  
+//#else
+//command = (filename.indexOf("spiffs") > -1) ? U_SPIFFS : U_FLASH;
+//#endif
+
+      
 			if (strstr(upload.filename.c_str(), "spiffs"))
 			{
 				command = U_SPIFFS;
@@ -903,7 +915,7 @@ void webServer::getVmcJSONData(String & response)
 	response += "{\"na\":\"Nb min vmc\",\"va\":\"";
 	response += RELAIS.getNbMinuteActiveJourCourant();
 	response += "\"},\r\n";
-	//décompte mode forcé
+	//dï¿½compte mode forcï¿½
 	response += "{\"na\":\"Decompte\",\"va\":\"";
 	response += VMC.getDecompteTempoArretMarcheForce();
 	response += "\"},\r\n";
@@ -966,7 +978,7 @@ void webServer::getSysJSONData(String & response)
 	if (SwitchState)
 		response += F("Open");  //switch ouvert
 	else
-		response += F("Closed");  //switch fermé
+		response += F("Closed");  //switch fermï¿½
 
 	response += "\"},\r\n";
 #endif
@@ -1031,7 +1043,7 @@ void webServer::getSysJSONData(String & response)
 
 	response += "{\"na\":\"Analog\",\"va\":\"";
 	//adc = ((1000 * analogRead(A0)) / 1024);
-	//adc = ESP.getVcc();  //pas juste du au pont 220/100k  d'après internet......
+	//adc = ESP.getVcc();  //pas juste du au pont 220/100k  d'aprï¿½s internet......
 	sprintf_P(buffer, PSTR("%d mV"), (1000 * analogRead(A0) / 1024));
 	response += buffer;
 	response += "\"},\r\n";
@@ -1241,4 +1253,3 @@ void webServer::incNb_reinit(void)
 {
 	nb_reinit++;
 }
-

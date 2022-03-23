@@ -18,16 +18,16 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifiï¿½ par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-03-21 ()
-//		-intégré le code dans la classe mySyslog mySyslog.cpp
+// Modifiï¿½ par marc PRIEUR 2019-03-21 ()
+//		-intï¿½grï¿½ le code dans la classe mySyslog mySyslog.cpp
 //********************************************************************************
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include <FS.h>
 #include <WiFiUdp.h>
-#include <Syslog.h>
+#include <Syslog.h>   //add Syslog-master to C:\Program Files (x86)\Arduino\libraries
 #include "config.h"
 #include "constantes.h"
 #include "mySyslog.h"
@@ -41,7 +41,7 @@
 /////////////////////////// uniquement si DEBUGSERIAL ou SYSLOG //////////
 #ifdef MACRO
 ////// Versions polymorphes des appels au debugging
-////// non liées au port Serial ou Serial1
+////// non liï¿½es au port Serial ou Serial1
 
 	void mySyslog::convert(const __FlashStringHelper *ifsh)
 	{
@@ -101,14 +101,14 @@ void mySyslog::Myprint(char *msg) {
 	}
 	else if (SYSLOGselected) {
 		//syslog non encore disponible
-		//stocker les messages à envoyer plus tard
+		//stocker les messages ï¿½ envoyer plus tard
 		in++;
 		if (in >= 50) {
-			//table saturée !
+			//table saturï¿½e !
 			in = 0;
 		}
 		if (lines[in]) {
-			//entrée occupée : l'écraser, tant pis !
+			//entrï¿½e occupï¿½e : l'ï¿½craser, tant pis !
 			free(lines[in]);
 		}
 		lines[in] = (char *)malloc(strlen(msg) + 2);
@@ -210,8 +210,8 @@ void mySyslog::Myflush() {
 	}
 	void mySyslog::setSYSLOGselected(void)
 	{
-	SYSLOGselected = true;  //Par défaut, au moins stocker les premiers msg debug
-	//  SYSLOGusable=false;   //Tant que non connecté, ne pas émettre sur réseau
+	SYSLOGselected = true;  //Par dï¿½faut, au moins stocker les premiers msg debug
+	//  SYSLOGusable=false;   //Tant que non connectï¿½, ne pas ï¿½mettre sur rï¿½seau
 	}
 
 	void mySyslog::clearLinesSyslog(void)

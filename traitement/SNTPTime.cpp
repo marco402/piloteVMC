@@ -47,7 +47,7 @@ tm * mkTmStruct(ulong secsSince1900)
   return localtime(secsSince1900, confTimeZone, confDayLight);
 }
 
-time_t time(time_t * t)
+time_t time_1(time_t * t)
 {
   time_t seconds = Clock.getTimeSeconds();
   if (t)
@@ -128,27 +128,58 @@ int compareTime(tm * t1, tm * t2)
   ulong sec2 = mktime(t2);
   return (sec1 - sec2);
 }
-
+///reprise du code sinon heure d'été au 1° Mars
 time_t testDayLight(ulong secsSince1900)
 {
+  time_t seconds =0;
   tm t;
   t = *mkTmStruct(secsSince1900);
 
-  int month = t.tm_mon;
-  if (month < 2 || month > 9) // month 1, 2, 11, 12
-    return 0;  // -> Winter
-
-  // after last Sunday 2:00 in March
-  if (t.tm_mday - t.tm_wday >= 25 && (t.tm_wday || (t.tm_hour >= 2)))  //marc add two brackets
+  if (t.tm_mon < 2 || t.tm_mon > 9) // month 0, 1, 10, 11  -> Winter
+	  return seconds;  // -> Winter
+  if (t.tm_mon == 2 || t.tm_mon == 9)  // Mars ou Octobre -> Winter
   {
-    if (month == 9) // October -> Winter
-      return 0;
-  // before last Sunday 2:00 in March
-    else if (month == 2) // -> Winter
-      return 0;
+	  if ((t.tm_mday - t.tm_wday >= 25) && (t.tm_wday == 0) && (t.tm_hour >= 2))  // > dernier dimanche  de mars � octobre
+	  {
+		  if (t.tm_mon == 2)
+      {
+        seconds=3600;
+			  return seconds;
+      }
+		  else if (t.tm_mon == 9)
+			  return seconds;
+	  }
+	  if (t.tm_mon == 2)
+		  return seconds;
+	  else if (t.tm_mon == 9)
+   {
+      seconds=3600;
+		  return seconds;
+   }   
+	  else                      //impossible mais erreur compile si visual studio
+		  return 0;
   }
-  // we have daylight set, so return the timediff
-  return 3600;
+  else
+  {
+    seconds=3600;
+	  return seconds;           // we have daylight set, so return the timediff
+  }
+
+  //int month = t.tm_mon;
+  //if (month < 2 || month > 9) // month 1, 2, 11, 12
+  //  return 0;  // -> Winter
+
+  //// after last Sunday 2:00 in March
+  //if (t.tm_mday - t.tm_wday >= 25 && (t.tm_wday || (t.tm_hour >= 2)))  //marc add two brackets
+  //{
+  //  if (month == 9) // October -> Winter
+  //    return 0;
+  //// before last Sunday 2:00 in March
+  //  else if (month == 2) // -> Winter
+  //    return 0;
+  //}
+  //// we have daylight set, so return the timediff
+  //return 3600;
 }
 
 ulong removeDayLight(ulong secsSince1900)
@@ -219,4 +250,3 @@ struct tm * localtime(const ulong secsSince1900, long timezone, int daylight)
 
   return &t;
 }
-

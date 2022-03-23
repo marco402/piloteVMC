@@ -10,23 +10,26 @@
 //terminal à 115200
 //choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57200)
 //charger affichage.ino
-
-#include <gfxfont.h>
+//arduino 1.8.7 ok
+//arduino 1.8.19 ok
+#include <gfxfont.h>  //add Adafruit-GFX-Library-master to arduino/libraries
 #include <Adafruit_SPITFT_Macros.h>
 #include <Adafruit_SPITFT.h>
 #include <Adafruit_GFX.h>
-#include <Adafruit_ST77xx.h>
+#include <Adafruit_ST77xx.h>  //add Adafruit-ST7735-Library-master to arduino/libraries
 #include <Adafruit_ST7789.h>
 #include <Adafruit_ST7735.h>
-#include <NeoPixelBus.h>
+#include <NeoPixelBus.h>      //add NeoPixelBus-master to arduino/libraries
 #include <NeoPixelBrightnessBus.h>
 #include <NeoPixelAnimator.h>
-#include <SPI.h>
-#include <NewTone.h>
+#include <SPI.h>   //add SPI to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries
+#include <NewTone.h>  //add Newtone to arduino/libraries
+
 #include "constantes.h"
-#include "dht.h"
+#include "dht.h" 
 #include "st7735.h"
-#include "canBus.h"
+#include "canBus.h"  //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries for mcp_can.h to canBus.h
+//WARNING MVPCAN modifié chercher marc
 #include "ledsRgbSerial.h"
 #include "ledsClassiques.h"
 #include "poussoir.h"

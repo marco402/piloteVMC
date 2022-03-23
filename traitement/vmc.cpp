@@ -145,6 +145,7 @@ void vmc::initialisationMode()
 	//noInterrupts();	//au cas ou: framework arduino ???
 	if (memoModes != leMode)
 	{
+		memoRetourForcage = memoModes;
 		decompteTempoArretMarcheForce = 0;				//sinon repart en auto en fin de tempo si on a pas fini le forçage
 		switch (leMode)
 		{
@@ -210,7 +211,7 @@ int vmc::traiteArretMarcheForce()
 	}
 	else if (decompteTempoArretMarcheForce ==1 )		//on perd 2 sec sur la tempo...
 	{
-		leMode = MODES::AUTO;		//ne repasse pas en auto a voir
+		leMode = memoRetourForcage;   //                                     MODES::AUTO;		//ne repasse pas en auto a voir
 		//memoModes= MODES::AUTO;
 		decompteTempoArretMarcheForce = 0;
 		//tempoFinForcage = 2;
