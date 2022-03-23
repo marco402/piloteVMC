@@ -47,9 +47,11 @@
 #include "mySntp.h"
 #include "config.h"
 #include "canBus.h"
+#ifdef PIN_CS_CAN
 ICACHE_FLASH_ATTR can_bus::can_bus(void) : MCP_CAN(PIN_CS_CAN, CLOCKSPI)
 {
 }
+#endif
 void can_bus::TRAITEMENTEMISSIONCAN(void)
 {
 	if (!initCanBusOK)

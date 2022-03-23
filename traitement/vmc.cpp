@@ -461,12 +461,14 @@ void vmc::lectureCapteurs(void)
 {
 	DHTSDB.lectureCapteur();
 	TEMPEXT.lectureCapteur();
+ #ifdef PIN_CS_CAN
 	if (CAN_BUS.getReceptionCapteurs())
 	{
 	DHTCUISINE_T.traiteMesure(CAN_BUS.getTCuis());
 	DHTCUISINE_H.traiteMesure(CAN_BUS.getHCuis());
 	CAN_BUS.resetReceptionCapteurs();
 	}
+ #endif
 }
 uint8_t vmc::getSeuilAuto(void) const
 {

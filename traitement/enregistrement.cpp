@@ -95,8 +95,10 @@ void enregistrement::clrPremierEnregistrement(void)
 void enregistrement::enregistreMessageTempoVmc()
 {
 	//*******************************************************************
+#ifdef 	WITHWIFINFO
 	if (traiteCompteursTempo(&lesMessages[pointeurEcritureMessage], premiersEnregistrement))
 	{
+#endif
 		//****************************************************
 		lesMessages[pointeurEcritureMessage].heure1970 = Clock.getTimeSeconds();
 		lesMessages[pointeurEcritureMessage].dureeMax = this->dureeMax;
@@ -136,7 +138,9 @@ lesMessages[pointeurEcritureMessage].etatVmc =((uint8_t)VMC.getLeMode() << 2) | 
 		if (premiersEnregistrement < 6)
 			premiersEnregistrement++;				//on passe au compteur suivant
 		clrCptSecPeriodeEnregistrement();
+#ifdef 	WITHWIFINFO
 	}
+#endif
 }
 bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr)
 {

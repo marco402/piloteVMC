@@ -26,7 +26,7 @@
 // **********************************************************************************
 #ifndef WIFINFO_H
 #define WIFINFO_H
-
+#include "constantes.h"
 #include <Ticker.h>
 #include <ESP8266WiFi.h>
 extern "C" {
@@ -55,6 +55,8 @@ extern "C" {
 //#define SENSOR			//pas remis SENSOR dans wifinfo.ino, il faudrait générer une classe sensor. marc
 
   /*  ===========================defines=================================== */
+#define WITHWIFINFO
+
 //#define TELEINFO_RXD2		//teleinfo sur RXD2 sinon sur RXD0
 #define DEBUGSERIAL				//DEBUGSERIAL debug vers TXD0
 //#define SIMUTRAMETEMPO			//Version standard:simulation des trames tempo. strapper D4(TXD1) et D7(RXD2) ou D9(RXD0) suivant TELEINFO_RXD2
@@ -63,7 +65,9 @@ extern "C" {
 #define MODE_HISTORIQUE true	//Pour le linky true mode historique,false mode standard (mode standard incomplet)
 
 #ifndef SIMUTRAMETEMPO				//meme pin D4
-	#define COMP_CAN_BUS
+	#ifdef PIN_CS_CAN
+		#define COMP_CAN_BUS
+	#endif
 #endif
 #ifdef DEBUGSERIAL
 	#define MACRO

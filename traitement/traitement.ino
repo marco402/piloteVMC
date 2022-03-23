@@ -1,3 +1,6 @@
+//1-sans canbus: renommer PIN_CS_CAN constantes.h (a essayer)
+//2-sans wifinfo renommer WITHWIFINFO wifinfo.h (a essayer)
+
 //version carte nodemcu 3.0.2 probleme spiffs
 //install version 2.7.4 probleme spiffs
 //install version 2.6.0 probleme spiffs
@@ -99,7 +102,6 @@
 #include "dht.h"
 #include "vmc.h"
 #include "tA12.h"
-#include "canBus.h"
 #include "simuTempo.h"
 #include "LibTeleinfo.h"
 #include "enregistrement.h"
@@ -112,10 +114,13 @@
 #include "buzzer.h"
 #include "myTinfo.h"
 //###################################defines################################## 
-myTinfo MYTINFO;
-#ifdef COMP_CAN_BUS
+#ifdef PIN_CS_CAN
+	#include "canBus.h"
 	can_bus CAN_BUS;
 #endif
+
+myTinfo MYTINFO;
+
 enregistrement ENREGISTREMENT;
 relais RELAIS;
  lesLeds LESLEDS;   //conserver pour TRAITEMENTLEDS même sans led locale
@@ -228,7 +233,9 @@ void ICACHE_FLASH_ATTR setup() {
 	SIMU_TEMPO.initSimuTrameTempo();
 	SerialSimu.begin(VITESSE_SIMUTRAMETEMPO);	//19200, SERIAL_7E1
 #endif
-MYTINFO.init(MODE_HISTORIQUE);
+#ifdef 	WITHWIFINFO
+	MYTINFO.init(MODE_HISTORIQUE);
+#endif
   uint8_t timeout = 5;
   while (WIFINOOKOU && timeout)
   {
@@ -277,7 +284,9 @@ void loop()
 	//enregistrement des 6 compteurs à minuit pour graphiques journaliers
 
 	bool minuit=MYSNTP.TestSiMinuit();
-	boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur();   
+#ifdef 	WITHWIFINFO
+	boolean CgtCompteur = MYTINFO.getEtResetCgtCompteur(); 
+#endif
 	if(minuit )    //&& CgtCompteur
 	{
 		if(!passeMinuit)
@@ -292,7 +301,11 @@ void loop()
 	}
 
 	/*ENREGISTREMENT.testAcquitementMessage();*/
+#ifdef 	WITHWIFINFO
 	ENREGISTREMENT.TRAITEENREGISTREMENT(MYTINFO.getNouvelleTrame(), CgtCompteur,dureeMax);
+#else
+	ENREGISTREMENT.TRAITEENREGISTREMENT(false, false,dureeMax);
+#endif
 	//DebugF(" dureeMax: "); Debugln(dureeMax);
 	dureeMax = 0;
 	//**************************************Traitement des capteurs****************************************************
