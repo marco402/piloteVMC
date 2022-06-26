@@ -17,6 +17,8 @@
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
+//****06/2022 modification si changement de portEnr en fonctionnement
+//***********************************************************************************
 #include <Arduino.h>
 #include <WiFiUdp.h>
 #include "Wifinfo.h"
@@ -46,6 +48,7 @@ void ICACHE_FLASH_ATTR enregistrement::init()
 	nbMessageEmis = 1; //limite a 1 message
 #endif
 	udpEnr.begin(CONFIGURATION.config.tempo.portEnr);  //port a ecouter localement;//pointeurChar = 0;
+	memoPort = CONFIGURATION.config.tempo.portEnr;
 }
 void ICACHE_FLASH_ATTR enregistrement::stop()
 {
@@ -283,6 +286,12 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 	}
 bool enregistrement::send(const char* adresseIP, uint32_t port, char * message)
 {
+	if (memoPort != port)
+	{
+		stop();
+		udpEnr.begin(CONFIGURATION.config.tempo.portEnr);
+		memoPort = CONFIGURATION.config.tempo.portEnr;
+	}
 	int ret = -1;
 	ret = udpEnr.beginPacket(adresseIP, port);  //adresse et port distant
 	if (ret)

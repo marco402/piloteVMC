@@ -455,7 +455,7 @@ var modHighCharts = (function () {
             yAxis: [{ // Primary yAxis
                 opposite: false,
                 max:data.seuils.max,    //marc
-                min:data.seuils.min,    //marc
+                //min:data.seuils.min,    //marc  no change min?
                 title: {
                     text: 'Watt'
                 },
@@ -716,7 +716,7 @@ var modHighCharts = (function () {
                 }
                  }, { // Secondary yAxis températures
                // max:50,
-               // min:-50,
+                min:data.seuils.min,        //marc OK for min
                // value: data.seuils.max,
                 opposite: true,
                 gridLineWidth: 0,

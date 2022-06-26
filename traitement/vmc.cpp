@@ -14,6 +14,8 @@
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
+//06/2022  supression des heures pour le mode été
+//***********************************************************************************
 #include <pgmspace.h>
 #include <Arduino.h>
 #include "Wifinfo.h"
@@ -419,15 +421,14 @@ void vmc::traitementVMC(void)
 }
 void vmc::traitementVMCEte(void)
 {
-
 	entreAirFraisEte = TEMPEXT.getMoyennePeriode() < DHTSDB.DHT_T.getMoyennePeriode();
-	heureOKentreAirFrais = (Clock.getHour() < 8) || (Clock.getHour() > 21);
-	if (entreAirFraisEte  && heureOKentreAirFrais)
+	heureOKentreAirFrais = (Clock.getHour() < 9) || (Clock.getHour() > 20);
+	if (entreAirFraisEte && heureOKentreAirFrais)
 	{
 		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 		DebuglnF("ete 1");
 	}
-	else if (!entreAirFraisEte   && heureOKentreAirFrais)
+	else if (!entreAirFraisEte && heureOKentreAirFrais)
 	{
 		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 		DebuglnF("ete 2");

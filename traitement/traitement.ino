@@ -78,6 +78,29 @@
 // **********************************************************************************
 // Modifié par marc PRIEUR 2019-03-21 V2.0.0
 //		V2.0.2:2019/05/01 ajout de la classe myTinfo
+//#####################################################################  
+// 06/2022  SPIFFS to LITTLEFS
+//* installation esp8266:https://arduino-esp8266.readthedocs.io/en/3.0.2/installing.html?highlight=python
+//* problème python3:
+//*C:\Users\mireille\Documents\Arduino>mklink python3.exe C:\Users\mireille\AppData
+//*\Local\Arduino15\packages\esp8266\tools\python\3.7.2-post1\python.exe
+//*Lien symbolique créé pour python3.exe <<===>> C:\Users\mireille\AppData\Local\Ar
+//*duino15\packages\esp8266\tools\python\3.7.2-post1\python.exe
+//**************************************************************************************************
+//version esp8266 3.0.2
+//version arduino 1.8.19
+//
+//passage du systeme de fichier de SPIFFS a littleFS
+//transfert du dossier data via plugin arduino si SPIFFS:
+//  C:\Program Files (x86)\Arduino\tools\ESP8266FS\tool\esp8266fs.jar
+//transfert du dossier data via plugin arduino  si littleFS:
+//  C:\Program Files (x86)\Arduino\tools\ESP8266LittleFS\tool\esp8266littlefs.jar
+//  arduino->menu outils->ESP8266 littleFS data upload
+//probleme de password si port=adresse IP avec le plugin esp8266fs.jar d'origine, telecharger:
+//https://github.com/877dev/arduino-esp8266littlefs-plugin
+
+
+//********************************************************************
 //###################################includes##################################  
 //version wifinfo syslog d'origine:352 392 bytes
 
@@ -85,7 +108,7 @@
 //remplacer les XXXX par ptec
 //emettre le dernier compteur du jour qu'on quitte
 //ajouter I2S.h dans C:\Program Files (x86)\Arduino\libraries\NeoPixelBus-master\src\internal
-#include "constantes.h"
+//#include "constantes.h"   ici,COMP_CAN_BUS pas vu??? il faut apres Wifinfo.h???
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
@@ -94,6 +117,7 @@
 #include <EEPROM.h>
 #include <Ticker.h>
 #include "Wifinfo.h"
+#include "constantes.h"
 #include "mySNTP.h"
 #include "mySyslog.h"
 #include "myOTA.h"
@@ -159,7 +183,7 @@ Comments: -
 ====================================================================== */
 void ICACHE_FLASH_ATTR setup() {
 
-  system_update_cpu_freq(160);
+//  system_update_cpu_freq(160);
 
 #ifdef SYSLOG
   MYSYSLOG.setSYSLOGselected();

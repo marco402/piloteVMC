@@ -529,14 +529,14 @@ webServer::webServer()
 //command = (filename.indexOf("spiffs") > -1) ? U_SPIFFS : U_FLASH;
 //#endif
 
-      
-			if (strstr(upload.filename.c_str(), "spiffs"))
-			{
-				command = U_SPIFFS;
-				DebuglnF("command = U_SPIFFS");
-			}
-			else
-				DebuglnF("command = U_FLASH");
+//comment when spiffs to littlefs      
+//			if (strstr(upload.filename.c_str(), "spiffs"))
+//			{
+//				command = U_SPIFFS;
+//				DebuglnF("command = U_SPIFFS");
+//			}
+//			else
+//				DebuglnF("command = U_FLASH");
 
 
 
@@ -687,9 +687,15 @@ void webServer::initServeur(void)	//myServer::
 
 // serves all SPIFFS Web file with 24hr max-age control
 // to avoid multiple requests to ESP
-serveStatic("/font", SPIFFS, "/font", "max-age=86400");
-serveStatic("/js", SPIFFS, "/js", "max-age=86400");
-serveStatic("/css", SPIFFS, "/css", "max-age=86400");
+#ifdef LITTLE_FS
+	serveStatic("/font", LittleFS, "/font", "max-age=86400");
+	serveStatic("/js", LittleFS, "/js", "max-age=86400");
+	serveStatic("/css", LittleFS, "/css", "max-age=86400");
+#else
+  serveStatic("/font", SPIFFS, "/font", "max-age=86400");
+  serveStatic("/js", SPIFFS, "/js", "max-age=86400");
+  serveStatic("/css", SPIFFS, "/css", "max-age=86400");
+#endif
 begin(80);	//
 
 }
@@ -697,6 +703,27 @@ void webServer::initSpiffs(void)	//
 {
 	char  buffer[132];
 //*****************************************SPIFFS****************************************
+#ifdef LITTLE_FS
+// Init LittleFS filesystem, to use web server static files
+	if (!LittleFS.begin())
+	{
+		// Serious problem
+		DebuglnF("LittleFS Mount failed !");
+	}
+	else
+	{
+		DebuglnF("");
+		DebuglnF("LittleFS Mount succesfull");
+
+		Dir dir = LittleFS.openDir("/");
+		while (dir.next()) {
+			String fileName = dir.fileName();
+			size_t fileSize = dir.fileSize();
+			sprintf(buffer, "FS File: %s, size: %d\n", fileName.c_str(), fileSize);
+			Debug(buffer);
+		}
+	}
+#else
   // Init SPIFFS filesystem, to use web server static files
   if (!SPIFFS.begin())
   {
@@ -716,6 +743,7 @@ void webServer::initSpiffs(void)	//
 		  Debug(buffer);
 	  }
   }
+#endif
   //*****************************************fin SPIFFS****************************************
 }
 
@@ -734,7 +762,17 @@ bool webServer::handleFileRead(String path) {
 	String pathWithGz = path + ".gz";
 
 	DebugF("handleFileRead ");Debug(path);
+#ifdef LITTLE_FS
+	if (LittleFS.exists(pathWithGz) || LittleFS.exists(path)) {
+		if (LittleFS.exists(pathWithGz)) {
+			path += ".gz";
+			DebugF(".gz");
+		}
 
+		DebuglnF(" found on FS");
+
+		File file = LittleFS.open(path, "r");
+#else
 	if (SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {
 		if (SPIFFS.exists(pathWithGz)) {
 			path += ".gz";
@@ -744,6 +782,7 @@ bool webServer::handleFileRead(String path) {
 		DebuglnF(" found on FS");
 
 		File file = SPIFFS.open(path, "r");
+#endif
 		//size_t sent = 
 		streamFile(file, contentType);
 		file.close();
@@ -1049,7 +1088,11 @@ void webServer::getSysJSONData(String & response)
 	response += "\"},\r\n";
 
 	FSInfo info;
+#ifdef LITTLE_FS
+	LittleFS.info(info);
+#else
 	SPIFFS.info(info);
+#endif
 
 	response += "{\"na\":\"SPIFFS Total\",\"va\":\"";
 	response += formatSize(info.totalBytes);
@@ -1141,7 +1184,33 @@ void webServer::getConfJSONData(String & r)
 	r += FPSTR(FP_JSON_END);
 
 }
+bool first_item = true;
+#ifdef LITTLE_FS
+String getDirLittleFSJSONData(String Path)
+{
+	String  response;
+	Dir dir = LittleFS.openDir(Path);
+	while (dir.next())
+	{
+		String fileName = dir.fileName();
+		size_t fileSize = dir.fileSize();
 
+
+		if (dir.fileSize()) {      //no directory
+			if (first_item)
+				first_item = false;
+			else
+				response += ",";
+			response += F("{\"na\":\"");
+			response += Path + fileName.c_str();
+			response += F("\",\"va\":\"");
+			response += fileSize;
+			response += F("\"}\r\n");
+		}
+	}
+	return response;
+}
+#endif
 /* ======================================================================
 Function: getSpiffsJSONData
 Purpose : Return JSON string containing list of SPIFFS files
@@ -1161,6 +1230,13 @@ void webServer::getSpiffsJSONData(String & response)
 	response += F("\"files\":[\r\n");
 
 	// Loop trough all files
+	  // Loop trough all files
+#ifdef LITTLE_FS
+	response += getDirLittleFSJSONData("/");
+	response += getDirLittleFSJSONData("/css/");
+	response += getDirLittleFSJSONData("/fonts/");
+	response += getDirLittleFSJSONData("/js/");
+#else
 	Dir dir = SPIFFS.openDir("/");
 	while (dir.next()) {
 		String fileName = dir.fileName();
@@ -1176,6 +1252,7 @@ void webServer::getSpiffsJSONData(String & response)
 		response += fileSize;
 		response += F("\"}\r\n");
 	}
+#endif
 	response += F("],\r\n");
 
 
@@ -1184,7 +1261,11 @@ void webServer::getSpiffsJSONData(String & response)
 
 	// Get SPIFFS File system informations
 	FSInfo info;
+#ifdef LITTLE_FS
+	LittleFS.info(info);
+#else
 	SPIFFS.info(info);
+#endif
 	response += F("\"Total\":");
 	response += info.totalBytes;
 	response += F(", \"Used\":");

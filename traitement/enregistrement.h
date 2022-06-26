@@ -108,6 +108,7 @@ private:
 	int16_t dureeMax = 0;
 	uint8_t erreur=0;
 	boolean forceEnregistrement = false;
+	uint16_t memoPort = 0;
 };
 extern enregistrement ENREGISTREMENT;
 

@@ -56,7 +56,7 @@ extern "C" {
 
   /*  ===========================defines=================================== */
 #define WITHWIFINFO
-
+#define LITTLE_FS
 //#define TELEINFO_RXD2		//teleinfo sur RXD2 sinon sur RXD0
 #define DEBUGSERIAL				//DEBUGSERIAL debug vers TXD0
 //#define SIMUTRAMETEMPO			//Version standard:simulation des trames tempo. strapper D4(TXD1) et D7(RXD2) ou D9(RXD0) suivant TELEINFO_RXD2
@@ -77,7 +77,11 @@ extern "C" {
 #endif  
 
 #define WIFINFO_VERSION "2.0.3"
-
+#ifdef LITTLE_FS
+#include "LittleFS.h"
+//#else
+//#include <FS.h>
+#endif
 #ifdef SYSLOG
 	#define MACRO
 	// Definit le client syslog
