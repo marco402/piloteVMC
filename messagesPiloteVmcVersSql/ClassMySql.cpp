@@ -221,9 +221,6 @@ bool ClassMySql::traitementMessageS(QByteArray lesMessages, quint32 *delta) {
 	return true;
 }
 
-
-
-
 //**************correction du temps 1970 suite à une coupure secteur avec la wifi coupée***************
 //mémoriser tous les messages à cette date
 //attendre une année > 2020
@@ -234,109 +231,70 @@ bool ClassMySql::traitementMessageS(QByteArray lesMessages, quint32 *delta) {
 
 bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 {
-	static QList<ClassMySql::TeleInfoVmc> messages;
-	//static quint32 memoNbMessage = 0;
 	static quint32 memoHeure = 0;
 	TeleInfoVmc* leMessageVersBase = reinterpret_cast<TeleInfoVmc*>(message.data());
 	QDateTime localTime = QDateTime::fromTime_t(leMessageVersBase->timestamp, Qt::LocalTime);    //QTime::currentTime().toString()
-	//***************************************************************
+	//**************************pb date 1970*************************************
+	static QList<ClassMySql::TeleInfoVmc> messages;
 	if(leMessageVersBase->timestamp < 1655540012)
 	{
-		//messages.append(*leMessageVersBase);
 		messages << *leMessageVersBase;
-		//memoNbMessage += 1;
-		return false;
+		return true;
 	}
-	//memoNbMessage -= 1;
-if (messages.count()>0)
-{ 
-	uint premierTempsOK = 0;
-	uint deltaTemps1970 = 0;
-	uint memoT0 = messages.at(0).timestamp;
-	//quint32 i = 0;
-
-	premierTempsOK = leMessageVersBase->timestamp;
-	deltaTemps1970 = messages.last().timestamp - messages.at(0).timestamp;
-
-
-	messages[0].timestamp = premierTempsOK - deltaTemps1970 - 150;
-	//afficheMessageTest(messages(0));
-//***********************************************************
-	laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(messages[0].timestamp) + "__" + QString::number(messages[0].compteur) + "__" + QString::number(messages[0].iInstMax) + "__" + QString::number(messages[0].dureeMax) + "__" + QString::number(messages[0].etatTempo) + "__" + QString::number(messages[0].etatWifi) + "__" + QString::number(messages[0].tempExt) + "__" + QString::number(messages[0].tempCuis) + "__" + QString::number(messages[0].tempSdb) + "__" + QString::number(messages[0].humCuis) + "__" + QString::number(messages[0].humSdb) + "__" + QString::number(messages[0].etatVmc));
-	if (memoHeure > 0)
-		*delta = (messages[0].timestamp - memoHeure) / 2;
-	memoHeure = messages[0].timestamp;
-	if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
-	{
-		if (!messageVersBase(&messages[0]))
-		{
-			messages.clear();
-			return false;
-		}
-	}
-	//return true;
-
+	if (messages.count()>0)
+	{ 
+		uint premierTempsOK = 0;
+		uint deltaTemps1970 = 0;
+		uint memoT0 = messages.at(0).timestamp;
+		premierTempsOK = leMessageVersBase->timestamp;
+		deltaTemps1970 = messages.last().timestamp - messages.at(0).timestamp;
+		messages[0].timestamp = premierTempsOK - deltaTemps1970 - 150;
 	//***********************************************************
-	qint32 j = 0;
-	for (j = 1; j <= messages.count(); j++)
-	{
-		messages[j].timestamp = messages.at(0).timestamp + (messages.at(j).timestamp - memoT0);
-		//afficheMessageTest(messages(j));
-		//***********************************************************
-		laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(messages[j].timestamp) + "__" + QString::number(messages[j].compteur) + "__" + QString::number(messages[j].iInstMax) + "__" + QString::number(messages[j].dureeMax) + "__" + QString::number(messages[j].etatTempo) + "__" + QString::number(messages[j].etatWifi) + "__" + QString::number(messages[j].tempExt) + "__" + QString::number(messages[j].tempCuis) + "__" + QString::number(messages[j].tempSdb) + "__" + QString::number(messages[j].humCuis) + "__" + QString::number(messages[j].humSdb) + "__" + QString::number(messages[j].etatVmc));
+		laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(messages[0].timestamp) + "__" + QString::number(messages[0].compteur) + "__" + QString::number(messages[0].iInstMax) + "__" + QString::number(messages[0].dureeMax) + "__" + QString::number(messages[0].etatTempo) + "__" + QString::number(messages[0].etatWifi) + "__" + QString::number(messages[0].tempExt) + "__" + QString::number(messages[0].tempCuis) + "__" + QString::number(messages[0].tempSdb) + "__" + QString::number(messages[0].humCuis) + "__" + QString::number(messages[0].humSdb) + "__" + QString::number(messages[0].etatVmc));
 		if (memoHeure > 0)
-			*delta = (messages[j].timestamp - memoHeure) / 2;
-		memoHeure = messages[j].timestamp;
+			*delta = (messages[0].timestamp - memoHeure) / 2;
+		memoHeure = messages[0].timestamp;
 		if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
 		{
-			if (!messageVersBase(&messages[j]))
-			{
-				messages.clear();
+			if (!messageVersBase(&messages[0]))
 				return false;
-			}
 		}
-		//return true;
 
 		//***********************************************************
-	}	
-	//afficheMessageTest(message);
-	// dt = epoch.AddSeconds(message.timestamp)
-	// Debug.Print(message.timestamp.ToString & vbTab & dt.ToLocalTime.ToString("dd/MM/yyyy à  HH:mm:ss")
-	// sauvegarde-->
+		qint32 j = 0;
+		for (j = 1; j < messages.count(); j++)
+		{
+			messages[j].timestamp = messages.at(0).timestamp + (messages.at(j).timestamp - memoT0);
+			//***********************************************************
+			laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(messages[j].timestamp) + "__" + QString::number(messages[j].compteur) + "__" + QString::number(messages[j].iInstMax) + "__" + QString::number(messages[j].dureeMax) + "__" + QString::number(messages[j].etatTempo) + "__" + QString::number(messages[j].etatWifi) + "__" + QString::number(messages[j].tempExt) + "__" + QString::number(messages[j].tempCuis) + "__" + QString::number(messages[j].tempSdb) + "__" + QString::number(messages[j].humCuis) + "__" + QString::number(messages[j].humSdb) + "__" + QString::number(messages[j].etatVmc));
+			if (memoHeure > 0)
+				*delta = (messages[j].timestamp - memoHeure) / 2;
+			memoHeure = messages[j].timestamp;
+			if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
+			{
+				if (!messageVersBase(&messages[j]))
+					return false;
+			}
 
-	//memoNbMessage = 0;
-	messages.clear();
-	// ReDim messages(0)
-	return true;    // utile si test
-}
-else
-{
-	laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(leMessageVersBase->timestamp) + "__" + QString::number(leMessageVersBase->compteur) + "__" + QString::number(leMessageVersBase->iInstMax) + "__" + QString::number(leMessageVersBase->dureeMax) + "__" + QString::number(leMessageVersBase->etatTempo) + "__" + QString::number(leMessageVersBase->etatWifi) + "__" + QString::number(leMessageVersBase->tempExt) + "__" + QString::number(leMessageVersBase->tempCuis) + "__" + QString::number(leMessageVersBase->tempSdb) + "__" + QString::number(leMessageVersBase->humCuis) + "__" + QString::number(leMessageVersBase->humSdb) + "__" + QString::number(leMessageVersBase->etatVmc));
-	if (memoHeure > 0)
-		*delta = (leMessageVersBase->timestamp - memoHeure) / 2;
-	memoHeure = leMessageVersBase->timestamp;
-	if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
-	{
-		if (!messageVersBase(leMessageVersBase))
-			return false;
+			//***********************************************************
+		}	
+		messages.clear();
+		return true;    // utile si test
 	}
-	return true;
-}
-
-
-
-
-	//***************************************************************
-	//laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(leMessageVersBase->timestamp) + "__" + QString::number(leMessageVersBase->compteur) + "__" + QString::number(leMessageVersBase->iInstMax) + "__" + QString::number(leMessageVersBase->dureeMax) + "__" + QString::number(leMessageVersBase->etatTempo) + "__" + QString::number(leMessageVersBase->etatWifi) + "__" + QString::number(leMessageVersBase->tempExt) + "__" + QString::number(leMessageVersBase->tempCuis) + "__" + QString::number(leMessageVersBase->tempSdb) + "__" + QString::number(leMessageVersBase->humCuis) + "__" + QString::number(leMessageVersBase->humSdb) + "__" + QString::number(leMessageVersBase->etatVmc));
-	//if (memoHeure > 0)
-	//	*delta = (leMessageVersBase->timestamp - memoHeure) / 2;
-	//memoHeure = leMessageVersBase->timestamp;
-	//if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
-	//{
-	//	if (!messageVersBase(leMessageVersBase))
-	//		return false;
-	//}
-	//return true;
+	else
+	{
+		//***************************end pb data 1970***************************************
+		laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(leMessageVersBase->timestamp) + "__" + QString::number(leMessageVersBase->compteur) + "__" + QString::number(leMessageVersBase->iInstMax) + "__" + QString::number(leMessageVersBase->dureeMax) + "__" + QString::number(leMessageVersBase->etatTempo) + "__" + QString::number(leMessageVersBase->etatWifi) + "__" + QString::number(leMessageVersBase->tempExt) + "__" + QString::number(leMessageVersBase->tempCuis) + "__" + QString::number(leMessageVersBase->tempSdb) + "__" + QString::number(leMessageVersBase->humCuis) + "__" + QString::number(leMessageVersBase->humSdb) + "__" + QString::number(leMessageVersBase->etatVmc));
+		if (memoHeure > 0)
+			*delta = (leMessageVersBase->timestamp - memoHeure) / 2;
+		memoHeure = leMessageVersBase->timestamp;
+		if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
+		{
+			if (!messageVersBase(leMessageVersBase))
+				return false;
+		}
+		return true;
+	}
 }
 bool ClassMySql::connexionIsOK() const
 {
