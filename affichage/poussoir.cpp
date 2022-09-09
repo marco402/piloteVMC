@@ -24,8 +24,18 @@ poussoir::poussoir()
 	pinMode(PIN_POUSSOIR_MODE, INPUT);
 }
 //appel� a chaque loop de affichage.ino
-boolean poussoir::traitement()
+boolean poussoir::traitement(MODES forcageMode)
 {
+#ifdef TRAITMODE
+	//struct_reception structReception;
+
+	if (forcageMode != MODES::BIDON)  //le logiciel distant traitement indique si un forcage est en cours
+	{
+		leMode = forcageMode;
+		memoModes = leMode;
+	}
+	//on garde la possibilitee de changer de mode pendant le forcage
+#endif
 	static boolean  transitoirePoussoir=false;
 	boolean buzzer=false;
 	if ((millis()- tempsMilli) > 1000)
@@ -57,6 +67,9 @@ boolean poussoir::traitement()
 			if (transitoirePoussoir)	//relachement
 			{
 				leMode=modeTransitoire;	//validation du nouveau mode, lemode devient diff�rent de memoModes-->InitialisationMode
+#ifdef TRAITMODE
+				memoModes = leMode;
+#endif
 				//Serial.print("modeTransitoire"); Serial.println(modeTransitoire);
 				transitoirePoussoir=false;
 				AFFICHEUR.setchangeMode(false);
@@ -79,3 +92,24 @@ void poussoir::clearLeMode(void)
 {
 	this->leMode = MODES::BIDON;
 }
+#ifdef TRAITMODE
+void poussoir::testModeForce(int16_t decompteTempoArretMarcheForce)      // , uint16_t duree_forcage_sec)
+{
+	//if (decompteTempoArretMarcheForce > 0)
+	//	decompteTempoArretMarcheForce -= 1;
+
+	//else if(leMode != memoModes)
+	//{
+	switch (leMode)
+		{
+		case MODES::TEMPO_ARRET:
+		case MODES::TEMPO_MARCHE_PV:
+		case MODES::TEMPO_MARCHE_GV:
+			if (decompteTempoArretMarcheForce == 0)
+				leMode = memoModes;
+			//decompteTempoArretMarcheForce = duree_forcage_sec;
+			break;
+		}
+	//}
+}
+#endif

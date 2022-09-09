@@ -44,6 +44,7 @@ class can_bus : public MCP_CAN
 		void traitementEmission(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t CuisineHMsb,uint8_t CuisineHLsb,MODES leMode);
 		void clearStructReception(void);
 		struct_reception getStructReception(void) const;
+		//uint16_t  decDecompteTempoArretMarcheForce(void);
 		uint8_t getEtResetErreur(void);
 	private:
 		void traitementEmissionMESSAGE_TYPE_3(MODES leMode);

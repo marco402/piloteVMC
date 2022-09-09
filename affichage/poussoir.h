@@ -21,14 +21,17 @@ class poussoir
 {
 	public:
 		poussoir();
-		boolean traitement();
+		boolean traitement(MODES forcageMode);
 		MODES getLeMode(void);
 		void clearLeMode(void);
 		void setLemode(unsigned char leMode);
+#ifdef TRAITMODE
+		void testModeForce(int16_t decompteTempoArretMarcheForce);   // , uint16_t duree_forcage_sec);
+#endif
 	private:
-		MODES modeTransitoire= MODES::ARRET;
-		MODES memoModes= MODES::ARRET;
-		MODES leMode= MODES::ARRET;
+		MODES modeTransitoire= MODES::AUTO;   //ARRET
+		MODES memoModes= MODES::AUTO;
+		MODES leMode= MODES::AUTO;
 };
 extern poussoir POUSSOIR;
 #endif /* POUSSOIR_H_ */

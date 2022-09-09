@@ -39,11 +39,11 @@
 		uint8_t getCasAuto(void) const;
 		uint16_t  getSeuilHC(void)const;
 		uint16_t  getSeuilHB(void)const;
+		MODES getForcageMode(void)const;
+	private:
 		bool cuisineTropHumide;
 		bool salledebainTropHumide;
-
-		//bool moisOKentreAirFrais;
-	private:
+		MODES forcageMode = MODES::BIDON;
 		bool entreAirFraisEte=false;
 		bool entreAirChaudHiver;
 		bool heureOKentreAirFrais;
@@ -52,17 +52,25 @@
 		void initialisationMode(void);
 		void lectureCapteurs(void);
 		void traiteMoyennePeriode(void);
-		void testTraitementVmc(void);
 		void traitementVMC(void);
 		void traitementVMCEte(void);
+		void traitementVMCHiver(void);
 		void setCptVmc(uint16_t T);
-		int traiteArretMarcheForce(void);
+    //void testTraitementVmc(void); 
+    void traitePeriodeVmc(void);      
+//#ifndef TRAITMODE
+	uint16_t traiteArretMarcheForce(void);
+//#else
+//		void traiteArretMarcheForce(void);
+//#endif
 		boolean traitementTempsMiniVMC(void);
-		void traitePeriodeVmc(void);
-		MODES leMode = MODES::ARRET;  //initialisation identique � affichage
+		
+		MODES leMode = MODES::AUTO;  //initialisation identique a affichage
 		uint8_t etat = 0; 
-		MODES memoModes = MODES::PETITE_VITESSE;    //diff�rent de mode pour entrer dans le traitement d�s le premier changement
+		MODES memoModes = MODES::PETITE_VITESSE;    //different de mode pour entrer dans le traitement d�s le premier changement
+#ifndef TRAITMODE
 		MODES memoRetourForcage = MODES::PETITE_VITESSE; 
+#endif
 		uint16_t  decompteTempoArretMarcheForce=0;
 		//uint16_t  tempoFinForcage = 0;
 		uint16_t cptSecondesVmcAuto= REINIT;
@@ -72,8 +80,8 @@
 		int16_t SeuilHC = 0;
 		int16_t SeuilHB = 0;
 		int8_t CouleurEnCours = 0;
-		void traiteEte();
-		void traiteHiver();
+		//void traiteEte();
+		//void traiteHiver();
 		//boolean cgtMode = false;
 	};
 	extern vmc VMC;

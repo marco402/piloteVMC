@@ -30,8 +30,8 @@
 //
 // **********************************************************************************
 #include <Arduino.h>
-#include "mcp_can.h"
 #include "Wifinfo.h"
+#include "mcp_can.h"
 #include "mySyslog.h"
 #include "dht.h"
 #include "capteur.h"
@@ -40,13 +40,15 @@
 #include "ta12.h"
 #include "smt160.h"
 #include "buzzer.h"
-//#include "mySNTP.h"
 #include "myWifi.h"
 #include "interRelais.h"
 #include "myTinfo.h"
 #include "mySntp.h"
 #include "config.h"
 #include "canBus.h"
+#ifdef ALARME
+  #include "alarme.h"
+#endif
 #ifdef PIN_CS_CAN
 ICACHE_FLASH_ATTR can_bus::can_bus(void) : MCP_CAN(PIN_CS_CAN, CLOCKSPI)
 {
@@ -209,6 +211,7 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_4::AFF_CUISINE_H_LSB] = DHTCUISINE_H.getMesureCycleLsb();
 			buf[MESSAGE_TYPE_4::ETAT_WIFI] = WIFI.getWifiUser() | (MYTINFO.getEtatWifi() << 1);
 			buf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB] = CONFIGURATION.config.tempo.luminositeeLedsRgb;
+			buf[MESSAGE_TYPE_4::ALARME_GARAGE] = MYALARME.getEtatAlarmeGarage();
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_4, 0, MESSAGE_TYPE_4::FIN_MESSAGE_TYPE_4, buf);
 		}
 	else if (type == ID_MESSAGE_TYPE_5)
@@ -221,6 +224,9 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_MSB] = RELAIS.getNbMinuteActiveJourCourant()>> 8;
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_LSB] = RELAIS.getNbMinuteActiveJourCourant() & 0xFF;
 			buf[MESSAGE_TYPE_5::MARCHE_ARRET] = RELAIS.getEtatReelRelaisMarcheArret() & 0xFF;
+#ifdef TRAITMODE
+			buf[MESSAGE_TYPE_5::FORCAGE_MODE] = VMC.getForcageMode();
+#endif
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_5, 0, MESSAGE_TYPE_5::FIN_MESSAGE_TYPE_5, buf);
 		}
 	if (sndStat != CAN_OK) {

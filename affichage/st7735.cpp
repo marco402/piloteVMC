@@ -17,6 +17,9 @@
 //Using library Adafruit-ST7735-Library-master version 1.2.7
 //Using library SPI version 1.0 in folder
 // **********************************************************************************
+/* 09/2022:ajout alarme  reception.alarmeGarage
+
+*/
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
 #include <SPI.h>
@@ -39,6 +42,7 @@
 extern "C" void __cxa_pure_virtual() { while (1); }
 uint16_t couleursWIFI[] = {ST7735_RED, ST7735_RED, ST7735_ORANGE, ST7735_GREEN};
 uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, ST7735_GREEN};
+uint16_t couleursALARME[] = {BIDON, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
 uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_BLACK };
 // print pb avec string
 char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc n�cessaires pour effacer la plus longue chaine
@@ -113,8 +117,8 @@ void st7735::initScreen(void)
 	print("H cui");
 	setCursor(V_COLCONSTANTES, V_TXTLIGNEHSDB);
 	print("H sdb");
-	setCursor(V_COLCONSTANTES, V_TXTLIGNEIVMC);
-	print("W Vmc");
+	setCursor(V_COLCONSTANTES, V_TXTLIGNEALARME);
+	print("AlGar");
 	//cadres vert   
 	drawRect(0, 0, WIDTH, HEIGHT, COLORCADRES);
 	//lignes horizontales
@@ -307,8 +311,12 @@ void st7735::casNormal(struct_reception R)
 			print("Pas de mes.");
 		setTextColor(COLORVARIABLESFORE, COLORSCREEN);
 		//********************traitement puissance vmc**************************************
-		afficheInt((float)puis, V_COLVARIABLES + 12, V_TXTLIGNEIVMC);
-		//******************traitement des pav�s tempo et wifi*******************************	  
+		//afficheInt((float)puis, V_COLVARIABLES + 12, V_TXTLIGNEIVMC);
+		//********************traitement alarme garage**************************************
+//V_COLVARIABLES + 12  V_TXTLIGNEIVMC
+		TraitePaveAlarme(V_COLVARIABLES + 12, R.alarmeGarage);
+		//TraitePaveAlarme(V_COLVARIABLES + 30, R.alarmePortail);
+		//******************traitement des pav�s tempo et wifi*******************************
 		union leds etatDesLeds;
 		etatDesLeds.etat = R.etatLeds;
 		TraitePave(XPAVEJOUR, etatDesLeds.etatCourant.aujourdhui);
@@ -382,6 +390,10 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 		casNormal(reception);
 }
 #endif
+void st7735::TraitePaveAlarme(int X, uint8_t etat)
+{
+	fillRect(X, V_TXTLIGNEALARME + 2, 12, HAUTLIGNE - 8, couleursALARME[etat]);
+}
 void st7735::TraitePave(int X, uint8_t etat)
 {
 	fillRect(X, V_TXTLIGNEETAT + 2, 12, HAUTLIGNE - 8, couleursTEMPO[etat ]);

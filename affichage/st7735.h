@@ -42,8 +42,8 @@
 #define V_TXTLIGNETEXT  (V_TXTLIGNETSDB+HAUTLIGNE)
 #define V_TXTLIGNEHCUIS  (V_TXTLIGNETEXT+HAUTLIGNE)
 #define V_TXTLIGNEHSDB  (V_TXTLIGNEHCUIS+HAUTLIGNE)
-#define V_TXTLIGNEIVMC  (V_TXTLIGNEHSDB+HAUTLIGNE)
-#define V_TXTLIGNEHEURE  (V_TXTLIGNEIVMC+HAUTLIGNE)
+#define V_TXTLIGNEALARME  (V_TXTLIGNEHSDB+HAUTLIGNE)
+#define V_TXTLIGNEHEURE  (V_TXTLIGNEALARME+HAUTLIGNE)
 #define V_TXTLIGNEETAT  (V_TXTLIGNEHEURE+HAUTLIGNE)
 #define V_TXTSTATUS     V_TXTLIGNEHCUIS
 #define V_TXTSTATUS1    V_TXTLIGNEHSDB
@@ -58,6 +58,7 @@
 #define COLHEURE  35
 #define COL3  49
 #define COL5  116
+#define XPAVEALARMEGARAGE 3
 #define XPAVEJOUR 3
 #define XPAVEDEMAIN 18
 #define XPAVEJOURNUIT 33
@@ -98,6 +99,7 @@ class st7735 : public Adafruit_ST7735
 		void fix_number_position(int number);
 		void TraitePave(int X,uint8_t etat);
 		void TraitePaveJN(int X,uint8_t etat);
+    void TraitePaveAlarme(int X, uint8_t etat);
 		void TraiteLigneEtat(struct_reception R);
 		void initScreen(void);
 		void afficheFloat(float temperature, unsigned char positionX, unsigned char positionY);

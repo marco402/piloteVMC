@@ -45,16 +45,21 @@ void vmc::TRAITEMENTVMC(void)
 	//ATTENTION,le mode change ici mais le relais marche arret sera commandé 5 secondes plus tard-->en attendant:etatRelaisMarcheArret=ArretMarche::ARRET_REL;
 	initialisationMode();
 	lectureCapteurs();
-	testTraitementVmc();
+	traitePeriodeVmc();
 }
 
-void vmc::testTraitementVmc(void)
-{
-	if (traiteArretMarcheForce() == 0)
-	{
-			traitePeriodeVmc();
-	}
-}
+//void vmc::testTraitementVmc(void)
+//{
+////#ifndef TRAITMODE
+//	if (traiteArretMarcheForce() == 0)
+//	{
+//			traitePeriodeVmc();
+//	}
+////#else
+////			traitePeriodeVmc();
+////#endif
+//}
+
 //appelé cycliquement sans condition par main_pilote_vmc.cpp
 void vmc::setCptVmc(uint16_t T)
 {
@@ -87,22 +92,29 @@ void vmc::traiteRazCapteursAuto(void)
 //		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 //    }
 //}
-void vmc::traiteHiver()
+void vmc::traitementVMCHiver()
 {
-	boolean entreAirChaud = (TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode() ));
-	if (entreAirChaud)
+	if ((TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode())))
+	{
+		forcageMode = MODES::BIDON;
 		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+	}
 	else
 	{
-		leMode = MODES::AUTO;
-		memoModes = MODES::AUTO;
+		forcageMode = MODES::AUTO;
+		//leMode = MODES::AUTO;  //il faudrait indiquer a affichage->poussoir de forcer le mode auto
+		//memoModes = MODES::AUTO;
+//#ifndef TRAITMODE
 		decompteTempoArretMarcheForce = 0;
+//#endif
 	}
 		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 }
 
 void vmc::traitePeriodeVmc()
 {
+	if (traiteArretMarcheForce() > 0)
+		return;
 	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)
 	{
 		if (leMode == MODES::AUTO)
@@ -113,6 +125,11 @@ void vmc::traitePeriodeVmc()
 		else if (leMode == MODES::ETE)
 		{
 			traitementVMCEte();
+			cptSecondesVmcAuto = 0;
+		}
+		else if (leMode == MODES::HIVER)
+		{
+			traitementVMCHiver();
 			cptSecondesVmcAuto = 0;
 		}
 		else
@@ -129,11 +146,11 @@ void vmc::traitePeriodeVmc()
 	//	//traiteEte();
 	//}
 	//else 
-	if (leMode == MODES::HIVER)
-	{
-		traiteHiver();
-		cptSecondesVmcAuto = 0;
-	}
+	//if (leMode == MODES::HIVER)
+	//{
+	//	traitementVMCHiver();
+	//	cptSecondesVmcAuto = 0;
+	//}
 }
 void vmc::incrementeCptVmc()
 {
@@ -147,8 +164,10 @@ void vmc::initialisationMode()
 	//noInterrupts();	//au cas ou: framework arduino ???
 	if (memoModes != leMode)
 	{
+#ifndef TRAITMODE
 		memoRetourForcage = memoModes;
 		decompteTempoArretMarcheForce = 0;				//sinon repart en auto en fin de tempo si on a pas fini le forçage
+#endif
 		switch (leMode)
 		{
 		case MODES::ARRET:
@@ -164,15 +183,21 @@ void vmc::initialisationMode()
 		case MODES::TEMPO_ARRET:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret
+//#ifndef TRAITMODE
 			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
+//#endif
 			break;
 		case MODES::TEMPO_MARCHE_PV:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+//#ifndef TRAITMODE
 			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
+//#endif
 			break;
 		case MODES::TEMPO_MARCHE_GV:
 			RELAIS.traitementRelais(VITESSE_RELAIS::RAPIDE_REL, ARRET_MARCHE::MARCHE_REL);
+//#ifndef TRAITMODE
 			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
+//#endif
 			break;
 		case MODES::AUTO:
 //			modeEteEntreAirFrais = false;
@@ -187,7 +212,7 @@ void vmc::initialisationMode()
 			//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
 		case MODES::HIVER:
-			traiteHiver();
+			traitementVMCHiver();
 			//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
 		case MODES::BIDON:
@@ -201,10 +226,12 @@ void vmc::initialisationMode()
 	//if (tempoFinForcage > 0)
 		//tempoFinForcage -= 1;
 }
+
 uint16_t  vmc::getDecompteTempoArretMarcheForce(void)const
 {
 	return decompteTempoArretMarcheForce;
 }
+#ifndef TRAITMODE
 int vmc::traiteArretMarcheForce()
 {
 	if (decompteTempoArretMarcheForce == 0)
@@ -229,6 +256,14 @@ int vmc::traiteArretMarcheForce()
 		return 1;
 	}
 }
+#else
+uint16_t vmc::traiteArretMarcheForce(void)
+{
+	if (decompteTempoArretMarcheForce > 0)
+		decompteTempoArretMarcheForce -= 1;
+	return decompteTempoArretMarcheForce;
+}
+#endif
 boolean vmc::traitementTempsMiniVMC(void)
 {
 	// ok Nbminute=HEURE.tm.Hour*60+HEURE.tm.Minute;
@@ -246,6 +281,11 @@ MODES vmc::getLeMode() const
 {
 	return leMode;
 }
+MODES vmc::getForcageMode()const
+{
+	return forcageMode;
+}
+
 String vmc::getLeModeString() const
 {
 	//return (char *)pgm_read_dword(&(MODES_AFF[leMode]));

@@ -9,7 +9,7 @@
 //paramétrage arduino
 //type de carte NodeMcu 0.9
 //cpu frequency 160Mhz
-//flash size 4M(1M spiffs)
+//flash size 4M(1M OTA)
 //rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"
 //C:\Users\mireille\AppData\Local\Temp\arduino_build_135849\traitement.ino.bin
 //10/07/2021->seuil air frais 25->20    pour ventiler plus la nuit en été
@@ -129,6 +129,9 @@
 #include "simuTempo.h"
 #include "LibTeleinfo.h"
 #include "enregistrement.h"
+#ifdef ALARME
+#include "alarme.h"
+#endif
 #include "interRelais.h"
 #include "ledsRGBSerial.h"
 #include "webServer.h"
@@ -146,6 +149,9 @@
 myTinfo MYTINFO;
 
 enregistrement ENREGISTREMENT;
+#ifdef ALARME
+	myAlarme MYALARME;
+#endif
 relais RELAIS;
  lesLeds LESLEDS;   //conserver pour TRAITEMENTLEDS même sans led locale
 #ifdef SIMUTRAMETEMPO
@@ -269,6 +275,9 @@ void ICACHE_FLASH_ATTR setup() {
   }
 MYSNTP.init();
 ENREGISTREMENT.init();
+#ifdef ALARME
+	MYALARME.init();
+#endif
 #ifdef COMP_CAN_BUS
   CAN_BUS.InitCanBus(MCP_16MHZ);
 #endif
@@ -341,6 +350,9 @@ void loop()
 	//**************************************Traitement des relais VMC****************************************************
 	VMC.TRAITEMENTVMC();
 	//DebugF("tCuis: "); Debugln(tCuis);
+#ifdef ALARME
+	MYALARME.testReceptionAlarme();
+#endif
 //**************************************Traitement des sorties****************************************************
 #ifdef COMP_CAN_BUS
 	CAN_BUS.TRAITEMENTEMISSIONCAN();

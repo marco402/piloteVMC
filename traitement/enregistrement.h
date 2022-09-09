@@ -14,17 +14,17 @@
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
-//06/06/2018 passé NBMESSAGE de 100 à 300     pour 5 minutes 24 heures:288
+//06/06/2018 passï¿½ NBMESSAGE de 100 ï¿½ 300     pour 5 minutes 24 heures:288
 
 //avec 300 et vmc
-//Program traitement_tempo size: 372 588 bytes (used 36% of a 1 044 464 byte maximum) (121,39 secs)
+//Program traitement_tempo size: 372ï¿½588 bytes (used 36% of a 1ï¿½044ï¿½464 byte maximum) (121,39 secs)
 //Minimum Memory Usage : 63260 bytes(77 % of a 81920 byte maximum)
 //avec 500
-//Program traitement_tempo size : 372 588 bytes(used 36 % of a 1 044 464 byte maximum) (122, 30 secs)
+//Program traitement_tempo size : 372ï¿½588 bytes(used 36 % of a 1ï¿½044ï¿½464 byte maximum) (122, 30 secs)
 //Minimum Memory Usage : 75660 bytes(92 % of a 81920 byte maximum)
 
-//en version structure numérique et 200 messages vmc+tempo:
-//Program traitement_tempo size: 371 848 bytes (used 36% of a 1 044 464 byte maximum) (126,71 secs)
+//en version structure numï¿½rique et 200 messages vmc+tempo:
+//Program traitement_tempo size: 371ï¿½848 bytes (used 36% of a 1ï¿½044ï¿½464 byte maximum) (126,71 secs)
 //Minimum Memory Usage : 49944 bytes(61 % of a 81920 byte maximum)
 
 
@@ -33,12 +33,12 @@
 
 #include <Arduino.h>
 #include <WiFiUdp.h>
-#define NBMESSAGE 200				//ATTENTION,pas confirmé mais l'OTA ne fonctionnait plus:Fatal exception 29(StoreProhibitedCause) en mettant 300.
-//le port série ne fonctionnait plus sur la carte nodemcu base 1.0, ok sans la base et a nouveau ok avec la base en rechargeant la version avec 200??? à suivre.
-//à 200:7.43kb free ram sur page web
+#define NBMESSAGE 200				//ATTENTION,pas confirmï¿½ mais l'OTA ne fonctionnait plus:Fatal exception 29(StoreProhibitedCause) en mettant 300.
+//le port sï¿½rie ne fonctionnait plus sur la carte nodemcu base 1.0, ok sans la base et a nouveau ok avec la base en rechargeant la version avec 200??? ï¿½ suivre.
+//ï¿½ 200:7.43kb free ram sur page web
 
-#define NBMESSAGEEMISMAXUDP 10     //a 10 le temps de cycle dépasse la seconde 1086,1300(c'était pas ça à suivre) 
-//sans mail:300 (25 heures et 43(Long mes) pas de plantage mais pertes de messages et décalage(2/12/18:delta 18963->perte:63 messages(periode d'enr:300)						50 pb 100 pb mail...		
+#define NBMESSAGEEMISMAXUDP 10     //a 10 le temps de cycle dï¿½passe la seconde 1086,1300(c'ï¿½tait pas ï¿½a ï¿½ suivre) 
+//sans mail:300 (25 heures et 43(Long mes) pas de plantage mais pertes de messages et dï¿½calage(2/12/18:delta 18963->perte:63 messages(periode d'enr:300)						50 pb 100 pb mail...		
 //ensuite lecture message:a 9h50 s'arrete a 3h36--->6h14-->374mn/5(300sec)=decalage:				 74 messages
 
 //4/12/18 essai avec NBMEMaxDureeSSAGE=200--->16 heures
@@ -92,9 +92,11 @@ public:
 	void forceEnregistrementSurMarche(void);
 private:
 	WiFiUDP udpEnr;
+  //IPAddress adressIP;
 	void incCptSecPeriodeEnregistrement(void);
 	void enregistreMessageTempoVmc();
-	bool send(const char* adressIP, uint32_t port, char * message);
+  bool send(const char* adressIP, uint32_t port, char * message, uint32_t * memPort, WiFiUDP udp, int16_t nbMessageEmis);  
+  //bool send(IPAddress adressIP, uint32_t port, char * message, uint32_t * memPort, WiFiUDP udp, int16_t nbMessageEmis);
 	bool traiteCompteursTempo(ST_message *leMessage, uint8_t premiersEnregistrement);
 	void emetEnregistrementTempoVmc(void);
 	ST_message lesMessages[NBMESSAGE];
@@ -108,7 +110,7 @@ private:
 	int16_t dureeMax = 0;
 	uint8_t erreur=0;
 	boolean forceEnregistrement = false;
-	uint16_t memoPort = 0;
+	uint32_t memoPort = 0;
 };
 extern enregistrement ENREGISTREMENT;
 

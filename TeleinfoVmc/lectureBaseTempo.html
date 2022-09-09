@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style></style>
+  </head>
+  <body>
+    <?php
+    //session_start();  
+    //if (!isset($_SESSION['login'])) { 
+      // header ('Location: ../index.php'); 
+       //exit();  
+    //}  
+
+// information pour la connection à le DB
+//$host = 'localhost';
+//$user = 'root';
+//$pass = 'glaces';
+//$db = 'meteo';
+include_once 'config_perso.php';
+
+// connection à la DB
+$link = mysql_connect ($serveur,$login,$pass) or die ('Erreur : '.mysql_error() );
+mysql_select_db($db) or die ('Erreur :'.mysql_error());
+
+
+$select = 'SELECT date FROM base';
+$result = mysql_query($select,$link) or die ('Erreur : '.mysql_error() );
+$total = mysql_num_rows($result);
+
+
+
+echo 'total:' $total;
+if($total) {
+
+
+
+ //   }
+    echo '</table>'."\n";
+
+}
+else echo 'Pas d\'enregistrements dans cette table...';
+
+
+mysql_free_result($result);
+
+?>
+
+
+</body>
+</html>

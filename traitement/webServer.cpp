@@ -44,6 +44,9 @@
 #include "webclient.h"
 #include "interRelais.h"
 #include "enregistrement.h"
+#ifdef ALARME
+#include "alarme.h"
+#endif
 #include "LibTeleinfo.h"
 #include "ledsRGBSerial.h"
 #include "constantes.h"
@@ -240,6 +243,8 @@ webServer::webServer()
 			{
 			ENREGISTREMENT.stop();
 			ENREGISTREMENT.init();
+			MYALARME.stop();
+			MYALARME.init();
 			}
 			CONFIGURATION.showConfig();
 		}

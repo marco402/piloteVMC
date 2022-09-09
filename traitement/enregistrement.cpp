@@ -37,6 +37,7 @@
 //#include "mySntp.h"
 #include "myTinfo.h"
 #include "enregistrement.h"
+#include <ESP8266WiFi.h>
 #define NO_DEBUGENREGISTREMENT
 
 //boolean forceEnregistrement = false;
@@ -46,9 +47,14 @@ void ICACHE_FLASH_ATTR enregistrement::init()
 {
 #ifndef EMISSION_ENREGISTREMENT
 	nbMessageEmis = 1; //limite a 1 message
-#endif
-	udpEnr.begin(CONFIGURATION.config.tempo.portEnr);  //port a ecouter localement;//pointeurChar = 0;
-	memoPort = CONFIGURATION.config.tempo.portEnr;
+#endif	
+	 //uint8_t un=atoi(CONFIGURATION.config.tempo.host_enr[0]);
+  // uint8_t deu=atoi(CONFIGURATION.config.tempo.host_enr[1]);
+  // uint8_t troi=atoi(CONFIGURATION.config.tempo.host_enr[2]);
+  // uint8_t quat=atoi(CONFIGURATION.config.tempo.host_enr[3]); 
+   //adressIP(un,deu,troi,quat);
+   memoPort = CONFIGURATION.config.tempo.portEnr;
+   udpEnr.begin(memoPort);  //port a ecouter localement;//pointeurChar = 0;
 }
 void ICACHE_FLASH_ATTR enregistrement::stop()
 {
@@ -243,7 +249,7 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 		union U_message U_leMessage;
 		U_leMessage.leMessage = lesMessages[pointeurLectureMessage];
 		//#ifdef EMISSION_ENREGISTREMENT_VB
-		if (!send(CONFIGURATION.config.tempo.host_enr, (uint32)CONFIGURATION.config.tempo.portEnr, U_leMessage.leMessageChar))
+		if (!send(CONFIGURATION.config.tempo.host_enr, (uint32)CONFIGURATION.config.tempo.portEnr, U_leMessage.leMessageChar,&memoport,udpEnr))
 			DebuglnF("pb udp.send message(vb)");
 		//#else
 		//	emission http
@@ -275,7 +281,7 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 				}
 				indice += 1;
 		}
-		if (!send(CONFIGURATION.config.tempo.host_enr,(uint32) CONFIGURATION.config.tempo.portEnr, messageConcatene))
+		if (!send(CONFIGURATION.config.tempo.host_enr,(uint32) CONFIGURATION.config.tempo.portEnr, messageConcatene,&memoPort,udpEnr,nbMessageEmis))
 			DebuglnF("pb udp.send message(vb)");  
 		delete[] messageConcatene;
 	#endif
@@ -284,20 +290,21 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 //		DebuglnF("ENR json:pb udp.send message (php)");
 //#endif
 	}
-bool enregistrement::send(const char* adresseIP, uint32_t port, char * message)
+//bool enregistrement::send(IPAddress adressIP, uint32_t port, char * message, uint32_t * memPort, WiFiUDP udp, int16_t nbMessage)
+bool enregistrement::send(const char* adressIP, uint32_t port, char * message, uint32_t * memPort,WiFiUDP udp, int16_t nbMessage)
 {
-	if (memoPort != port)
+	if (*memPort != port)
 	{
 		stop();
-		udpEnr.begin(CONFIGURATION.config.tempo.portEnr);
-		memoPort = CONFIGURATION.config.tempo.portEnr;
+		udp.begin(port);
+		*memPort = port;
 	}
 	int ret = -1;
-	ret = udpEnr.beginPacket(adresseIP, port);  //adresse et port distant
+	ret = udp.beginPacket(adressIP, port);  //adresse et port distant
 	if (ret)
 	{
-		udpEnr.write(message, sizeof(ST_message)*nbMessageEmis);  //ou udp.write(buffer,longueur);  return le nombre de byte emis
-		ret = udpEnr.endPacket();
+		udp.write(message, sizeof(ST_message)*nbMessage);  //ou udp.write(buffer,longueur);  return le nombre de byte emis
+		ret = udp.endPacket();
 		if (ret)
 			return true;
 		else

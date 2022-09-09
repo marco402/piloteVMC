@@ -144,6 +144,8 @@ boolean can_bus::traitementReception(void )
 					 reception.humidite_cuis_aff = motRecu.capteur;
 					 reception.etatWifi = rxBuf[MESSAGE_TYPE_4::ETAT_WIFI];
 					 reception.luminositeeLeds = rxBuf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB];
+					 reception.alarmeGarage = rxBuf[MESSAGE_TYPE_4::ALARME_1];
+					 reception.alarmePortail = rxBuf[MESSAGE_TYPE_4::ALARME_2];
 					 reception.locaux = true;
 					 reception.NbMessage += 1;
 				 }
@@ -173,6 +175,12 @@ boolean can_bus::traitementReception(void )
 					 motRecu.capteur = 0;
 					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::MARCHE_ARRET];
 					 reception.arret_marche= motRecu.capteur;
+					 motRecu.capteur = 0;
+					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::FORCAGE_MODE];
+					 reception.forcageMode=(MODES) motRecu.capteur;
+//#ifdef TRAITMODE
+//           reception.dureeForcage=rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE]*60;
+//#endif
 					 reception.NbMessage += 1;
 					 reception.infos2 = true;
 				 }
@@ -212,6 +220,10 @@ void can_bus::traitementEmission(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t
 	buf[MESSAGE_TYPE_2::DHT_CUISINE_T_LSB]=CuisineTLsb;
 	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_MSB]=CuisineHMsb;
 	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_LSB]=CuisineHLsb;
+//#ifdef TRAITMODE
+//	buf[MESSAGE_TYPE_2::DECOMPTE_FORCAGE] = reception.decompteTempoArretMarcheForce/60;
+//	//VMC.decompteTempoArretMarcheForce = rxBuf[(int)MESSAGE_TYPE_2::DECOMPTE_FORCAGE] * 60;
+//#endif
 	emission(ID_MESSAGE_TYPE_2,MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2, buf);
 	traitementEmissionMESSAGE_TYPE_3(leMode);        //POUSSOIR.getLeMode() 
 	//le mode repasse en AUTO et revient immédiatement en FORCE,
@@ -228,6 +240,14 @@ void  can_bus::clearStructReception(void)
 {
 	reception = {};
 }
+
+//uint16_t  can_bus::decDecompteTempoArretMarcheForce(void)
+//{
+//	if (reception.decompteTempoArretMarcheForce > 0)
+//	  reception.decompteTempoArretMarcheForce -= 1;
+//  return reception.decompteTempoArretMarcheForce;
+//}
+
 uint8_t can_bus::getEtResetErreur(void)
 {
 	uint8_t temp = erreur;

@@ -8,6 +8,7 @@
 //programmation: interface usb serial
 //1 en bas (orange)
 //terminal à 115200
+//carte arduino pro ou pro mini
 //choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57200)
 //charger affichage.ino
 //arduino 1.8.7 ok
@@ -66,11 +67,19 @@ void setup()
 void loop()
 {
 	boolean retour;
+	struct_reception structReception;
 	CAN_BUS.initialiseCanBus(); //a chaque cycle,si le distant est branché en second,inutile avec alimentation par le distant...
 //#####################################Traitement des entrées######################################
  if(CAN_BUS.traitementReception()||(task_1_sec==3)) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
 	task_1_sec=0;
-	retour = POUSSOIR.traitement();
+	structReception = CAN_BUS.getStructReception();
+	retour = POUSSOIR.traitement(structReception.forcageMode);
+
+#ifdef TRAITMODE
+	//uint16_t decompteTempoArretMarcheForce=CAN_BUS.decDecompteTempoArretMarcheForce();
+	//POUSSOIR.testModeForce(CAN_BUS.decDecompteTempoArretMarcheForce(), structReception.dureeForcage);
+	POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
+#endif
 	BUZZER.setBuzzer(retour);
 	DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
 	DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls

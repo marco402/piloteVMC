@@ -26,13 +26,59 @@
 // **********************************************************************************
 #ifndef WIFINFO_H
 #define WIFINFO_H
+
+#define TRAITMODE  //before constantes.h
+/*modifications associées à TRAITMODE-->le ForcageMode est indépendant du mode force
+coté traitement:
+Wifinfo.h       ajout constante de compilation TRAITMODE
+constantes.h    deplacement enum erreur vers constantesPartagées.h
+constantesPartagées.h    enum MESSAGE_TYPE_5 ajout FORCAGE_MODE
+vmc.h            ajout MODES getForcageMode(void)const;
+                 ajout MODES forcageMode = MODES::BIDON;
+				 ajout uint16_t vmc::traiteArretMarcheForce(void)
+canBus.cpp
+                  ajout buf[MESSAGE_TYPE_5::FORCAGE_MODE] = VMC.getForcageMode();
+traitement.ino
+
+vmc.cpp
+
+coté affichage:
+canBus.h           supprime decDecompteTempoArretMarcheForce
+constantes.h       ajout constante de compilation TRAITMODE
+                   ajout uint16_t dureeForcage = 0;
+                   et	MODES forcageMode; 
+constantesPartagées.h idem traitement
+poussoir.h         ajout parametre boolean traitement(MODES forcageMode);
+
+affichage.ino      ajout parametre boolean traitement(structReception.forcageMode);
+                   ajout POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce); 
+
+canBus.cpp         ajout reception.dureeForcage=rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE]*60;
+
+poussoir.cpp       ajout testModeForce
+                       if (decompteTempoArretMarcheForce == 0)
+                       leMode = memoModes;
+enchainement des taches
+
+poussoir.cpp
+        traitement
+
+*/
+
+#define ALARME
+/*
+ajout reception d'un message d'une alarme porte ouverte
+affichage sur l'ecran d'un pave vert ferme,rouge ouvert
+
+*/
 #include "constantes.h"
+ 
 #include <Ticker.h>
 #include <ESP8266WiFi.h>
 extern "C" {
 #include "user_interface.h"
 }
- 
+
 // Décommenter SIMU pour compiler une version de test
 //  pour un module non connecté au compteur EDF (simule un ADCO et une valeur HCHC)
 // Le port Serial sera alors utilisé pour le DEBUG (accessible via USB pour l'IDE)

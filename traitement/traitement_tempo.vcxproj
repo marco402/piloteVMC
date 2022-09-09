@@ -150,6 +150,7 @@
     <ProjectCapability Include="VisualMicro" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="alarme.h" />
     <ClInclude Include="configWifi.h" />
     <ClInclude Include="buzzer.h" />
     <ClInclude Include="canBus.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="__vm\.traitement_tempo_vmc.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="alarme.cpp" />
     <ClCompile Include="buzzer.cpp" />
     <ClCompile Include="canBus.cpp" />
     <ClCompile Include="capteur.cpp" />
