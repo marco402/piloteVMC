@@ -62,10 +62,8 @@ webServer::webServer()
 	on("/vmc.json", [&]() {
 		DebuglnF("Serving /vmc.json page...");
 		String response = "";
-
 		ESP.wdtFeed();  //Force software watchdog to restart from 0
 		getVmcJSONData(response);
-
 		// Just to debug where we are
 		//Debug(F("Serving /system page..."));
 		send(200, "text/json", response);
@@ -243,8 +241,10 @@ webServer::webServer()
 			{
 			ENREGISTREMENT.stop();
 			ENREGISTREMENT.init();
+#ifdef ALARME      
 			MYALARME.stop();
 			MYALARME.init();
+#endif
 			}
 			CONFIGURATION.showConfig();
 		}
@@ -1191,9 +1191,8 @@ void webServer::getConfJSONData(String & r)
 }
 bool first_item = true;
 #ifdef LITTLE_FS
-String getDirLittleFSJSONData(String Path)
+void webServer::getDirLittleFSJSONData(String  Path,String & response)
 {
-	String  response;
 	Dir dir = LittleFS.openDir(Path);
 	while (dir.next())
 	{
@@ -1213,7 +1212,6 @@ String getDirLittleFSJSONData(String Path)
 			response += F("\"}\r\n");
 		}
 	}
-	return response;
 }
 #endif
 /* ======================================================================
@@ -1235,12 +1233,11 @@ void webServer::getSpiffsJSONData(String & response)
 	response += F("\"files\":[\r\n");
 
 	// Loop trough all files
-	  // Loop trough all files
 #ifdef LITTLE_FS
-	response += getDirLittleFSJSONData("/");
-	response += getDirLittleFSJSONData("/css/");
-	response += getDirLittleFSJSONData("/fonts/");
-	response += getDirLittleFSJSONData("/js/");
+    getDirLittleFSJSONData("/",response);
+    getDirLittleFSJSONData("/css/",response);
+    getDirLittleFSJSONData("/fonts/",response);
+    getDirLittleFSJSONData("/js/",response);
 #else
 	Dir dir = SPIFFS.openDir("/");
 	while (dir.next()) {

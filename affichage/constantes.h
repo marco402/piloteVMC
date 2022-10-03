@@ -19,7 +19,8 @@
 #include <Arduino.h>
 
 #define TRAITMODE  //before constantesPartagees.h
-
+#define XXALARME
+#define HORLOGE
 #include "constantesPartagees.h" 
 //################################################define##########################################################
 //****************************************pins entrées sorties****************************************************
@@ -50,7 +51,9 @@
 enum COULEUR_JOUR { COULEUR_JOUR_BLEU = 0, COULEUR_JOUR_BLANC , COULEUR_JOUR_ROUGE ,COULEUR_JOUR_INIT };
 enum LES_LEDS_RGB { LES_LEDS_RGB_LED_DEMAIN,LES_LEDS_RGB_LED_JOUR,FIN_LED};   //LES_LEDS_RGB_LED_JOUR_NUIT,
 enum ARRET_MARCHE { ARRET_REL = 0, MARCHE_REL };
+#ifdef ALARME
 enum CODES_ALARME { DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT };
+#endif
 #define NB_LEDS_RGB LES_LEDS_RGB::FIN_LED
 //################################################static const##########################################################
 //################################################structures##########################################################
@@ -94,8 +97,10 @@ struct struct_reception {
 #ifdef TRAITMODE
 	uint16_t dureeForcage = 0;
 	MODES forcageMode;
+#ifdef ALARME
 	uint8_t alarmeGarage = 0;
 	uint8_t alarmePortail = 0;
+#endif
 #endif
 };
 //struct etatLeds {

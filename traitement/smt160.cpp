@@ -61,7 +61,7 @@ boolean smt160::lectureCapteur()   //
 	for (int8_t i = 0; i < 10; i++)
 	{
 		noInterrupts();
-		haut = pulseIn(pin  , HIGH, 1000L);  //300 a la place de 1000
+		haut = pulseIn(pin  , HIGH, 1000L);  //essayer 2000 avec 80Mhz idem pour low  2khz-> periode 500 microSecondes->timeout 1000 microSecondes
 		interrupts();
 #ifdef DEBUGSMT160
 		if ( premierPassage == 0)
@@ -80,7 +80,7 @@ boolean smt160::lectureCapteur()   //
 			return false;  //on reste sur la dernière valeur pour le cycle en cours
 		}
 		noInterrupts();
-		bas = pulseIn(pin, LOW, 1000L);  //300 a la place de 1000
+		bas = pulseIn(pin, LOW, 1000L);  //     2khz-> periode 500 microSecondes->timeout 1000 microSecondes
 		interrupts();
 #ifdef DEBUGSMT160
 		if (premierPassage == 0)

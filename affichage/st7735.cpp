@@ -42,7 +42,9 @@
 extern "C" void __cxa_pure_virtual() { while (1); }
 uint16_t couleursWIFI[] = {ST7735_RED, ST7735_RED, ST7735_ORANGE, ST7735_GREEN};
 uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, ST7735_GREEN};
-uint16_t couleursALARME[] = {BIDON, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
+#ifdef ALARME
+	uint16_t couleursALARME[] = {BIDON, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
+#endif
 uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_BLACK };
 // print pb avec string
 char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc n�cessaires pour effacer la plus longue chaine
@@ -117,8 +119,10 @@ void st7735::initScreen(void)
 	print("H cui");
 	setCursor(V_COLCONSTANTES, V_TXTLIGNEHSDB);
 	print("H sdb");
+#ifdef ALARME
 	setCursor(V_COLCONSTANTES, V_TXTLIGNEALARME);
 	print("AlGar");
+#endif
 	//cadres vert   
 	drawRect(0, 0, WIDTH, HEIGHT, COLORCADRES);
 	//lignes horizontales
@@ -314,7 +318,9 @@ void st7735::casNormal(struct_reception R)
 		//afficheInt((float)puis, V_COLVARIABLES + 12, V_TXTLIGNEIVMC);
 		//********************traitement alarme garage**************************************
 //V_COLVARIABLES + 12  V_TXTLIGNEIVMC
+#ifdef ALARME
 		TraitePaveAlarme(V_COLVARIABLES + 12, R.alarmeGarage);
+#endif
 		//TraitePaveAlarme(V_COLVARIABLES + 30, R.alarmePortail);
 		//******************traitement des pav�s tempo et wifi*******************************
 		union leds etatDesLeds;
@@ -390,10 +396,12 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 		casNormal(reception);
 }
 #endif
+#ifdef ALARME
 void st7735::TraitePaveAlarme(int X, uint8_t etat)
 {
 	fillRect(X, V_TXTLIGNEALARME + 2, 12, HAUTLIGNE - 8, couleursALARME[etat]);
 }
+#endif
 void st7735::TraitePave(int X, uint8_t etat)
 {
 	fillRect(X, V_TXTLIGNEETAT + 2, 12, HAUTLIGNE - 8, couleursTEMPO[etat ]);

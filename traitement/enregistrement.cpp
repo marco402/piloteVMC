@@ -108,6 +108,7 @@ void enregistrement::enregistreMessageTempoVmc()
 	if (traiteCompteursTempo(&lesMessages[pointeurEcritureMessage], premiersEnregistrement))
 	{
 #endif
+    //DebugF("compteur: "); Debugln((uint32_t)lesMessages[pointeurEcritureMessage].compteur);
 		//****************************************************
 		lesMessages[pointeurEcritureMessage].heure1970 = Clock.getTimeSeconds();
 		lesMessages[pointeurEcritureMessage].dureeMax = this->dureeMax;
@@ -159,7 +160,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr
 		if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 		{
 			erreur = ERREURS::E_TINFO;
-			DebuglnF("PTEC== NULL");
+			//DebuglnF("PTEC== NULL");
 			return false;
 		}
 		//0:bleu nuit,1:blanc nuit,2:rouge nuit,3:bleu jour,4:blanc jour,5:rouge jour
@@ -175,7 +176,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr
 					if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 					{
 						erreur = ERREURS::E_TINFO;
-						DebuglnF("CPT== NULL");
+						//DebuglnF("CPT== NULL");
 						return false;
 					}
 					leMessage->compteur = (unsigned int)atoi(valeurs);
@@ -187,7 +188,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr
 					if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 					{
 						erreur = ERREURS::E_TINFO;
-						DebugF("pb compteur: "); Debugln(premEnr);
+						//DebugF("pb compteur: "); Debugln(premEnr);
 						return false;
 					}
 					leMessage->compteur = (unsigned int)atoi(valeurs);

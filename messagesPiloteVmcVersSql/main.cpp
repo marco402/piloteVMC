@@ -10,6 +10,7 @@
 // Written by Marc Prieur (https://marco40github.wixsite.com/website/pilotevmc)(marco40_github@sfr.fr)
 //
 //History : V1.00 2019-07-28 - First release
+
 //
 //
 // All text above must be included in any redistribution.
@@ -55,6 +56,14 @@
 							//si erreur au lancement de FormReceptionTempo.exe du dossier livraison:windeployqt.exe ne transfert pas tous les modules (libay32.dll...)   verifier les modules chargés
 							//lancer le programme dans l'environnement, afficher les modules Déboguer-->fenêtres->modules->cliquer sur la colonne Code utilisateur transférer tous les modules .à OUI manquants dans livraison.
 //***********************************************************************************************************************************
+/*
+erreur disparue a voir (idem apres reboot):
+le compteur  sur le site teleinfo était correct???plusieurs autres champs erronés
+ven. sept. 30 19:09:31 2022__381822707__1073732304__62216__16382__24__253__16382__63448__16419__254__239__254
+erreur sql traitementMessage : Out of range value for column 'BBRHPJB' at row 1
+donnée correct:
+sam. oct. 1 18:16:05 2022__1664640965__69840420__2__14__27__3__186__189__194__58__51__14
+*/
 #include <QtWidgets\QApplication>
 #include "FormReceptionTempo.h"
 

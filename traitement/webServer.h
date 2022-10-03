@@ -18,8 +18,8 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par marc Prieur 2019
-//		-intégré le code dans la classe webClient webServer.cpp  webServer.h
+// Modifie par marc Prieur 2019
+//		-integre le code dans la classe webClient webServer.cpp  webServer.h
 //
 // Using library ESP8266WebServer version 1.0
 //
@@ -38,7 +38,7 @@
 //const char FP_JSON_END[] PROGMEM = "\r\n}\r\n";
 //const char FP_QCQ[] PROGMEM = "\":\"";
 //const char FP_QCNL[] PROGMEM = "\",\r\n\"";
-//const char FP_RESTART[] PROGMEM = "OK, Redémarrage en cours\r\n";
+//const char FP_RESTART[] PROGMEM = "OK, Redï¿½marrage en cours\r\n";
 //const char FP_NL[] PROGMEM = "\r\n";
 
 
@@ -61,7 +61,9 @@ private:
 	char optval[128];
 	String formatSize(size_t bytes);
 	int nb_reinit=0;
+#ifdef LITTLE_FS
+	void getDirLittleFSJSONData(String  Path,String & response);
+#endif
 };
 extern webServer WEBSERVER;
-
 #endif

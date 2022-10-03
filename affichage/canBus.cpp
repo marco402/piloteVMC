@@ -144,8 +144,10 @@ boolean can_bus::traitementReception(void )
 					 reception.humidite_cuis_aff = motRecu.capteur;
 					 reception.etatWifi = rxBuf[MESSAGE_TYPE_4::ETAT_WIFI];
 					 reception.luminositeeLeds = rxBuf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB];
+#ifdef ALARME
 					 reception.alarmeGarage = rxBuf[MESSAGE_TYPE_4::ALARME_1];
 					 reception.alarmePortail = rxBuf[MESSAGE_TYPE_4::ALARME_2];
+#endif
 					 reception.locaux = true;
 					 reception.NbMessage += 1;
 				 }

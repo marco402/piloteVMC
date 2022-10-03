@@ -27,6 +27,11 @@
 #include <NewTone.h>  //add Newtone to arduino/libraries
 
 #include "constantes.h"
+#ifdef HORLOGE
+  #include <TM1637Display.h>
+  #define CLK A5
+  #define DIO A4
+#endif
 #include "dht.h" 
 #include "st7735.h"
 #include "canBus.h"  //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries for mcp_can.h to canBus.h
@@ -44,14 +49,27 @@ ledsClassiques LEDS_CLASSIQUES;
 ledsRgbSerial LEDS_RGB_SERIAL;
 poussoir POUSSOIR;
 buzzer BUZZER;
+#ifdef  HORLOGE
+    TM1637Display display = TM1637Display(CLK, DIO);
+#endif
 ///###################################initialisations globales##################################  
 int8_t task_1_sec = 0;
 unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrait se caler sur la reception...
 //######################################setup#####################################
+//#ifdef  HORLOGE
+  // Create array that turns all segments on:
+//  const uint8_t data[] = {0xff, 0xff, 0xff, 0xff};
+  // Create array that turns all segments off:
+//  const uint8_t blank[] = {0x00, 0x00, 0x00, 0x00};
+//#endif
 void setup()
 {
   Serial.begin(115200);
   Serial.println("setup");
+#ifdef  HORLOGE
+    display.setBrightness(4); //0 mini  7 maxi
+    display.clear();
+#endif
   AFFICHEUR.initAdafruit_ST7735();
   LEDS_RGB_SERIAL.init();
   BUZZER.test();
@@ -99,7 +117,15 @@ void loop()
 //########################################Traitement temps des traitements##########################################
 	//int32_t delta=1000-(memoTempsMilli-millis()) ;
 	//Serial.print("temps libre:");Serial.println(delta);
- //#################################################################################################################   
+ //################################################################################################################# 
+#ifdef  HORLOGE
+ // Print 1234 with the center colon:
+ // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
+  display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
+  display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);  
+#endif
+
+   
   } //1 sec
 //########################################Traitement durée du cycle##########################################
   if((millis()- memoTempsMilli) > 1000)

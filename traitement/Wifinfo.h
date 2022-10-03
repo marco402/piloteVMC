@@ -65,7 +65,7 @@ poussoir.cpp
 
 */
 
-#define ALARME
+#define XXALARME
 /*
 ajout reception d'un message d'une alarme porte ouverte
 affichage sur l'ecran d'un pave vert ferme,rouge ouvert

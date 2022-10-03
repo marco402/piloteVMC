@@ -134,6 +134,7 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 			laFormReceptionTempo->plainTextEditMessages->appendPlainText("erreur sql traitementMessage : " + QString(ex.what()));
 			//textEditMessages->setText(textEditMessages->text() + "Exception occurred ErrorCode:" + QString::number(ex.getErrorCode()) + "\n");
 			//textEditMessages->setText(textEditMessages->text() + "Exception occurred SQLState:" +  ex.getSQLStateCStr() + "\n");
+			QApplication::beep();
 			return false;
 		}
 	}
@@ -257,7 +258,10 @@ bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 		if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
 		{
 			if (!messageVersBase(&messages[0]))
+			{
+				QApplication::beep();
 				return false;
+			}
 		}
 
 		//***********************************************************
@@ -273,7 +277,10 @@ bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 			if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
 			{
 				if (!messageVersBase(&messages[j]))
+				{
+					QApplication::beep();
 					return false;
+				}
 			}
 
 			//***********************************************************
@@ -291,7 +298,10 @@ bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 		if (laFormReceptionTempo->checkBoxEnregistrement->isChecked())
 		{
 			if (!messageVersBase(leMessageVersBase))
+			{
+				QApplication::beep();
 				return false;
+			}
 		}
 		return true;
 	}
