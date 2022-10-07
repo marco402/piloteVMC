@@ -58,11 +58,13 @@
 		void setCptVmc(uint16_t T);
     //void testTraitementVmc(void); 
     void traitePeriodeVmc(void);      
-//#ifndef TRAITMODE
-	uint16_t traiteArretMarcheForce(void);
-//#else
-//		void traiteArretMarcheForce(void);
-//#endif
+#ifndef TRAITMODE
+	//uint16_t traiteArretMarcheForce(void);
+  int traiteArretMarcheForce(void);
+#else
+		//void traiteArretMarcheForce(void);
+    uint16_t traiteArretMarcheForce(void);
+#endif
 		boolean traitementTempsMiniVMC(void);
 		
 		MODES leMode = MODES::AUTO;  //initialisation identique a affichage

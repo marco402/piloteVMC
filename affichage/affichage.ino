@@ -9,7 +9,11 @@
 //1 en bas (orange)
 //terminal à 115200
 //carte arduino pro ou pro mini
-//choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57200)
+//choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57600)
+//ou modifier board.txt
+//   carte Arduino Mini w/ ATmega328P
+//mini.menu.cpu.atmega328.upload.speed=57600 
+//ATTENTION fermer arduino et ne pas ouvrir a partir d'une fenetre arduino déja ouverte pour prise en compte modif
 //charger affichage.ino
 //arduino 1.8.7 ok
 //arduino 1.8.19 ok
