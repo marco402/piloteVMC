@@ -1,5 +1,5 @@
 // **********************************************************************************
-// Programme affichage  arduino pro mini  Pilotage VMC et TEMPO->Pilotage de leds RGB série type APA106
+// Programme affichage  arduino pro mini  Pilotage VMC et TEMPO->Pilotage de leds RGB sï¿½rie type APA106
 // **********************************************************************************
 // Creative Commons Attrib Share-Alike License
 // You are free to use/extend this library but please abide with the CC-BY-SA license:
@@ -47,16 +47,29 @@ void ledsRgbSerial::init(void)
     //traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_JOUR_NUIT);
 	rgb_led.Show();
 }
+
+int memoEtatDesLeds = -1;
+int memoLuminositeeLeds = -1;
 void ledsRgbSerial::traitement(struct_reception reception)
 {
 	if(reception.infos)
 	{	
-	rgb_led.SetBrightness(reception.luminositeeLeds);
-		union leds etatDesLeds;
-	etatDesLeds.etat=reception.etatLeds;
-	traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
-	traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
-	//traitementLedsRGB(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
+    if(reception.luminositeeLeds != memoLuminositeeLeds)
+    {
+          rgb_led.SetBrightness(reception.luminositeeLeds); 
+          memoLuminositeeLeds = reception.luminositeeLeds;  
+    }        
+    if(reception.etatLeds != memoEtatDesLeds)
+    { 
+      union leds etatDesLeds;
+      //   if(reception.etatLeds!=12)
+      //      Serial.print("reception.etatLeds "); Serial.println(reception.etatLeds);
+      etatDesLeds.etat=reception.etatLeds;
+      traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
+      traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
+      //traitementLedsRGB(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
+      memoEtatDesLeds=reception.etatLeds ; 
+    }
 	}
 }
 void ledsRgbSerial::traitementLedsRGB(unsigned char etat,LES_LEDS_RGB indiceLedRGB)
@@ -77,4 +90,3 @@ switch  (etat)
 	}
 	rgb_led.Show();
 }
-

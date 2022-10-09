@@ -44,7 +44,7 @@
 		 if (nEssai == 0)
 		 {
 			 Serial.println("CAN BUS Shield init fail 10 try");
-			 initCanBus = false;
+			 //initCanBus = false;
 			 return;
 		 }
 		 else
@@ -87,7 +87,7 @@ boolean can_bus::traitementReception(void )
 					 POUSSOIR.setLemode((reception.mode));	//sinon on revient sur le mode forcé en fin de tempo
 					 reception.etat = rxBuf[MESSAGE_TYPE_0::ETAT];  //libre
 					 reception.Rbuzzer=CAN_BUS.getEtResetErreur() | DHTCUISINE.DHT_T.getEtResetErreur() | rxBuf[MESSAGE_TYPE_0::LEBUZZER];
-					 reception.puissanceVMC = rxBuf[MESSAGE_TYPE_0::COURANTVMC];
+					 //reception.puissanceVMC = rxBuf[MESSAGE_TYPE_0::COURANTVMC];
 					 reception.NbMessage += 1;
 					 reception.infos = true;
 				 }
@@ -178,11 +178,11 @@ boolean can_bus::traitementReception(void )
 					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::MARCHE_ARRET];
 					 reception.arret_marche= motRecu.capteur;
 					 motRecu.capteur = 0;
-					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::FORCAGE_MODE];
+#ifdef TRAITMODE          
+ 					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::FORCAGE_MODE];
 					 reception.forcageMode=(MODES) motRecu.capteur;
-//#ifdef TRAITMODE
-//           reception.dureeForcage=rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE]*60;
-//#endif
+           reception.dureeForcage=rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE]*60;
+#endif
 					 reception.NbMessage += 1;
 					 reception.infos2 = true;
 				 }

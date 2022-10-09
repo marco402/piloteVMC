@@ -55,6 +55,8 @@ poussoir POUSSOIR;
 buzzer BUZZER;
 #ifdef  HORLOGE
     TM1637Display display = TM1637Display(CLK, DIO);
+	int memoBrightness=4; //0 mini  7 maxi
+	int memoMinute=-1; //0 mini  7 maxi
 #endif
 ///###################################initialisations globales##################################  
 int8_t task_1_sec = 0;
@@ -71,7 +73,7 @@ void setup()
   Serial.begin(115200);
   Serial.println("setup");
 #ifdef  HORLOGE
-    display.setBrightness(4); //0 mini  7 maxi
+    display.setBrightness(memoBrightness); //0 mini  7 maxi
     display.clear();
 #endif
   AFFICHEUR.initAdafruit_ST7735();
@@ -95,12 +97,13 @@ void loop()
  if(CAN_BUS.traitementReception()||(task_1_sec==3)) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
 	task_1_sec=0;
 	structReception = CAN_BUS.getStructReception();
-	retour = POUSSOIR.traitement(structReception.forcageMode);
-
 #ifdef TRAITMODE
+	retour = POUSSOIR.traitement(structReception.forcageMode);
 	//uint16_t decompteTempoArretMarcheForce=CAN_BUS.decDecompteTempoArretMarcheForce();
 	//POUSSOIR.testModeForce(CAN_BUS.decDecompteTempoArretMarcheForce(), structReception.dureeForcage);
 	POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
+#else
+	retour = POUSSOIR.traitement(MODES::BIDON);
 #endif
 	BUZZER.setBuzzer(retour);
 	DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
@@ -125,8 +128,17 @@ void loop()
 #ifdef  HORLOGE
  // Print 1234 with the center colon:
  // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
-  display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
-  display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);  
+	if (structReception.luminositeeLeds != memoBrightness)
+	{
+		memoBrightness = structReception.luminositeeLeds;
+		display.setBrightness(memoBrightness); //0 mini  7 maxi
+	}
+	if (memoMinute!=structReception.minutes)
+	{
+		memoMinute = structReception.minutes;
+		display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
+		display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
+    }
 #endif
 
    

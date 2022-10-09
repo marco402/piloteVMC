@@ -294,13 +294,13 @@ void st7735::casNormal(struct_reception R)
 	}
 	if (R.infos)
 	{
-		int8_t puis = 0;
+		//int8_t puis = 0;
 		//*******************traitement du mode et arret marche***************************************
 		setCursor(V_COLMODE+4, V_TXTLIGNEMODES);
 		if (R.arret_marche == ARRET_MARCHE::MARCHE_REL)
 		{
 			setTextColor(COLORVARIABLESFORE, ST7735_GREEN);
-			puis = R.puissanceVMC;
+			//puis = R.puissanceVMC;
 		}
 		else
 			setTextColor(COLORVARIABLESFORE, COLORSCREEN);

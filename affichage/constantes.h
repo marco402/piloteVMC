@@ -18,9 +18,9 @@
 #define CONSTANTES_H
 #include <Arduino.h>
 
-#define TRAITMODE  //before constantesPartagees.h
+#define XXTRAITMODE  //before constantesPartagees.h
 #define XXALARME
-#define HORLOGE
+#define HORLOGE  //parasites sur ledsRGBSerial
 #include "constantesPartagees.h" 
 //################################################define##########################################################
 //****************************************pins entrées sorties****************************************************
@@ -74,8 +74,8 @@ struct struct_reception {
 	unsigned char secondes;
 	unsigned char mode;
 	unsigned char etat;
-	uint8_t Rbuzzer;
-	int8_t puissanceVMC;
+	uint8_t Rbuzzer=0;
+	//int8_t puissanceVMC=0;
 	int16_t temperature_cuis_aff;
 	int16_t humidite_cuis_aff;
 	int16_t temperature_sdb_aff;
@@ -85,7 +85,7 @@ struct struct_reception {
 	boolean distants;
 	boolean locaux;
 	boolean infos2;
-	uint8_t NbMessage = 0;
+	uint8_t NbMessage=0;
 	uint16_t NbMinuteActiveJourCourant;
 	int8_t decompteDelaiCgtVitesse;
 	int16_t decompteTempoArretMarcheForce;
@@ -114,11 +114,11 @@ struct struct_reception {
 //################################################union##########################################################
 union CANconv {
 	int16_t capteur;
-	int8_t b[3];
+	int8_t b[3]  ;
 };
 union leds {
 	struct etatLeds etatCourant;
-	unsigned char etat;
+	unsigned char etat=0;
 };
 //################################################fin##########################################################
 #endif
