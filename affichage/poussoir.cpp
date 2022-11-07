@@ -19,12 +19,13 @@
 #include "poussoir.h"
 #include "st7735.h"
 unsigned long tempsMilli = 0 ;
+unsigned long tempsMilliCommandeTemporisees = 0 ;
 poussoir::poussoir()
 {
 	pinMode(PIN_POUSSOIR_MODE, INPUT);
 }
 //appel� a chaque loop de affichage.ino
-boolean poussoir::traitement(MODES forcageMode)
+boolean poussoir::traitement(MODES forcageMode, int16_t dureeTempo)
 {
 #ifdef TRAITMODE
 	//struct_reception structReception;
@@ -44,6 +45,11 @@ boolean poussoir::traitement(MODES forcageMode)
 	}
 	//on garde la possibilitee de changer de mode pendant le forcage
 #endif
+	if (tempsMilliCommandeTemporisees > 0 && tempsMilliCommandeTemporisees < millis())
+	{
+		leMode = memoModes ;
+		tempsMilliCommandeTemporisees = 0;
+	}
 	static boolean  transitoirePoussoir=false;
 	boolean buzzer=false;
 	if ((millis()- tempsMilli) > 1000)
@@ -75,12 +81,25 @@ boolean poussoir::traitement(MODES forcageMode)
 			if (transitoirePoussoir)	//relachement
 			{
 				leMode=modeTransitoire;	//validation du nouveau mode, lemode devient diff�rent de memoModes-->InitialisationMode
-#ifdef TRAITMODE
+//#ifdef TRAITMODE
 				memoModes = leMode;
-#endif
+//#endif
 				//Serial.print("modeTransitoire"); Serial.println(modeTransitoire);
 				transitoirePoussoir=false;
 				AFFICHEUR.setchangeMode(false);
+//#ifdef TRAITMODE
+				switch (leMode)
+				{
+				case MODES::TEMPO_ARRET:
+				case MODES::TEMPO_MARCHE_PV:
+				case MODES::TEMPO_MARCHE_GV:
+				    //memoModes = leMode;  
+				  //leMode = forcageMode;
+					//lancement du decompte
+					tempsMilliCommandeTemporisees =(unsigned long) millis() + (unsigned long)dureeTempo * 1000;
+				  break;
+				}
+//#endif
 			}
 		}
 	}

@@ -37,7 +37,9 @@
 #include "capteur.h"
 #include "vmc.h"
 #include "ledsRGBSerial.h"
-#include "ta12.h"
+#ifdef TA12
+	#include "ta12.h"
+#endif
 #include "smt160.h"
 #include "buzzer.h"
 #include "myWifi.h"
@@ -181,9 +183,10 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 		buf[MESSAGE_TYPE_0::MODE] = VMC.getLeMode();
 		buf[MESSAGE_TYPE_0::ETAT] =0;  //libre
 		//buf[MESSAGE_TYPE_0::LEBUZZER] =BUZZER.getBuzzer();  //true->beep
-		buf[MESSAGE_TYPE_0::LEBUZZER] = TEMPEXT.getEtResetErreur()| DHTSDB.DHT_T.getEtResetErreur() | CAPTEURIINST.getEtResetErreur()| TA12.getEtResetErreur()| CAN_BUS.getEtResetErreur()| MYTINFO.getEtResetErreur();  //true->beep
+   // buf[MESSAGE_TYPE_0::LEBUZZER] = TEMPEXT.getEtResetErreur()| DHTSDB.DHT_T.getEtResetErreur() | CAPTEURIINST.getEtResetErreur()| TA12.getEtResetErreur()| CAN_BUS.getEtResetErreur()| MYTINFO.getEtResetErreur();  //true->beep
+		buf[MESSAGE_TYPE_0::LEBUZZER] = TEMPEXT.getEtResetErreur()| DHTSDB.DHT_T.getEtResetErreur() | CAPTEURIINST.getEtResetErreur()| CAN_BUS.getEtResetErreur()| MYTINFO.getEtResetErreur();  //true->beep
 		BUZZER.clrBuzzer();
-		buf[MESSAGE_TYPE_0::COURANTVMC] =TA12.getPuissanceConsommee();
+		buf[MESSAGE_TYPE_0::COURANTVMC] = 0;   // TA12.getPuissanceConsommee();
 		 sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_0, 0, MESSAGE_TYPE_0::FIN_MESSAGE_TYPE_0, buf);
 		//DebugF("Send mode:"); Debugln(buf[MESSAGE_TYPE_0::MODE]);
 	}
@@ -212,7 +215,8 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_4::ETAT_WIFI] = WIFI.getWifiUser() | (MYTINFO.getEtatWifi() << 1);
 			buf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB] = CONFIGURATION.config.tempo.luminositeeLedsRgb;
 #ifdef ALARME
-			buf[MESSAGE_TYPE_4::ALARME_GARAGE] = MYALARME.getEtatAlarmeGarage();
+			buf[MESSAGE_TYPE_4::ALARME_GARAGE] = MYALARMEGARAGE.getEtatAlarmeGarage();
+			buf[MESSAGE_TYPE_4::ALARME_PORTAIL] = MYALARMEPORTAIL.getEtatAlarmePortail();
 #endif
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_4, 0, MESSAGE_TYPE_4::FIN_MESSAGE_TYPE_4, buf);
 		}
@@ -226,9 +230,9 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_MSB] = RELAIS.getNbMinuteActiveJourCourant()>> 8;
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_LSB] = RELAIS.getNbMinuteActiveJourCourant() & 0xFF;
 			buf[MESSAGE_TYPE_5::MARCHE_ARRET] = RELAIS.getEtatReelRelaisMarcheArret() & 0xFF;
-#ifdef TRAITMODE
-			buf[MESSAGE_TYPE_5::FORCAGE_MODE] = VMC.getForcageMode();
-#endif
+//#ifdef TRAITMODE
+			buf[MESSAGE_TYPE_5::FORCAGE_MODE] = 0; // VMC.getForcageMode();
+//#endif
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_5, 0, MESSAGE_TYPE_5::FIN_MESSAGE_TYPE_5, buf);
 		}
 	if (sndStat != CAN_OK) {
@@ -238,9 +242,11 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			compteurBuzzer = 0;
 			erreur = ERREURS::E_CAN_BUS_TRAIT;
 		}
-		DebugF("Error Sending Message..."); Debugln(sndStat);
+		DebugF("Error Sending Message..."); Debugln(sndStat);  //12/10/22 error 6(parasite?)
 		compteurErreurConsecutives += 1;
 	}
+	else
+		compteurErreurConsecutives = 0;
 }
 bool can_bus::getReceptionCapteurs(void)const
 {

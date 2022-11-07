@@ -112,7 +112,10 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 	prep_stmt->setString(2, ptec);
 	prep_stmt->setUInt(10, leMessageVersBase->dureeMax);
 	prep_stmt->setInt(12, leMessageVersBase->tempExt);
-	prep_stmt->setInt(13, leMessageVersBase->tempCuis);
+	if(leMessageVersBase->tempCuis>255)
+		prep_stmt->setInt(13, 0);
+	else
+		prep_stmt->setInt(13, leMessageVersBase->tempCuis);
 	prep_stmt->setInt(14, leMessageVersBase->tempSdb);
 	prep_stmt->setInt(15, leMessageVersBase->humCuis);
 	prep_stmt->setInt(16, leMessageVersBase->humSdb);

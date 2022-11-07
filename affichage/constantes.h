@@ -18,31 +18,38 @@
 #define CONSTANTES_H
 #include <Arduino.h>
 
-#define XXTRAITMODE  //before constantesPartagees.h
-#define XXALARME
-#define HORLOGE  //parasites sur ledsRGBSerial
+#define NO_TRAITMODE  //before constantesPartagees.h
+#define NO_ALARME     //probleme de memoire avec ALARME  22496 OK 22616 PB T et H DHT
+#define NO_HORLOGETM1650  //Attention cablage different avec TM1637
+#define HORLOGETM1637
 #include "constantesPartagees.h" 
 //################################################define##########################################################
 //****************************************pins entrées sorties****************************************************
-//RX													0	
-//TX													1	
-//INT0													2
+//RX													      0	
+//TX													      1	
+//INT0													    2
 // marc a voir si remplacé par PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE #define PIN_DHT22										3		//inversion smt160 et mq7 voir schéma pcb
 #define TFT_DC											4	    //
-#define PIN_LED_JOUR_NUIT								5		//passer sur 5 manque R14 utilise R13
-#define TFT_LEDA							            6	    //via 2n2222 and 2N2907
-#define PIN_CS_CAN										7		//sur test receive blink 15µs haut 15µs bas
+#define PIN_LED_JOUR_NUIT						5		//passer sur 5 manque R14 utilise R13
+
+//There are six pins from the set of digital pins that are PWM (Pulse Width Modulation) pins, numbered as 3, 5, 6, 9, 10, and 11.
+#define TFT_LEDA							      6	    //via 2n2222 and 2N2907
+#define PIN_CS_CAN								  7		//sur test receive blink 15µs haut 15µs bas
 #define TFT_CS											8	    //
 #define PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE				9
-//#define TFT_LEDA										10
+//#define TFT_LEDA									10
 #define TFT_MOSI										11		//SPI	MOSI	sur test receive blink 0.5µs bas  1µs haut 1µs bas
 //														12		//SPI	MISO	sur test receive blink
 #define TFT_SCLK										13		//SPI	CLK		PIN_LED_CARTE_PRO_MINI
 #define TFT_RESET										-1
 //libre													A0		//14
-#define PIN_POUSSOIR_MODE								A1		//15
-#define PIN_LED_RGB										A2		//16
-#define PIN_BUZZER_NUM									A3		//17
+#define PIN_POUSSOIR_MODE						A1		//15
+#define PIN_LED_RGB									A2		//16
+#define PIN_BUZZER_NUM							A3		//17
+//#ifdef HORLOGETM1650 //|| HORLOGETM1637
+	#define CLK											  A5		//18 SDA I2C 
+	#define DIO											  A4		//19 SCL I2C
+//#endif
 //#define TFT_DC										A4		//18 SDA I2C 
 //#define TFT_CS										A5		//19 SCL I2C
 //libre													A6		//20
@@ -52,7 +59,7 @@ enum COULEUR_JOUR { COULEUR_JOUR_BLEU = 0, COULEUR_JOUR_BLANC , COULEUR_JOUR_ROU
 enum LES_LEDS_RGB { LES_LEDS_RGB_LED_DEMAIN,LES_LEDS_RGB_LED_JOUR,FIN_LED};   //LES_LEDS_RGB_LED_JOUR_NUIT,
 enum ARRET_MARCHE { ARRET_REL = 0, MARCHE_REL };
 #ifdef ALARME
-enum CODES_ALARME { DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT };
+   enum CODES_ALARME { DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT };
 #endif
 #define NB_LEDS_RGB LES_LEDS_RGB::FIN_LED
 //################################################static const##########################################################
@@ -94,14 +101,15 @@ struct struct_reception {
 	uint8_t arret_marche;
 	uint8_t seuilAuto;
 	uint8_t casAuto;
-#ifdef TRAITMODE
-	uint16_t dureeForcage = 0;
-	MODES forcageMode;
 #ifdef ALARME
 	uint8_t alarmeGarage = 0;
 	uint8_t alarmePortail = 0;
 #endif
-#endif
+//#ifdef TRAITMODE
+	//uint16_t dureeForcage = 0;
+	MODES forcageMode;
+
+//#endif
 };
 //struct etatLeds {
 //	unsigned char aujourdhui : 2;   //lsb

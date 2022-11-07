@@ -53,4 +53,3 @@ extern ledsRgbSerial LEDS_RGB_SERIAL;
 //#include "C:\Program Files (x86)\Arduino\libraries\LibTeleinfo-syslog\examples\Wifinfo\config.h"
 
 #endif
-

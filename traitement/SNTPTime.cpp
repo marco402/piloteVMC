@@ -134,36 +134,45 @@ time_t testDayLight(ulong secsSince1900)
   time_t seconds =0;
   tm t;
   t = *mkTmStruct(secsSince1900);
-
+//test dans calculIR.vbproj
   if (t.tm_mon < 2 || t.tm_mon > 9) // month 0, 1, 10, 11  -> Winter
-	  return seconds;  // -> Winter
-  if (t.tm_mon == 2 || t.tm_mon == 9)  // Mars ou Octobre -> Winter
-  {
-	  if ((t.tm_mday - t.tm_wday >= 25) && (t.tm_wday == 0) && (t.tm_hour >= 2))  // > dernier dimanche  de mars � octobre
-	  {
-		  if (t.tm_mon == 2)
-      {
-        seconds=3600;
-			  return seconds;
-      }
-		  else if (t.tm_mon == 9)
-			  return seconds;
-	  }
-	  if (t.tm_mon == 2)
-		  return seconds;
-	  else if (t.tm_mon == 9)
-   {
-      seconds=3600;
-		  return seconds;
-   }   
-	  else                      //impossible mais erreur compile si visual studio
-		  return 0;
-  }
+	  return 0;  // -> Winter
+  if (t.tm_mon > 2 && t.tm_mon < 9) // month 0, 1, 10, 11  -> Winter
+	  return 3600;  // -> Summer  //ajoute 12 par rapport a https://github.com/SensorsIot/SNTPtime/blob/master/SNTP.cpp ???
+  if (t.tm_mon == 2 && (t.tm_hour + 24 * t.tm_mday) >= (12+3 + 24 * (31 - (5 * t.tm_year / 4 + 4) % 7))
+	  || t.tm_mon == 9 && (t.tm_hour + 24 * t.tm_mday) < (12+3 + 24 * (31 - (5 * t.tm_year / 4 + 1) % 7)))
+	  return 3600;
   else
-  {
-    seconds=3600;
-	  return seconds;           // we have daylight set, so return the timediff
-  }
+	  return 0;
+
+
+  //if (t.tm_mon == 2 || t.tm_mon == 9)  // Mars ou Octobre -> Winter
+  //{                                    // sunday=0
+	 // if ((t.tm_mday - t.tm_wday >= 25) && (t.tm_wday == 0) && (t.tm_hour >= 2))  // > dernier dimanche  de mars � octobre
+	 // {
+		//  if (t.tm_mon == 2)
+		//  {
+		//	seconds=3600;
+		//	return seconds;
+		//  }
+		//  else //if (t.tm_mon == 9)
+		//	  return seconds;
+	 // }
+	 // if (t.tm_mon == 2)  erreur ici du 25°jour a la fin du mois sauf le dimanche
+		//  return seconds;
+	 // else //if (t.tm_mon == 9)
+	 // {
+		//  seconds=3600;
+		//  return seconds;
+	 // }   
+	 // //else                      //impossible mais erreur compile si visual studio
+		//  //return 0;
+  //}
+  //else  //Avril a Septembre  ->Summer
+  //{
+  //    seconds=3600;
+	 // return seconds;           // we have daylight set, so return the timediff
+  //}
 
   //int month = t.tm_mon;
   //if (month < 2 || month > 9) // month 1, 2, 11, 12

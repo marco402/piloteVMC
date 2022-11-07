@@ -145,8 +145,8 @@ boolean can_bus::traitementReception(void )
 					 reception.etatWifi = rxBuf[MESSAGE_TYPE_4::ETAT_WIFI];
 					 reception.luminositeeLeds = rxBuf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB];
 #ifdef ALARME
-					 reception.alarmeGarage = rxBuf[MESSAGE_TYPE_4::ALARME_1];
-					 reception.alarmePortail = rxBuf[MESSAGE_TYPE_4::ALARME_2];
+					 reception.alarmeGarage = rxBuf[MESSAGE_TYPE_4::ALARME_GARAGE];
+					 reception.alarmePortail = rxBuf[MESSAGE_TYPE_4::ALARME_PORTAIL];
 #endif
 					 reception.locaux = true;
 					 reception.NbMessage += 1;
@@ -178,11 +178,11 @@ boolean can_bus::traitementReception(void )
 					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::MARCHE_ARRET];
 					 reception.arret_marche= motRecu.capteur;
 					 motRecu.capteur = 0;
-#ifdef TRAITMODE          
+//#ifdef TRAITMODE          
  					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::FORCAGE_MODE];
 					 reception.forcageMode=(MODES) motRecu.capteur;
-           reception.dureeForcage=rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE]*60;
-#endif
+           //reception.dureeForcage=rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE]*60;
+//#endif
 					 reception.NbMessage += 1;
 					 reception.infos2 = true;
 				 }
@@ -193,6 +193,7 @@ boolean can_bus::traitementReception(void )
 		return true;
     return false;    // avec ou sans message recu 
 }
+
 void can_bus::emission(INT32U id, INT8U len, INT8U *buf)
 {
 	char sndStat = sendMsgBuf(id, 0, len, buf);
@@ -204,8 +205,18 @@ void can_bus::emission(INT32U id, INT8U len, INT8U *buf)
 			erreur = ERREURS::E_CAN_BUS_AFF;
 		}
 		Serial.print("Error Sending Message..."); Serial.println(sndStat);
+		compteurErreurConsecutives += 1;
+		if (compteurErreurConsecutives == 10)  //10sec
+		{
+			initCanBus = false;
+			compteurErreurConsecutives = 0;
+			initialiseCanBus();
+		}
 	}
+	else
+		compteurErreurConsecutives = 0;
 }
+
 void can_bus::traitementEmissionMESSAGE_TYPE_3(MODES leMode)
 {
  	unsigned char buf[MESSAGE_TYPE_3::FIN_MESSAGE_TYPE_3] ;
@@ -215,6 +226,7 @@ void can_bus::traitementEmissionMESSAGE_TYPE_3(MODES leMode)
 }
 void can_bus::traitementEmission(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t CuisineHMsb,uint8_t CuisineHLsb,MODES leMode)
 {
+  
   if(initCanBus)
   {
 	unsigned char buf[MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2]; 

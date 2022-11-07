@@ -58,13 +58,13 @@
 		void setCptVmc(uint16_t T);
     //void testTraitementVmc(void); 
     void traitePeriodeVmc(void);      
-#ifndef TRAITMODE
-	//uint16_t traiteArretMarcheForce(void);
-  int traiteArretMarcheForce(void);
-#else
-		//void traiteArretMarcheForce(void);
-    uint16_t traiteArretMarcheForce(void);
-#endif
+//#ifndef TRAITMODE
+//	//uint16_t traiteArretMarcheForce(void);
+//  int traiteArretMarcheForce(void);
+//#else
+//		//void traiteArretMarcheForce(void);
+//    uint16_t traiteArretMarcheForce(void);
+//#endif
 		boolean traitementTempsMiniVMC(void);
 		
 		MODES leMode = MODES::AUTO;  //initialisation identique a affichage
@@ -73,7 +73,7 @@
 #ifndef TRAITMODE
 		MODES memoRetourForcage = MODES::PETITE_VITESSE; 
 #endif
-		uint16_t  decompteTempoArretMarcheForce=0;
+		uint16_t  decompteTempoArretMarcheForce=300;
 		//uint16_t  tempoFinForcage = 0;
 		uint16_t cptSecondesVmcAuto= REINIT;
 		uint8_t seuilAuto = 0;

@@ -40,7 +40,9 @@
 #include "smt160.h"
 #include "dht.h"
 #include "vmc.h"
+#ifdef TA12
 #include "tA12.h"
+#endif
 #include "webclient.h"
 #include "interRelais.h"
 #include "enregistrement.h"
@@ -242,8 +244,10 @@ webServer::webServer()
 			ENREGISTREMENT.stop();
 			ENREGISTREMENT.init();
 #ifdef ALARME      
-			MYALARME.stop();
-			MYALARME.init();
+			MYALARMEGARAGE.stop();
+			MYALARMEGARAGE.init();
+			MYALARMEPORTAIL.stop();
+			MYALARMEPORTAIL.init();
 #endif
 			}
 			CONFIGURATION.showConfig();
@@ -941,7 +945,7 @@ void webServer::getVmcJSONData(String & response)
 	response += "\"},\r\n";
 	//I vmc
 	response += "{\"na\":\"I vmc\",\"va\":\"";
-	response += TA12.getMesureCycleOled();
+	response += "0";   // TA12.getMesureCycleOled();
 	response += "\"},\r\n";
 	//mode
 	response += "{\"na\":\"Mode\",\"va\":\"";

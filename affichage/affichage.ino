@@ -4,6 +4,22 @@
  * Created: 24/02/2019 22:18:27
  *  Author: marc Prieur
  */
+ //###################################memoire################################## 
+//OK
+//  Le croquis utilise 21844 octets (71%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
+//  Les variables globales utilisent 1446 octets (70%) de mémoire dynamique, ce qui laisse 602 octets pour les variables locales. Le maximum est de 2048 octets.
+//ajout HORLOGETM1637 OK
+//  Le croquis utilise 22496 octets (73%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
+//  Les variables globales utilisent 1469 octets (71%) de mémoire dynamique, ce qui laisse 579 octets pour les variables locales. Le maximum est de 2048 octets.
+//ajout ALARME    probleme avec dht
+//  Le croquis utilise 22718 octets (73%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
+//  Les variables globales utilisent 1489 octets (72%) de mémoire dynamique, ce qui laisse 559 octets pour les variables locales. Le maximum est de 2048 octets.
+//essai ALARME sans functions display   probleme avec dht
+//  Le croquis utilise 22616 octets (73%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
+//  Les variables globales utilisent 1479 octets (72%) de mémoire dynamique, ce qui laisse 569 octets pour les variables locales. Le maximum est de 2048 octets.
+
+
+
  //###################################include################################## 
 //programmation: interface usb serial
 //1 en bas (orange)
@@ -17,6 +33,10 @@
 //charger affichage.ino
 //arduino 1.8.7 ok
 //arduino 1.8.19 ok
+//***************************10/10/2022*****************************************
+//modification commandes temporisees:voir traitement.ino
+//******************************************************************************
+
 #include <gfxfont.h>  //add Adafruit-GFX-Library-master to arduino/libraries
 #include <Adafruit_SPITFT_Macros.h>
 #include <Adafruit_SPITFT.h>
@@ -31,10 +51,11 @@
 #include <NewTone.h>  //add Newtone to arduino/libraries
 
 #include "constantes.h"
-#ifdef HORLOGE
-  #include <TM1637Display.h>
-  #define CLK A5
-  #define DIO A4
+#ifdef HORLOGETM1637
+	#include <TM1637Display.h>
+#endif
+#ifdef HORLOGETM1650
+	#include <TM1650.h>
 #endif
 #include "dht.h" 
 #include "st7735.h"
@@ -53,10 +74,15 @@ ledsClassiques LEDS_CLASSIQUES;
 ledsRgbSerial LEDS_RGB_SERIAL;
 poussoir POUSSOIR;
 buzzer BUZZER;
-#ifdef  HORLOGE
-    TM1637Display display = TM1637Display(CLK, DIO);
-	int memoBrightness=4; //0 mini  7 maxi
+//	int memoBrightness=2; //0 mini  7 maxi  (1 à 8)
 	int memoMinute=-1; //0 mini  7 maxi
+#ifdef  HORLOGETM1650
+//modifie C:\Users\mireille\Documents\Arduino\libraries\TM1650\src\TM1650.h TM1650_NUM_DIGITS   4 et TM1650_MAX_STRING   4 gain 
+//reste 358 de mémoire dynamique avec cette modif 202 sans
+	TM1650 display;
+#endif
+#ifdef  HORLOGETM1637
+	TM1637Display display(CLK, DIO);
 #endif
 ///###################################initialisations globales##################################  
 int8_t task_1_sec = 0;
@@ -72,10 +98,17 @@ void setup()
 {
   Serial.begin(115200);
   Serial.println("setup");
-#ifdef  HORLOGE
-    display.setBrightness(memoBrightness); //0 mini  7 maxi
-    display.clear();
+
+#ifdef  HORLOGETM1650 
+  display.init();
+	display.setBrightness(2); //0 mini  7 maxi  warning 0 is not mini il faut 1 à 8
 #endif
+#ifdef HORLOGETM1637
+  display.setBrightness(2); //0 mini  7 maxi  warning 0 is not mini il faut 1 à 8
+#endif
+
+    //display.setBrightness(memoBrightness); //0 mini  7 maxi
+    //display.clear();
   AFFICHEUR.initAdafruit_ST7735();
   LEDS_RGB_SERIAL.init();
   BUZZER.test();
@@ -88,9 +121,13 @@ void setup()
 //########################################loop##########################################
 //*********************************************BOUCLE 1 Seconde*******************************************
 //*****************Mise en place du mode de fonctionnement à partir du bouton poussoir********************
+
 void loop()
 {
 	boolean retour;
+#ifdef  HORLOGETM1650
+	char buf[4];
+#endif
 	struct_reception structReception;
 	CAN_BUS.initialiseCanBus(); //a chaque cycle,si le distant est branché en second,inutile avec alimentation par le distant...
 //#####################################Traitement des entrées######################################
@@ -103,7 +140,7 @@ void loop()
 	//POUSSOIR.testModeForce(CAN_BUS.decDecompteTempoArretMarcheForce(), structReception.dureeForcage);
 	POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
 #else
-	retour = POUSSOIR.traitement(MODES::BIDON);
+	retour = POUSSOIR.traitement(MODES::BIDON,structReception.decompteTempoArretMarcheForce);
 #endif
 	BUZZER.setBuzzer(retour);
 	DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
@@ -119,29 +156,51 @@ void loop()
 	BUZZER.traitement(CAN_BUS.getStructReception());  //buzzer permanent si plus de réception CAN
 //########################################Traitement des sorties##########################################
 //les moyennes se1110.ront faite au niveaux des UC
+//    Serial.print("Cuisine H  "); Serial.println(DHTCUISINE.DHT_H.getMesureCycleMsb());Serial.println(DHTCUISINE.DHT_H.getMesureCycleLsb());
+//    Serial.print("Cuisine T  "); Serial.println(DHTCUISINE.DHT_T.getMesureCycleMsb());;Serial.println(DHTCUISINE.DHT_T.getMesureCycleLsb());
 	CAN_BUS.traitementEmission(DHTCUISINE.DHT_T.getMesureCycleMsb(),DHTCUISINE.DHT_T.getMesureCycleLsb(),DHTCUISINE.DHT_H.getMesureCycleMsb(),DHTCUISINE.DHT_H.getMesureCycleLsb(), POUSSOIR.getLeMode());
 	CAN_BUS.clearStructReception();
 //########################################Traitement temps des traitements##########################################
 	//int32_t delta=1000-(memoTempsMilli-millis()) ;
 	//Serial.print("temps libre:");Serial.println(delta);
  //################################################################################################################# 
-#ifdef  HORLOGE
+
+#ifdef  HORLOGETM1637
  // Print 1234 with the center colon:
  // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
-	if (structReception.luminositeeLeds != memoBrightness)
-	{
-		memoBrightness = structReception.luminositeeLeds;
-		display.setBrightness(memoBrightness); //0 mini  7 maxi
-	}
+//	if (structReception.luminositeeLeds != memoBrightness)
+//	{
+//		memoBrightness = structReception.luminositeeLeds;
+//		display.setBrightness(memoBrightness); //0 mini  7 maxi
+//	}
 	if (memoMinute!=structReception.minutes)
 	{
 		memoMinute = structReception.minutes;
-		display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
-		display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
+		display.showNumberDecEx(structReception.heures*100+structReception.minutes,0x40, true, 4, 0);  //40 pour :
+		//display.showNumberDec(m, true, 2, 2);
+		//display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
+		//display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
     }
 #endif
 
-   
+#ifdef HORLOGETM1650
+ // Print 1234 with the center colon:
+ // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
+  if (structReception.luminositeeLeds != memoBrightness)
+  {
+    memoBrightness = structReception.luminositeeLeds;
+    display.setBrightness(memoBrightness); //0 mini  7 maxi
+  }
+  if (memoMinute!=structReception.minutes)
+  {
+    memoMinute = structReception.minutes;
+    sprintf(buf, "%02d%02d", structReception.heures, structReception.minutes);  //with zero
+    buf[1] = buf[1] | 0b10000000;   //second point
+    display.displayString(buf);
+    //display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
+    //display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
+    }
+#endif   
   } //1 sec
 //########################################Traitement durée du cycle##########################################
   if((millis()- memoTempsMilli) > 1000)

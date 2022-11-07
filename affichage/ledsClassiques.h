@@ -25,4 +25,3 @@ private:
 };
 extern ledsClassiques LEDS_CLASSIQUES;
 #endif
-

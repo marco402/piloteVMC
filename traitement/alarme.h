@@ -29,7 +29,7 @@
 #include <WiFiUdp.h>
 #include "enregistrement.h"  //for send a voir
 #define CFG_TEMPO_HOST_SIZE    32
-enum CODES_ALARME { DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME ,HEARTBEAT,HEAD_MESSAGE,AQUITEMENT};
+enum CODES_ALARME { NO_RECEPT = 0, DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT };
   //                       ROUGE                   VERT              BLEU                ORANGE
 class myAlarme
 {
@@ -39,13 +39,16 @@ public:
 	void init(void);
 	void stop(void);
 	uint8_t getEtatAlarmeGarage(void);
+	uint8_t getEtatAlarmePortail(void);
 private:
 	WiFiUDP udpAlarme;
 	bool send(IPAddress adressIP, uint32_t port, char * message, uint32_t * memPort, WiFiUDP udp, int16_t nbMessageEmis);
-	uint8_t etatAlarmeGarage = 0;
+	uint8_t etatAlarmeGarage = 2;  //bleu  0:black
+	uint8_t etatAlarmePortail = 3;  //orange  0:black
 	uint32_t receptLastMessage = 0;
   uint32_t memoPort = 0;
   char  host_alarme[CFG_TEMPO_HOST_SIZE + 1]; //adresse IP
 };
-extern myAlarme MYALARME;
+extern myAlarme MYALARMEGARAGE;
+extern myAlarme MYALARMEPORTAIL;
 #endif

@@ -21,7 +21,7 @@ class poussoir
 {
 	public:
 		poussoir();
-		boolean traitement(MODES forcageMode);
+		boolean traitement(MODES forcageMode, int16_t dureeTempo);
 		MODES getLeMode(void);
 		void clearLeMode(void);
 		void setLemode(unsigned char leMode);

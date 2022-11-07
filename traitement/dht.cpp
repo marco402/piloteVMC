@@ -13,7 +13,8 @@
 // modified: 07/03/2019 09:12:31
 //  by : marc Prieur
 //
-
+//Calcul de l’humidité absolue
+//https://forum.arduino.cc/t/formule-de-calcul-humidite-absolue/621360/6?pseSrc=pgTutoDht22
 
 #include <Arduino.h>
 #ifndef __AVR__
@@ -229,4 +230,3 @@ void dht::simuMesure(int16_t capteurT,int16_t capteurH)
 	DHT_T.traiteMesure(capteurT);
 	DHT_H.traiteMesure(capteurH);
 }
-

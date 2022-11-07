@@ -49,6 +49,8 @@ if(unCycleSurDeux==true)
 					compteurBuzzer = 0;
 					DHT_H.setErreur(ERREURS::E_DHTCUISINE);  //meme erreur 1 des 2 a la lecture
 				}
+        //DHT_T.traiteMesure(0);
+        //DHT_H.traiteMesure(0);
 				return false;		//beep
 			}
 			else

@@ -610,6 +610,29 @@ boolean webClient::httpRequest(void)
 		      if (valName == "OPTARIF")
           {
             url.replace("%OPTARIF%", me->value);
+			//prendre me->value[3]
+			//switch me->value[3] & 18x >> 3->prog eau  eau 1 ou eau 2 ou eau 3
+			//switch me->value[3] & 7x      ->prog chauffage  chau 1 ou .... ou chau 7
+
+			//voir compteur_mono.pdf et HN44S812emeeditionMars2007.pdf
+			/*-Bit 7 : bit de parité paire,
+				-Bits 0 à 6 bits codant le caractère
+				- Bit 6 : toujours à zéro,
+				-Bit 5 : toujours à 1,
+				-Bit 4 et 3 : programme circuit 1 :
+				01 _ programme A       HC  / HC  / HC  /    <-
+				10 _ programme B       HC HP HC  / HC  /
+				11 _ programme C       HC HP HC HP HC  /
+				- Bit 2 à 0 : programme circuit 2 :
+				000 _ programme P0     HC HP HC HP HC HP
+				001 _ programme P1     HC HP HC HP HC  /   <-
+				010 _ programme P2     HC HP HC HP  /  /
+				011 _ programme P3     HC HP HC  /  /  /
+				100 _ programme P4     HC HP  /  /  /  /
+				101 _ programme P5     HC  /  /  /  /  /
+				110 _ programme P6      /  /  /  /  /  /
+				111 _ programme P7      / HP  / HP  / HP
+				*/
           }
 		      if (valName == "ISOUSC")
           {

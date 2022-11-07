@@ -1,3 +1,7 @@
+//11/2022 erreur changement d'heure:
+//changement dimanche à 2 heures du matin
+//lun. oct. 31 17:05:27 2022__1667232327  18:05:27 heure sur afficheur
+
 //1-sans canbus: renommer PIN_CS_CAN constantes.h (a essayer)
 //2-sans wifinfo renommer WITHWIFINFO wifinfo.h (a essayer)
 
@@ -101,13 +105,50 @@
 
 
 //********************************************************************
-//###################################includes##################################  
 //version wifinfo syslog d'origine:352 392 bytes
-
+//********************************************************************
 //9/12/2021
 //remplacer les XXXX par ptec
 //emettre le dernier compteur du jour qu'on quitte
 //ajouter I2S.h dans C:\Program Files (x86)\Arduino\libraries\NeoPixelBus-master\src\internal
+//***************************10/10/2022*****************************************
+//modification du traitement des commandes temporisees
+//decompte dans traitement pose trop de probleme avec la boucle de transfert entre affichage
+//et traitement => transfert du decompte dans affichage.
+
+//dans traitement:transfert de la duree programmee vers affichage(decompteTempoArretMarcheForce).
+//dans affichage:
+//    memorisation de la commande en cours
+//    emission de la commande vers traitement.----->traitement->VMC.setLeMode
+//      reception d'une commande temporisee<--------traitement->VMC.getLeMode
+//        demarrage du decompte
+//          attente de la fin de decompte tout en attendant une eventuelle nouvelle commande.
+//          -soit nouvelle commande avant fin tempo
+//          -soit activation de la commande memorisee
+//    la duree de temporisation est calculee sur le temps recu HMS(voir le passage a minuit 
+//    combine avec la duree min vmc).
+
+//ensuite il faut voir buf[MESSAGE_TYPE_5::FORCAGE_MODE] = 0; // VMC.getForcageMode();
+//pour traitementVMCHiver  mode= soit BIDON soit AUTO
+//###################################watchdog##################################
+//https://sigmdel.ca/michel/program/esp8266/arduino/watchdogs3_fr.html  
+//https://sigmdel.ca/michel/program/esp8266/arduino/watchdogs_fr.html
+/*
+-1 watchdog materiel
+	-Actif par defaut
+	-periode 6sec.
+	-reactivation:pas besoin d'instruction incluse dans loop(),yield() et delay()
+-2 watchdog logiciel
+	-Actif par defaut
+	-desactivation:ESP.wdtDisable();
+	-periode <6sec : 3.2 ou 1.5 en fonction de l'init ?
+	-reactivation:pas necessare:instruction incluse dans loop(),yield() et delay()
+-3 watchdog user
+    -Ce site recommande de ne pas toucher a ces 2 watchdog mais plutot d'ajouter
+	un watchdog "user"
+
+*/
+//###################################includes##################################  
 //#include "constantes.h"   ici,COMP_CAN_BUS pas vu??? il faut apres Wifinfo.h???
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -125,7 +166,9 @@
 #include "smt160.h"
 #include "dht.h"
 #include "vmc.h"
+#ifdef TA12
 #include "tA12.h"
+#endif
 #include "simuTempo.h"
 #include "LibTeleinfo.h"
 #include "enregistrement.h"
@@ -150,7 +193,8 @@ myTinfo MYTINFO;
 
 enregistrement ENREGISTREMENT;
 #ifdef ALARME
-	myAlarme MYALARME;
+	myAlarme MYALARMEGARAGE;
+	myAlarme MYALARMEPORTAIL;
 #endif
 relais RELAIS;
  lesLeds LESLEDS;   //conserver pour TRAITEMENTLEDS même sans led locale
@@ -164,7 +208,9 @@ capteur CAPTEURIINST;
 capteur  DHTCUISINE_T;
 capteur DHTCUISINE_H;
 dht DHTSDB;
-ta12 TA12;
+#ifdef TA12
+	ta12 TA12;
+#endif
 Ticker Tick_emoncms;
 Ticker Tick_jeedom;
 Ticker Tick_httpRequest;
@@ -214,13 +260,17 @@ void ICACHE_FLASH_ATTR setup() {
  CONFIGURATION.showConfig();
   //initialiser les capteurs après CONFIGURATION.initConfig() 
   TEMPEXT.initCapteur(PIN_CAPTEUR_TEMP_EXT, CONFIGURATION.config.tempo.cor_temp_ext_dixieme_degres, 10, ID_CLASSES::ID_TEMPEXT);
-  CAPTEURIINST.initCapteur(0, 1, ID_CLASSES::ID_TA12);
+#ifdef TA12
+	CAPTEURIINST.initCapteur(0, 1, ID_CLASSES::ID_TA12);
+#endif
   DHTCUISINE_T.initCapteur(CONFIGURATION.config.tempo.cor_temp_cuis_dixieme_degres, 10, ID_CLASSES::ID_DHTCUISINE_T);
   DHTCUISINE_H.initCapteur(CONFIGURATION.config.tempo.cor_hum_cuis_pourcent, 1, ID_CLASSES::ID_DHTCUISINE_H);
   DHTSDB.initCapteur(PIN_CAPTEUR_TEMP_HUMIDITE_SDB, ID_CLASSES::ID_DHTSDB);
+#ifdef TA12
   TA12.initCapteur(PIN_CAPTEUR_ANA_COURANT, 1);
   TA12.setSeuilPetiteVitesse(20);
   TA12.setSeuilGrandeVitesse(39);
+#endif
   DHTSDB.DHT_H.initCapteur( CONFIGURATION.config.tempo.cor_hum_sdb_pourcent, 1, ID_CLASSES::ID_DHTSDB_H);
   DHTSDB.DHT_T.initCapteur(CONFIGURATION.config.tempo.cor_temp_sdb_dixieme_degres, 10, ID_CLASSES::ID_DHTSDB_T);
   WEBSERVER.initSpiffs();  
@@ -276,7 +326,8 @@ void ICACHE_FLASH_ATTR setup() {
 MYSNTP.init();
 ENREGISTREMENT.init();
 #ifdef ALARME
-	MYALARME.init();
+	MYALARMEGARAGE.init();
+	MYALARMEPORTAIL.init();
 #endif
 #ifdef COMP_CAN_BUS
   CAN_BUS.InitCanBus(MCP_16MHZ);
@@ -351,7 +402,8 @@ void loop()
 	VMC.TRAITEMENTVMC();
 	//DebugF("tCuis: "); Debugln(tCuis);
 #ifdef ALARME
-	MYALARME.testReceptionAlarme();
+	MYALARMEGARAGE.testReceptionAlarme();
+	MYALARMEPORTAIL.testReceptionAlarme();
 #endif
 //**************************************Traitement des sorties****************************************************
 #ifdef COMP_CAN_BUS

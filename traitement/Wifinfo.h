@@ -27,7 +27,7 @@
 #ifndef WIFINFO_H
 #define WIFINFO_H
 
-#define TRAITMODE  //before constantes.h
+#define NO_TRAITMODE  //before constantes.h
 /*modifications associées à TRAITMODE-->le ForcageMode est indépendant du mode force
 coté traitement:
 Wifinfo.h       ajout constante de compilation TRAITMODE
@@ -65,7 +65,7 @@ poussoir.cpp
 
 */
 
-#define XXALARME
+#define NO_ALARME
 /*
 ajout reception d'un message d'une alarme porte ouverte
 affichage sur l'ecran d'un pave vert ferme,rouge ouvert

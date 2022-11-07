@@ -159,6 +159,7 @@
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClInclude Include="constantes.h" />
+    <ClInclude Include="constantesPartagees.h" />
     <ClInclude Include="dht.h" />
     <ClInclude Include="interRelais.h" />
     <ClInclude Include="ledsRGBSerial.h" />
@@ -168,7 +169,6 @@
     <ClInclude Include="myTinfo.h" />
     <ClInclude Include="SNTPClock.h" />
     <ClInclude Include="SNTPTime.h" />
-    <ClInclude Include="stringFlash.h" />
     <ClInclude Include="ta12.h" />
     <ClInclude Include="vmc.h" />
     <ClInclude Include="LibTeleinfo.h" />

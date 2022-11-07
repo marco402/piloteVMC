@@ -49,27 +49,29 @@ void ledsRgbSerial::init(void)
 }
 
 int memoEtatDesLeds = -1;
-int memoLuminositeeLeds = -1;
+int memoLuminositeeLeds = brightness;
 void ledsRgbSerial::traitement(struct_reception reception)
 {
 	if(reception.infos)
 	{	
-    if(reception.luminositeeLeds != memoLuminositeeLeds)
-    {
-          rgb_led.SetBrightness(reception.luminositeeLeds); 
-          memoLuminositeeLeds = reception.luminositeeLeds;  
-    }        
-    if(reception.etatLeds != memoEtatDesLeds)
-    { 
-      union leds etatDesLeds;
-      //   if(reception.etatLeds!=12)
-      //      Serial.print("reception.etatLeds "); Serial.println(reception.etatLeds);
-      etatDesLeds.etat=reception.etatLeds;
-      traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
-      traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
-      //traitementLedsRGB(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
-      memoEtatDesLeds=reception.etatLeds ; 
-    }
+		if(reception.luminositeeLeds != memoLuminositeeLeds)
+		{
+			  rgb_led.SetBrightness(reception.luminositeeLeds);
+			  Serial.print("rgb_led.SetBrightness "); Serial.println(reception.luminositeeLeds);  //a voir prise en compte uniquement au reboot???
+			  memoLuminositeeLeds = reception.luminositeeLeds;
+			  rgb_led.Show();                                                                     //voir s'il faut .show
+		}        
+		if(reception.etatLeds != memoEtatDesLeds)
+		{ 
+		  union leds etatDesLeds;
+		  //   if(reception.etatLeds!=12)
+		  //      Serial.print("reception.etatLeds "); Serial.println(reception.etatLeds);
+		  etatDesLeds.etat=reception.etatLeds;
+		  traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
+		  traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
+		  //traitementLedsRGB(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
+		  memoEtatDesLeds=reception.etatLeds ; 
+		}
 	}
 }
 void ledsRgbSerial::traitementLedsRGB(unsigned char etat,LES_LEDS_RGB indiceLedRGB)

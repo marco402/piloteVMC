@@ -82,6 +82,7 @@
     <XtensaHItem Include="capteur.h" />
     <XtensaHItem Include="constantes.h" />
     <XtensaHItem Include="constantesPartagees.h" />
+    <XtensaHItem Include="dht.h" />
     <XtensaHItem Include="ledsClassiques.h" />
     <XtensaHItem Include="ledsRGBSerial.h" />
     <XtensaHItem Include="poussoir.h" />

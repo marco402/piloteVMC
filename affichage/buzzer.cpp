@@ -39,7 +39,7 @@ void buzzer::test(void)const
 }
 void buzzer::setBuzzer(boolean etat)
 {
-if (etat)    //pour ne pas annuler les précedents du cycle
+if (etat)    //pour ne pas annuler les prï¿½cedents du cycle
 	leBuzzer=true;   //true->beep
 }
 uint8_t buzzer::getBuzzer() const

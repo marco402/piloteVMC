@@ -46,7 +46,7 @@ myAlarme::myAlarme()
 void ICACHE_FLASH_ATTR myAlarme::init()
 {
 	udpAlarme.begin(CONFIGURATION.config.tempo.portEnr+1);
-  memoPort = CONFIGURATION.config.tempo.portEnr+1;
+    memoPort = CONFIGURATION.config.tempo.portEnr+1;
 }
 void ICACHE_FLASH_ATTR myAlarme::stop()
 {
@@ -55,6 +55,7 @@ void ICACHE_FLASH_ATTR myAlarme::stop()
 ///
 void myAlarme::testReceptionAlarme(void)
 {
+	return;
 	char packetBuffer[255];
 	char packetBufferAcquitement[2];
 	packetBufferAcquitement[0] = CODES_ALARME::HEAD_MESSAGE;
@@ -85,6 +86,10 @@ void myAlarme::testReceptionAlarme(void)
 uint8_t myAlarme::getEtatAlarmeGarage(void)
 {
 	return etatAlarmeGarage;
+}
+uint8_t myAlarme::getEtatAlarmePortail(void)
+{
+	return etatAlarmePortail;
 }
 bool myAlarme::send(IPAddress adresseIP, uint32_t port, char * message, uint32_t * memPort, WiFiUDP udp, int16_t nbMessage)
 {

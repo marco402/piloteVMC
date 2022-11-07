@@ -23,7 +23,9 @@
 #include "constantes.h"
 #include "dht.h"
 #include "smt160.h"
-#include "ta12.h"
+#ifdef TA12
+	#include "ta12.h"
+#endif
 #include "buzzer.h"
 #include "config.h"
 #include "interRelais.h"
@@ -105,7 +107,7 @@ void vmc::traitementVMCHiver()
 		//leMode = MODES::AUTO;  //il faudrait indiquer a affichage->poussoir de forcer le mode auto
 		//memoModes = MODES::AUTO;
 //#ifndef TRAITMODE
-		decompteTempoArretMarcheForce = 0;
+		//decompteTempoArretMarcheForce = 0;
 //#endif
 	}
 		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
@@ -113,8 +115,8 @@ void vmc::traitementVMCHiver()
 
 void vmc::traitePeriodeVmc()
 {
-	if (traiteArretMarcheForce() > 0)
-		return;
+	//if (traiteArretMarcheForce() > 0)
+	//	return;
 	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)
 	{
 		if (leMode == MODES::AUTO)
@@ -136,7 +138,9 @@ void vmc::traitePeriodeVmc()
 		{
 			casAuto = 0;	//effacement du status auto
 			info = CASSTATUS::ST_START;
+#ifdef TA12
 			TA12.traitementSeuilTa12();	//true si ok
+#endif
 		}
 	}
 	//if (leMode == MODES::ETE)
@@ -164,10 +168,10 @@ void vmc::initialisationMode()
 	//noInterrupts();	//au cas ou: framework arduino ???
 	if (memoModes != leMode)
 	{
-#ifndef TRAITMODE
+//#ifndef TRAITMODE
 		memoRetourForcage = memoModes;
 		decompteTempoArretMarcheForce = 0;				//sinon repart en auto en fin de tempo si on a pas fini le forçage
-#endif
+//#endif
 		switch (leMode)
 		{
 		case MODES::ARRET:
@@ -184,30 +188,30 @@ void vmc::initialisationMode()
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret
 //#ifndef TRAITMODE
-			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
+			//decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
 //#endif
 			break;
 		case MODES::TEMPO_MARCHE_PV:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 //#ifndef TRAITMODE
-			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
+			//decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
 //#endif
 			break;
 		case MODES::TEMPO_MARCHE_GV:
 			RELAIS.traitementRelais(VITESSE_RELAIS::RAPIDE_REL, ARRET_MARCHE::MARCHE_REL);
 //#ifndef TRAITMODE
-			decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
+			//decompteTempoArretMarcheForce = CONFIGURATION.config.tempo.duree_forcage_sec;
 //#endif
 			break;
 		case MODES::AUTO:
 //			modeEteEntreAirFrais = false;
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au d�part
+			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au depart
 			break;
 		case MODES::ETE:
 //			modeEteEntreAirFrais = true;
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au d�part
+			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret au depart
 			//traiteEte();
 			//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 			break;
@@ -220,7 +224,9 @@ void vmc::initialisationMode()
 		}
 		setCptVmc(REINIT);	//annule l'attente pour le traitement vmc reste a cette valeur si pas en auto-->traitement a chaque cycle
 		memoModes = leMode;
+#ifdef TA12
 		TA12.clrMoyennePeriodeCourante();
+#endif
 		//interrupts();
 	}
 	//if (tempoFinForcage > 0)
@@ -231,39 +237,39 @@ uint16_t  vmc::getDecompteTempoArretMarcheForce(void)const
 {
 	return decompteTempoArretMarcheForce;
 }
-#ifndef TRAITMODE
-int vmc::traiteArretMarcheForce()
-{
-	if (decompteTempoArretMarcheForce == 0)
-	{
-		return 0;
-	}
-	else if (decompteTempoArretMarcheForce ==1 )		//on perd 2 sec sur la tempo...
-	{
-		leMode = memoRetourForcage;   //                                     MODES::AUTO;		//ne repasse pas en auto a voir
-		//memoModes= MODES::AUTO;
-		decompteTempoArretMarcheForce = 0;
-		//tempoFinForcage = 2;
-		//le mode repasse en AUTO et revient immédiatement en FORCE,
-        //probablement au niveau affichage emission d'un message force avant la prise
-        //en compte de la réception du message AUTO=>temporiser 5 sec.avant prise en comte d'un nouveau mode
-		DebuglnF("Fin forcage");   //------------------------>OK
-		return 1;
-	}
-	else
-	{
-		decompteTempoArretMarcheForce -= 1;
-		return 1;
-	}
-}
-#else
-uint16_t vmc::traiteArretMarcheForce(void)
-{
-	if (decompteTempoArretMarcheForce > 0)
-		decompteTempoArretMarcheForce -= 1;
-	return decompteTempoArretMarcheForce;
-}
-#endif
+//#ifndef TRAITMODE
+//int vmc::traiteArretMarcheForce()
+//{
+//	if (decompteTempoArretMarcheForce == 0)
+//	{
+//		return 0;
+//	}
+//	else if (decompteTempoArretMarcheForce ==1 )		//on perd 2 sec sur la tempo...
+//	{
+//		leMode = memoRetourForcage;   //                                     MODES::AUTO;		//ne repasse pas en auto a voir
+//		//memoModes= MODES::AUTO;
+//		decompteTempoArretMarcheForce = 0;
+//		//tempoFinForcage = 2;
+//		//le mode repasse en AUTO et revient immédiatement en FORCE,
+//        //probablement au niveau affichage emission d'un message force avant la prise
+//        //en compte de la réception du message AUTO=>temporiser 5 sec.avant prise en comte d'un nouveau mode
+//		DebuglnF("Fin forcage");   //------------------------>OK
+//		return 1;
+//	}
+//	else
+//	{
+//		decompteTempoArretMarcheForce -= 1;
+//		return 1;
+//	}
+//}
+//#else
+//uint16_t vmc::traiteArretMarcheForce(void)
+//{
+//	if (decompteTempoArretMarcheForce > 0)
+//		decompteTempoArretMarcheForce -= 1;
+//	return decompteTempoArretMarcheForce;
+//}
+//#endif
 boolean vmc::traitementTempsMiniVMC(void)
 {
 	// ok Nbminute=HEURE.tm.Hour*60+HEURE.tm.Minute;
@@ -494,7 +500,9 @@ void vmc::traiteMoyennePeriode(void)
 		DHTCUISINE_T.traiteMoyennePeriode(false);  //capteurs distants
 		DHTCUISINE_H.traiteMoyennePeriode(true);  //capteurs distants
 		TEMPEXT.traiteMoyennePeriode(false);
+#ifdef TA12
 		TA12.traiteMoyennePeriode(false);
+#endif
 		//DebugF("1 TA12.getMoyennePeriode: "); Debugln(TA12.getMoyennePeriode());
 		//DebugF("1 TA12.getPuissanceConsommee: "); Debugln(TA12.getPuissanceConsommee());
 }

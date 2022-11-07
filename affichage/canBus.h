@@ -54,6 +54,7 @@ class can_bus : public MCP_CAN
 		unsigned char freq_can;
 		uint8_t erreur = 0;
 		uint16_t compteurBuzzer = 0;
+		int8_t compteurErreurConsecutives = 0;
 };
 extern can_bus CAN_BUS;
 #endif /* CAN_BUS_H_ */

@@ -43,10 +43,10 @@
 #define V_TXTLIGNEHCUIS  (V_TXTLIGNETEXT+HAUTLIGNE)
 #define V_TXTLIGNEHSDB  (V_TXTLIGNEHCUIS+HAUTLIGNE)
 #ifdef ALARME
-	#define V_TXTLIGNEALARME  (V_TXTLIGNEHSDB+HAUTLIGNE)
-	#define V_TXTLIGNEHEURE  (V_TXTLIGNEALARME+HAUTLIGNE)
+  #define V_TXTLIGNEALARME  (V_TXTLIGNEHSDB+HAUTLIGNE)
+  #define V_TXTLIGNEHEURE  (V_TXTLIGNEALARME+HAUTLIGNE)
 #else
-	#define V_TXTLIGNEHEURE  (V_TXTLIGNEHSDB+HAUTLIGNE)
+  #define V_TXTLIGNEHEURE  (V_TXTLIGNEHSDB+HAUTLIGNE)
 #endif
 #define V_TXTLIGNEETAT  (V_TXTLIGNEHEURE+HAUTLIGNE)
 #define V_TXTSTATUS     V_TXTLIGNEHCUIS
@@ -63,7 +63,7 @@
 #define COL3  49
 #define COL5  116
 #ifdef ALARME
-	#define XPAVEALARMEGARAGE 3
+  #define XPAVEALARMEGARAGE 3
 #endif
 #define XPAVEJOUR 3
 #define XPAVEDEMAIN 18
@@ -90,37 +90,37 @@
 #define NBPIXPARLETTERSIZE2    14
 class st7735 : public Adafruit_ST7735
 {
-	public:
-		st7735();
-		void affiche(struct_reception R);  //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
-		void initAdafruit_ST7735(void);
-		void setchangeMode(bool changeMode);
-		void setMode( int mode);
-	private:
-		bool changeMode = false;
-		int modeSelection = 0;
-		void afficheDistants(struct_reception R);
-		void afficheLocaux(struct_reception R);
-		void fix_number_position(float number);
-		void fix_number_position(int number);
-		void TraitePave(int X,uint8_t etat);
-		void TraitePaveJN(int X,uint8_t etat);
+  public:
+    st7735();
+    void affiche(struct_reception R);  //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
+    void initAdafruit_ST7735(void);
+    void setchangeMode(bool changeMode);
+    void setMode( int mode);
+  private:
+    bool changeMode = false;
+    int modeSelection = 0;
+    void afficheDistants(struct_reception R);
+    void afficheLocaux(struct_reception R);
+    void fix_number_position(float number);
+    void fix_number_position(int number);
+    void TraitePave(int X,uint8_t etat);
+    void TraitePaveJN(int X,uint8_t etat);
 #ifdef ALARME
         void TraitePaveAlarme(int X, uint8_t etat);
 #endif
-		void TraiteLigneEtat(struct_reception R);
-		void initScreen(void);
-		void afficheFloat(float temperature, unsigned char positionX, unsigned char positionY);
-		void afficheInt(int humidity, unsigned char positionX, unsigned char positionY);
-		void debugInfos(struct_reception R);
-		void debugDistants(struct_reception R);
-		void debugLocaux(struct_reception R);
-		void changementMode(void);
-		void decompteCgtVitesse(struct_reception R);
-		void casNormal(struct_reception R);
-		bool changeModePrec = false;
-		uint8_t clignote = 12;
-		uint8_t tourniquet = 4;
+    void TraiteLigneEtat(struct_reception R);
+    void initScreen(void);
+    void afficheFloat(float temperature, unsigned char positionX, unsigned char positionY);
+    void afficheInt(int humidity, unsigned char positionX, unsigned char positionY);
+    void debugInfos(struct_reception R);
+    void debugDistants(struct_reception R);
+    void debugLocaux(struct_reception R);
+    void changementMode(void);
+    void decompteCgtVitesse(struct_reception R);
+    void casNormal(struct_reception R);
+    bool changeModePrec = false;
+    uint8_t clignote = 12;
+    uint8_t tourniquet = 4;
 };
 extern st7735 AFFICHEUR;
 #endif /* ST7735_H_ */

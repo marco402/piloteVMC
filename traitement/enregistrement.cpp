@@ -29,7 +29,9 @@
 #include "interRelais.h"
 #include "dht.h"
 #include "vmc.h"
-#include "ta12.h"
+#ifdef TA12
+	#include "ta12.h"
+#endif
 #include "smt160.h"
 #include "mySNTP.h"
 #include "myWifi.h"
