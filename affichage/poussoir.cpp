@@ -18,16 +18,21 @@
 #include "constantes.h"
 #include "poussoir.h"
 #include "st7735.h"
-unsigned long tempsMilli = 0 ;
-unsigned long tempsMilliCommandeTemporisees = 0 ;
+
 poussoir::poussoir()
 {
 	pinMode(PIN_POUSSOIR_MODE, INPUT);
 }
 //appel� a chaque loop de affichage.ino
-boolean poussoir::traitement(MODES forcageMode, int16_t dureeTempo)
+unsigned long  poussoir::getTempsMilliCommandeTemporisees(void)
 {
-#ifdef TRAITMODE
+	return tempsMilliCommandeTemporisees;
+}
+boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
+{
+//            Serial.print(F("dureeForcageSec: "));
+//           Serial.println(dureeForcageSec);
+//#ifdef TRAITMODE
 	//struct_reception structReception;
 //switch (leMode)
 //    {
@@ -38,15 +43,22 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeTempo)
 //      leMode = forcageMode;
 //      break;
 //    }
-	if (forcageMode != MODES::BIDON)  //le logiciel distant traitement indique si un forcage est en cours
-	{
-    leMode = forcageMode;  
-    memoModes = leMode;  
-	}
-	//on garde la possibilitee de changer de mode pendant le forcage
-#endif
+//	if (forcageMode != MODES::BIDON)  //le logiciel distant traitement indique si un forcage est en cours
+//	{
+//    leMode = forcageMode;  
+//    memoModes = leMode;  
+//	}
+//	//on garde la possibilitee de changer de mode pendant le forcage
+//#endif
+//            Serial.print(F("tempsMilliCommandeTemporisees: "));
+//           Serial.println(tempsMilliCommandeTemporisees);
+//            Serial.print(F("milli: "));
+//           Serial.println(millis());
+
 	if (tempsMilliCommandeTemporisees > 0 && tempsMilliCommandeTemporisees < millis())
 	{
+             Serial.print(F("memoModes: "));
+           Serial.println(memoModes);
 		leMode = memoModes ;
 		tempsMilliCommandeTemporisees = 0;
 	}
@@ -80,14 +92,17 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeTempo)
 		{
 			if (transitoirePoussoir)	//relachement
 			{
+        memoModes = leMode;      
 				leMode=modeTransitoire;	//validation du nouveau mode, lemode devient diff�rent de memoModes-->InitialisationMode
 //#ifdef TRAITMODE
-				memoModes = leMode;
-//#endif
+
+				tempsMilliCommandeTemporisees = 0;   //arret d'une commande temporisee si en cours
+//#endif        
 				//Serial.print("modeTransitoire"); Serial.println(modeTransitoire);
 				transitoirePoussoir=false;
 				AFFICHEUR.setchangeMode(false);
 //#ifdef TRAITMODE
+				//traitement des modes temporises
 				switch (leMode)
 				{
 				case MODES::TEMPO_ARRET:
@@ -96,7 +111,7 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeTempo)
 				    //memoModes = leMode;  
 				  //leMode = forcageMode;
 					//lancement du decompte
-					tempsMilliCommandeTemporisees =(unsigned long) millis() + (unsigned long)dureeTempo * 1000;
+					tempsMilliCommandeTemporisees =(unsigned long) millis() + (unsigned long)dureeForcageSec * 1000;
 				  break;
 				}
 //#endif
@@ -119,34 +134,34 @@ void poussoir::clearLeMode(void)
 {
 	this->leMode = MODES::BIDON;
 }
-#ifdef TRAITMODE
-boolean startmodeTempo=false;
-void poussoir::testModeForce(int16_t decompteTempoArretMarcheForce)      // , uint16_t duree_forcage_sec)
-{
-	//if (decompteTempoArretMarcheForce > 0)
-	//	decompteTempoArretMarcheForce -= 1;
-
-	//else if(leMode != memoModes)
-	//{
-	switch (leMode)
-		{
-		case MODES::TEMPO_ARRET:
-		case MODES::TEMPO_MARCHE_PV:
-		case MODES::TEMPO_MARCHE_GV:
-    if(decompteTempoArretMarcheForce>0)
-    {
-      startmodeTempo=true;
-    }
-		else if (decompteTempoArretMarcheForce == 0 && startmodeTempo == true)
-			{
-      Serial.print("leMode avant ");Serial.println(leMode);
-		  leMode = memoModes;
-      startmodeTempo=true;
-      Serial.print("leMode apres ");Serial.println(leMode);
-			}
-			//decompteTempoArretMarcheForce = duree_forcage_sec;
-			break;
-		}
-	//}
-}
-#endif
+//#ifdef TRAITMODE
+//boolean startmodeTempo=false;
+//void poussoir::testModeForce(int16_t decompteTempoArretMarcheForce)      // , uint16_t duree_forcage_sec)
+//{
+//	//if (decompteTempoArretMarcheForce > 0)
+//	//	decompteTempoArretMarcheForce -= 1;
+//
+//	//else if(leMode != memoModes)
+//	//{
+//	switch (leMode)
+//		{
+//		case MODES::TEMPO_ARRET:
+//		case MODES::TEMPO_MARCHE_PV:
+//		case MODES::TEMPO_MARCHE_GV:
+//    if(decompteTempoArretMarcheForce>0)
+//    {
+//      startmodeTempo=true;
+//    }
+//		else if (decompteTempoArretMarcheForce == 0 && startmodeTempo == true)
+//			{
+//      Serial.print(F("leMode avant "));Serial.println(leMode);
+//		  leMode = memoModes;
+//      startmodeTempo=true;
+//      Serial.print(F("leMode apres "));Serial.println(leMode);
+//			}
+//			//decompteTempoArretMarcheForce = duree_forcage_sec;
+//			break;
+//		}
+//	//}
+//}
+//#endif

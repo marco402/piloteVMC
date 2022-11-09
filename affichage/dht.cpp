@@ -58,11 +58,11 @@ if(unCycleSurDeux==true)
 			capteur = getTemperatureDHT22(bits);
 			DHT_T.traiteMesure(capteur);
 #ifdef DEBUGDHT
-			Serial.print("capteur dht T=");	Serial.println((long)capteur);
+			Serial.print(F("capteur dht T="));	Serial.println((long)capteur);
 #endif
 			capteur= getHumiditeDHT22(bits); 
 #ifdef DEBUGDHT
-			Serial.print("capteur dht H=");Serial.println((long)capteur);
+			Serial.print(F("capteur dht H="));Serial.println((long)capteur);
 #endif
 			DHT_H.traiteMesure(capteur);
 			compteurBuzzer = 0;		//lecture ok

@@ -223,9 +223,9 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 	else if (type == ID_MESSAGE_TYPE_5)
 		{
 			unsigned char buf[MESSAGE_TYPE_5::FIN_MESSAGE_TYPE_5];
-			buf[MESSAGE_TYPE_5::DECOMPTE_TEMPO_ARRET_MARCHE_FORCE_MSB] = VMC.getDecompteTempoArretMarcheForce()>> 16;
-			buf[MESSAGE_TYPE_5::DECOMPTE_TEMPO_ARRET_MARCHE_FORCE_MIDDLE] = VMC.getDecompteTempoArretMarcheForce()>> 8;
-			buf[MESSAGE_TYPE_5::DECOMPTE_TEMPO_ARRET_MARCHE_FORCE_LSB] = VMC.getDecompteTempoArretMarcheForce() & 0xFF;
+			buf[MESSAGE_TYPE_5::DUREE_FORCAGE_MSB] = CONFIGURATION.config.tempo.duree_forcage_sec>> 16;
+			buf[MESSAGE_TYPE_5::DUREE_FORCAGE_MIDDLE] = CONFIGURATION.config.tempo.duree_forcage_sec>> 8;
+			buf[MESSAGE_TYPE_5::DUREE_FORCAGE_LSB] = CONFIGURATION.config.tempo.duree_forcage_sec & 0xFF;
 			buf[MESSAGE_TYPE_5::CPT_DELAI_CGT_VITESSE] = RELAIS.getDecompteDelaiCgtVitesse();
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_MSB] = RELAIS.getNbMinuteActiveJourCourant()>> 8;
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_LSB] = RELAIS.getNbMinuteActiveJourCourant() & 0xFF;

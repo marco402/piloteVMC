@@ -25,13 +25,16 @@ class poussoir
 		MODES getLeMode(void);
 		void clearLeMode(void);
 		void setLemode(unsigned char leMode);
-#ifdef TRAITMODE
-		void testModeForce(int16_t decompteTempoArretMarcheForce);   // , uint16_t duree_forcage_sec);
-#endif
+		unsigned long  getTempsMilliCommandeTemporisees(void);
+//#ifdef TRAITMODE
+//		void testModeForce(int16_t decompteTempoArretMarcheForce);   // , uint16_t duree_forcage_sec);
+//#endif
 	private:
 		MODES modeTransitoire= MODES::AUTO;   //ARRET
 		MODES memoModes= MODES::AUTO;
 		MODES leMode= MODES::AUTO;
+		unsigned long tempsMilli = 0;
+		unsigned long tempsMilliCommandeTemporisees = 0;
 };
 extern poussoir POUSSOIR;
 #endif /* POUSSOIR_H_ */

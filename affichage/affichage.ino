@@ -18,6 +18,9 @@
 //  Le croquis utilise 22616 octets (73%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
 //  Les variables globales utilisent 1479 octets (72%) de mémoire dynamique, ce qui laisse 569 octets pour les variables locales. Le maximum est de 2048 octets.
 
+//ajout de F("xxx")
+//  Le croquis utilise 22608 octets (73%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
+//  Les variables globales utilisent 1167 octets (56%) de mémoire dynamique, ce qui laisse 881 octets pour les variables locales. Le maximum est de 2048 octets.
 
 
  //###################################include################################## 
@@ -97,7 +100,7 @@ unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrai
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("setup");
+  Serial.println(F("setup"));
 
 #ifdef  HORLOGETM1650 
   display.init();
@@ -134,14 +137,15 @@ void loop()
  if(CAN_BUS.traitementReception()||(task_1_sec==3)) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
 	task_1_sec=0;
 	structReception = CAN_BUS.getStructReception();
-#ifdef TRAITMODE
-	retour = POUSSOIR.traitement(structReception.forcageMode);
-	//uint16_t decompteTempoArretMarcheForce=CAN_BUS.decDecompteTempoArretMarcheForce();
-	//POUSSOIR.testModeForce(CAN_BUS.decDecompteTempoArretMarcheForce(), structReception.dureeForcage);
-	POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
-#else
-	retour = POUSSOIR.traitement(MODES::BIDON,structReception.decompteTempoArretMarcheForce);
-#endif
+//#ifdef TRAITMODE
+//	retour = POUSSOIR.traitement(structReception.forcageMode);
+//	//uint16_t decompteTempoArretMarcheForce=CAN_BUS.decDecompteTempoArretMarcheForce();
+//	//POUSSOIR.testModeForce(CAN_BUS.decDecompteTempoArretMarcheForce(), structReception.dureeForcage);
+//	//POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
+//#else
+	retour = POUSSOIR.traitement(MODES::BIDON,structReception.dureeForcageSec);
+
+//#endif
 	BUZZER.setBuzzer(retour);
 	DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
 	DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls
@@ -152,8 +156,9 @@ void loop()
 	LEDS_RGB_SERIAL.traitement(CAN_BUS.getStructReception());  //3 appels,compteur "en dur" dans getEtatReceptionInfos
 	retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());
 	BUZZER.setBuzzer(retour) ;
-	AFFICHEUR.affiche(CAN_BUS.getStructReception());
-	BUZZER.traitement(CAN_BUS.getStructReception());  //buzzer permanent si plus de réception CAN
+	structReception.decompteTempoArretMarcheForce = POUSSOIR.getTempsMilliCommandeTemporisees();
+	AFFICHEUR.affiche(structReception);
+	BUZZER.traitement(structReception);  //buzzer permanent si plus de réception CAN
 //########################################Traitement des sorties##########################################
 //les moyennes se1110.ront faite au niveaux des UC
 //    Serial.print("Cuisine H  "); Serial.println(DHTCUISINE.DHT_H.getMesureCycleMsb());Serial.println(DHTCUISINE.DHT_H.getMesureCycleLsb());

@@ -43,13 +43,13 @@
 		 }
 		 if (nEssai == 0)
 		 {
-			 Serial.println("CAN BUS Shield init fail 10 try");
+			 Serial.println(F("CAN BUS Shield init fail 10 try"));
 			 //initCanBus = false;
 			 return;
 		 }
 		 else
 		 {
-			 Serial.println("CAN BUS Shield init to 100k ok!");
+			 Serial.println(F("CAN BUS Shield init to 100k ok!"));
 			 init_Mask(0, 0, 0xFFFFFFF8);                // Init first mask... accept 0 � 7  
 			 init_Filt(0, 0, (unsigned char)LES_ID_CAN::ID_MESSAGE_TYPE_0);                // Init first filter...
 			 init_Filt(1, 0, (unsigned char)LES_ID_CAN::ID_MESSAGE_TYPE_1);                // Init second filter...
@@ -93,7 +93,7 @@ boolean can_bus::traitementReception(void )
 				 }
 				 else
 				 {
-					 Serial.println("Problème de longueur message type 0");
+					 Serial.println(F("Problème de longueur message type 0"));
 					 erreur = ERREURS::E_CAN_BUS_AFF;
 				 }
 			 }
@@ -125,7 +125,7 @@ boolean can_bus::traitementReception(void )
 				 }
 				 else
 				 {
-					 Serial.println("Problème de longueur message type 1");
+					 Serial.println(F("Problème de longueur message type 1"));
 					 erreur = ERREURS::E_CAN_BUS_AFF;
 				 }
 			 }
@@ -154,7 +154,7 @@ boolean can_bus::traitementReception(void )
 				 else
 				 {
 					 erreur = ERREURS::E_CAN_BUS_AFF;
-					 Serial.println("Problème de longueur message type 4");
+					 Serial.println(F("Problème de longueur message type 4"));
 				 }
 			 }
 			 else if (canId == LES_ID_CAN::ID_MESSAGE_TYPE_5) 
@@ -163,11 +163,11 @@ boolean can_bus::traitementReception(void )
 				 {
 					 union CANconv motRecu;
 					 motRecu.capteur = 0;
-					 motRecu.b[2] = rxBuf[MESSAGE_TYPE_5::DECOMPTE_TEMPO_ARRET_MARCHE_FORCE_MSB];
-					 motRecu.b[1] = rxBuf[MESSAGE_TYPE_5::DECOMPTE_TEMPO_ARRET_MARCHE_FORCE_MIDDLE];
-					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::DECOMPTE_TEMPO_ARRET_MARCHE_FORCE_LSB];
-					 reception.decompteTempoArretMarcheForce = motRecu.capteur;
-					 motRecu.capteur = 0;
+					 motRecu.b[2] = rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE_MSB];
+					 motRecu.b[1] = rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE_MIDDLE];
+					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::DUREE_FORCAGE_LSB];
+					 reception.dureeForcageSec = motRecu.capteur;
+ 					 motRecu.capteur = 0;
 					 motRecu.b[0] = rxBuf[MESSAGE_TYPE_5::CPT_DELAI_CGT_VITESSE];
 					 reception.decompteDelaiCgtVitesse = motRecu.capteur;
 					 motRecu.capteur = 0;
@@ -204,7 +204,7 @@ void can_bus::emission(INT32U id, INT8U len, INT8U *buf)
 			compteurBuzzer = 0;
 			erreur = ERREURS::E_CAN_BUS_AFF;
 		}
-		Serial.print("Error Sending Message..."); Serial.println(sndStat);
+		Serial.print(F("Error Sending Message...")); Serial.println(sndStat);
 		compteurErreurConsecutives += 1;
 		if (compteurErreurConsecutives == 10)  //10sec
 		{

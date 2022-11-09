@@ -19,7 +19,7 @@
 #include <Arduino.h>
 
 #define NO_TRAITMODE  //before constantesPartagees.h
-#define NO_ALARME     //probleme de memoire avec ALARME  22496 OK 22616 PB T et H DHT
+#define ALARME     //probleme de memoire avec ALARME  22496 OK 22616 PB T et H DHT
 #define NO_HORLOGETM1650  //Attention cablage different avec TM1637
 #define HORLOGETM1637
 #include "constantesPartagees.h" 
@@ -37,7 +37,7 @@
 #define PIN_CS_CAN								  7		//sur test receive blink 15µs haut 15µs bas
 #define TFT_CS											8	    //
 #define PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE				9
-//#define TFT_LEDA									10
+//#define               								10
 #define TFT_MOSI										11		//SPI	MOSI	sur test receive blink 0.5µs bas  1µs haut 1µs bas
 //														12		//SPI	MISO	sur test receive blink
 #define TFT_SCLK										13		//SPI	CLK		PIN_LED_CARTE_PRO_MINI
@@ -95,7 +95,7 @@ struct struct_reception {
 	uint8_t NbMessage=0;
 	uint16_t NbMinuteActiveJourCourant;
 	int8_t decompteDelaiCgtVitesse;
-	int16_t decompteTempoArretMarcheForce;
+	unsigned long decompteTempoArretMarcheForce;
 	int8_t etatWifi;
 	uint8_t luminositeeLeds = 10;
 	uint8_t arret_marche;
@@ -106,7 +106,7 @@ struct struct_reception {
 	uint8_t alarmePortail = 0;
 #endif
 //#ifdef TRAITMODE
-	//uint16_t dureeForcage = 0;
+	uint16_t dureeForcageSec = 0;
 	MODES forcageMode;
 
 //#endif

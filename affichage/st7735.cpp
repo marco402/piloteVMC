@@ -70,18 +70,18 @@ void st7735::initScreen(void)
   setRotation(1);     //1:horizontal connecteur a droite
   setTextSize(2);
   setCursor(COL3 + DELTALINESTEXT, TXTLIGNE2);
-  print("TEMP");
+  print(F("TEMP"));
   setCursor(COL5 + DELTALINESTEXT, TXTLIGNE2);
-  print("HUM");
+  print(F("HUM"));
   setCursor(COL1, TXTLIGNE3);
-  print("Cuis");
+  print(F("Cuis"));
   setCursor(COL1, TXTLIGNE4);
-  print("SdB");
+  print(F("SdB"));
   setCursor(COL1, TXTLIGNE5);
-  print("Ext");
+  print(F("Ext"));
   //setTextColor(ST7735_CYAN, ST7735_BLUE);  
   setCursor(COL1, TXTLIGNE6);
-  print("I Vmc(A)");
+  print(F("I Vmc(A)"));
   //setCursor(COLHEURE, TXTLIGNE7);
   //print("h");
   //setCursor(COLHEURE + NBPIXPARLETTERSIZE2 * 3, TXTLIGNE7);   //75 
@@ -109,20 +109,20 @@ void st7735::initScreen(void)
   //commentaires fixes
   setTextSize(2);
   setCursor(V_COLCONSTANTES, V_TXTLIGNETCUIS);
-  print("T cui");
+  print(F("T cui"));
   setCursor(V_COLCONSTANTES, V_TXTLIGNETSDB);
-  print("T sdb");
+  print(F("T sdb"));
   setCursor(V_COLCONSTANTES, V_TXTLIGNETEXT);
-  print("T ext");
+  print(F("T ext"));
   setCursor(V_COLCONSTANTES, V_TXTLIGNEHCUIS);
-  print("H cui");
+  print(F("H cui"));
   setCursor(V_COLCONSTANTES, V_TXTLIGNEHSDB);
-  print("H sdb");
+  print(F("H sdb"));
 #ifdef ALARME
   setCursor(V_COLCONSTANTES, V_TXTLIGNEALARME);
-  print("Gar");  //Al Garage
+  print(F("Gar"));  //Al Garage
   setCursor(V_COLVARIABLES, V_TXTLIGNEALARME);
-  print("Por");  //Al Portail
+  print(F("Por"));  //Al Portail
 #endif
   //cadres vert   
   drawRect(0, 0, WIDTH, HEIGHT, COLORCADRES);
@@ -206,7 +206,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
       if (reception.NbMessage)
         print(MODES_AFF[reception.mode]);
       else
-        print("Pas de mes.");
+        print(F("Pas de mes."));
       //**********************************************************
       //afficheInt(ta12::getMesuresPourAffichage(reception.courantVMC), COL5 + DELTALINESTEXT, TXTLIGNE6);
       afficheInt(reception.puissanceVMC, COL5 + DELTALINESTEXT, TXTLIGNE6);
@@ -280,9 +280,9 @@ void st7735::decompteCgtVitesse(struct_reception R)
 {
   fillScreen(COLORSCREEN);
   setCursor(V_COLMODE, V_TXTSTATUS);
-  print("Decompte ");
+  print(F("Decompte "));
   setCursor(V_COLMODE, V_TXTSTATUS1);
-  print("relais: ");
+  print(F("relais: "));
   print(R.decompteDelaiCgtVitesse);
   changeModePrec = true;
 }
@@ -313,7 +313,7 @@ void st7735::casNormal(struct_reception R)
       print(MODES_AFF[mode]);
     }
     else
-      print("Pas de mes.");
+      print(F("Pas de mes."));
     setTextColor(COLORVARIABLESFORE, COLORSCREEN);
     //********************traitement puissance vmc**************************************
     //afficheInt((float)puis, V_COLVARIABLES + 12, V_TXTLIGNEIVMC);
@@ -339,16 +339,16 @@ void st7735::casNormal(struct_reception R)
     setTextColor(COLORVARIABLESFORE, COLORSCREEN);
     setCursor(V_COLHEURE, V_TXTLIGNEHEURE);
     print(R.heures);
-    print(":");
+    print(F(":"));
     print(R.minutes);
-    print(":");
+    print(F(":"));
     print(R.secondes);
     //**************************affichage erreur******************************
     if (R.Rbuzzer != 0)       // on reste sur la derni�re erreur
     {
       setCursor(V_COLERREUR, V_TXTLIGNEHEURE + 5);
       setTextSize(1);
-      print("e:");
+      print(F("e:"));
       print(R.Rbuzzer);
       setTextSize(2);
     }
@@ -425,7 +425,7 @@ void st7735::TraiteLigneEtat(struct_reception reception)
   case 1:
     if ((reception.etatWifi & 3) < 3)   //pas de wifi
     {
-      print("Wi");
+      print(F("Wi"));
       fillRect(XPAVEWIFI + 10, V_TXTLIGNEETAT + 2, 14, HAUTLIGNE - 8, couleursWIFI[reception.etatWifi & 3]);
     }
     break;
@@ -433,15 +433,15 @@ void st7735::TraiteLigneEtat(struct_reception reception)
     //**********************traitement seuil et cas auto********************
     if (reception.decompteTempoArretMarcheForce > 0)
     {
-      print("dec:");
-      print(reception.decompteTempoArretMarcheForce);
+      print(F("dec:"));
+      print((reception.decompteTempoArretMarcheForce-(unsigned long) millis())/1000);
     }
     break;
   case 3:
     if (reception.casAuto == CASSTATUS::ST_START || reception.mode != 3)
     {
       //**********************traitement temps restant********************
-      print("tvmc:");
+      print(F("tvmc:"));
       print(reception.NbMinuteActiveJourCourant);
     }
     break;
@@ -499,28 +499,28 @@ void st7735::afficheInt(int param, unsigned char positionX, unsigned char positi
 {
 
   setCursor(positionX, positionY);
-  print("    ");                      //pour nettoyer la zone
+  print(F("    "));                      //pour nettoyer la zone
   setCursor(positionX, positionY);
   fix_number_position(param);
   print(param);
 }
 void st7735::debugInfos(struct_reception R)
 {
-  Serial.print(R.heures);Serial.print("-");Serial.print(R.minutes);Serial.print("-");Serial.print(R.secondes );Serial.print("-");
-  Serial.print(R.Rbuzzer);Serial.print("-");Serial.print(R.mode);Serial.print("-");Serial.print(R.etatWifi);Serial.print("-");Serial.print(R.etatLeds);
+  Serial.print(R.heures);Serial.print(F("-"));Serial.print(R.minutes);Serial.print(F("-"));Serial.print(R.secondes );Serial.print(F("-"));
+  Serial.print(R.Rbuzzer);Serial.print(F("-"));Serial.print(R.mode);Serial.print(F("-"));Serial.print(R.etatWifi);Serial.print(F("-"));Serial.print(R.etatLeds);
 }
 void st7735::debugDistants(struct_reception R)
 {
   Serial.print(R.temperature_sdb_aff / 10.0f);
-  Serial.print("-");
+  Serial.print(F("-"));
   Serial.print(R.humidite_sdb_aff);
-  Serial.print("-");
+  Serial.print(F("-"));
   Serial.println(R.temperature_ext_aff / 10.0f);
 }
 void st7735::debugLocaux(struct_reception R)
 {
   Serial.print(R.temperature_cuis_aff / 10.0f);
-  Serial.print("-");
+  Serial.print(F("-"));
   Serial.println(R.humidite_cuis_aff);
 }
 void st7735::setchangeMode(bool changeMode)
@@ -534,14 +534,14 @@ void st7735::setMode(int modeSelection)
 void st7735::fix_number_position(float number)
 {
   if ((number >= -9.9) && (number < 0.0))    //-9.9      -0.1        4 char--->1 blanc
-    print(" ");
+    print(F(" "));
   else if ((number >= 0.0) && (number < 10.0))    //0.0       9.9         3 char--->2 blanc
-    print("  ");
+    print(F("  "));
   else if ((number >= 10.0) && (number < 100.0))   //10.0       99.9        4 char--->1 blanc
-    print(" ");
+    print(F(" "));
 }
 void st7735::fix_number_position(int number)
 {
   if (number < 10)
-    print(" ");
+    print(F(" "));
 }

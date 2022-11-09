@@ -57,7 +57,7 @@ void ledsRgbSerial::traitement(struct_reception reception)
 		if(reception.luminositeeLeds != memoLuminositeeLeds)
 		{
 			  rgb_led.SetBrightness(reception.luminositeeLeds);
-			  Serial.print("rgb_led.SetBrightness "); Serial.println(reception.luminositeeLeds);  //a voir prise en compte uniquement au reboot???
+			  Serial.print(F("rgb_led.SetBrightness ")); Serial.println(reception.luminositeeLeds);  //a voir prise en compte uniquement au reboot???
 			  memoLuminositeeLeds = reception.luminositeeLeds;
 			  rgb_led.Show();                                                                     //voir s'il faut .show
 		}        
