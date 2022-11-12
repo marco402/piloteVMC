@@ -231,7 +231,7 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_5::NB_MINUTE_JOUR_COURANT_LSB] = RELAIS.getNbMinuteActiveJourCourant() & 0xFF;
 			buf[MESSAGE_TYPE_5::MARCHE_ARRET] = RELAIS.getEtatReelRelaisMarcheArret() & 0xFF;
 //#ifdef TRAITMODE
-			buf[MESSAGE_TYPE_5::FORCAGE_MODE] = 0; // VMC.getForcageMode();
+			buf[MESSAGE_TYPE_5::FORCAGE_MODE] = VMC.getForcageMode();
 //#endif
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_5, 0, MESSAGE_TYPE_5::FIN_MESSAGE_TYPE_5, buf);
 		}

@@ -43,11 +43,14 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
 //      leMode = forcageMode;
 //      break;
 //    }
-//	if (forcageMode != MODES::BIDON)  //le logiciel distant traitement indique si un forcage est en cours
-//	{
-//    leMode = forcageMode;  
-//    memoModes = leMode;  
-//	}
+            Serial.print(F("leMode: "));  Serial.println(leMode);
+            Serial.print(F("forcageMode: "));  Serial.println(forcageMode);
+            
+	if (leMode == MODES::HIVER && forcageMode != MODES::BIDON)  //le logiciel distant traitement indique si un forcage est en cours pour mode hiver
+	{
+    leMode = forcageMode;  
+    memoModes = leMode;  
+	}
 //	//on garde la possibilitee de changer de mode pendant le forcage
 //#endif
 //            Serial.print(F("tempsMilliCommandeTemporisees: "));
@@ -55,10 +58,9 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
 //            Serial.print(F("milli: "));
 //           Serial.println(millis());
 
-	if (tempsMilliCommandeTemporisees > 0 && tempsMilliCommandeTemporisees < millis())
+	else if (tempsMilliCommandeTemporisees > 0 && tempsMilliCommandeTemporisees < millis())
 	{
-             Serial.print(F("memoModes: "));
-           Serial.println(memoModes);
+    Serial.print(F("memoModes: ")); Serial.println(memoModes);
 		leMode = memoModes ;
 		tempsMilliCommandeTemporisees = 0;
 	}

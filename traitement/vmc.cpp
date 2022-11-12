@@ -96,13 +96,17 @@ void vmc::traiteRazCapteursAuto(void)
 //}
 void vmc::traitementVMCHiver()
 {
+	//DebugF("TEMPEXT: ");	Debugln((long)TEMPEXT.getMoyennePeriode());
+	//DebugF("TEMPSDB: ");	Debugln((long)DHTSDB.DHT_T.getMoyennePeriode());
 	if ((TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode())))
 	{
+		//DebugF("BIDON ");
 		forcageMode = MODES::BIDON;
 		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 	}
 	else
 	{
+		//DebugF("AUTO ");
 		forcageMode = MODES::AUTO;
 		//leMode = MODES::AUTO;  //il faudrait indiquer a affichage->poussoir de forcer le mode auto
 		//memoModes = MODES::AUTO;
