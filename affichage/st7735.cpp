@@ -40,25 +40,36 @@
 //8 LEDA  luminosit�e 3.3V ou pot. de 10k       via 1k
 extern "C" void __cxa_pure_virtual() { while (1); }
 uint16_t couleursWIFI[] = {ST7735_RED, ST7735_RED, ST7735_ORANGE, ST7735_GREEN};
-uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, ST7735_GREEN};
+uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, COLORSCREEN};
 #ifdef ALARME
   uint16_t couleursALARME[] = {BIDON, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
 #endif
-uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_BLACK };
+uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_ORANGE };
 // print pb avec string
 char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc n�cessaires pour effacer la plus longue chaine
 //String MODES_AFF[] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","AT CAN BUS" }; //blanc n�cessaires pour effacer la plus longue chaine
 char CAS_AUTO[][12] = { "           ","A-temp ext>","A-temp ext<","M-hum cuis>","M-hum  sdb>","cas inex   "};  //      ,"   arret   " ,"SHC","SHB","SCHAUD","SFROID"};
 #define NO_DEBUG_ST7735
-#define NO_HORIZONTAL   //je n'ai par int�gr� les derni�res modif en horizontal...
 
-st7735::st7735() : Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RESET)           //-------->cycle d'affichage autour de 800ms.
+st7735::st7735() : Adafruit_ST7735(TFT_CS, TFT_RS, TFT_RESET)           //-------->cycle d'affichage autour de 800ms.
 {
 }
 void st7735::initAdafruit_ST7735(void)
 {
   initScreen(); //pas initScreen dans le constructeur
   pinMode(TFT_LEDA, OUTPUT);
+  //1023--->tout a 1
+//900
+//800
+//700
+//600
+//500
+//400
+//300
+//200
+//100
+//0------>tout a 0
+  analogWrite(TFT_LEDA, 1023); 
 }
 void st7735::initScreen(void) 
 {
@@ -119,9 +130,9 @@ void st7735::initScreen(void)
   setCursor(V_COLCONSTANTES, V_TXTLIGNEHSDB);
   print(F("H sdb"));
 #ifdef ALARME
-  setCursor(V_COLCONSTANTES, V_TXTLIGNEALARME);
+  setCursor(XLABELALARMEGARAGE, V_TXTLIGNEALARME);
   print(F("Gar"));  //Al Garage
-  setCursor(V_COLVARIABLES, V_TXTLIGNEALARME);
+  setCursor(XLABELALARMEPORTAIL, V_TXTLIGNEALARME);
   print(F("Por"));  //Al Portail
 #endif
   //cadres vert   
@@ -135,137 +146,7 @@ void st7735::initScreen(void)
   setTextColor(COLORVARIABLESFORE, COLORSCREEN);
 #endif
 }
-#ifdef HORIZONTAL
-void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
-{
-  //132*162
 
-  //caract�res 8*5 size 1(d�faut)   27 chars 14 lignes
-  //      16*10 size 2      13      7
-  //      24*15 size 3      6     3
-
-  //    heure minute seconde            08h 24mn 55s
-  //    buzzer
-  //    mode en cours               MODE FORCE GV
-  //    etat
-  //    etatleds
-  //    courant vmc                 I VMC:     4.2A
-
-  static bool changeModePrec = false;
-  static bool clignote = false;
-  if (changeMode)
-  {
-    //initDecompte = true;
-    if (!changeModePrec)
-    {
-      fillScreen(COLORSCREEN);
-      changeModePrec = true;
-    }
-    setCursor(COL2, TXTLIGNE3);
-    print(MODES_AFF[modeSelection]);
-  }
-  else if (reception.decompteDelaiCgtVitesse > 0 || reception.decompteTempoArretMarcheForce > 0)
-  {
-    /*if (!initDecompte)
-    {
-      initDecompte = true;*/
-    fillScreen(COLORSCREEN);
-    //}
-    if (reception.decompteDelaiCgtVitesse > 0)
-    {
-      char decompte[13];
-      sprintf(decompte, "Dec relais:%01u", reception.decompteDelaiCgtVitesse);
-      setCursor(COL1, TXTLIGNE5);
-      print(decompte);
-    }
-    if (reception.decompteTempoArretMarcheForce > 0)
-    {
-      setCursor(COL2, TXTLIGNE1);  //ATTENTION:caract�res en vrac avec trop de message de debug...pile???
-      print(MODES_AFF[reception.mode]);
-
-      char decompte[9];
-      sprintf(decompte, "Dec:%04u", reception.decompteTempoArretMarcheForce);
-      setCursor(COL1, TXTLIGNE6);
-      print(decompte);
-    }
-    changeModePrec = true;
-  }
-  else
-  {
-    //initDecompte = true;
-    if (changeModePrec)
-    {
-      changeModePrec = false;
-      initScreen();
-    }
-
-    if (reception.infos)
-    {
-      //**********************************************************
-      setCursor(COL2, TXTLIGNE1);  //ATTENTION:caract�res en vrac avec trop de message de debug...pile???
-      if (reception.NbMessage)
-        print(MODES_AFF[reception.mode]);
-      else
-        print(F("Pas de mes."));
-      //**********************************************************
-      //afficheInt(ta12::getMesuresPourAffichage(reception.courantVMC), COL5 + DELTALINESTEXT, TXTLIGNE6);
-      afficheInt(reception.puissanceVMC, COL5 + DELTALINESTEXT, TXTLIGNE6);
-      //*************************************************   
-      union leds etatDesLeds;
-      etatDesLeds.etat = reception.etatLeds;
-      TraitePave(XPAVEJOUR, etatDesLeds.etatCourant.aujourdhui);
-      TraitePave(XPAVEDEMAIN, etatDesLeds.etatCourant.demain);
-      TraitePaveJN(XPAVEJOURNUIT, etatDesLeds.etatCourant.jourNuit);    //1=nuit sinon 0
-
-      TraitePaveWifi(COL5 + DELTALINESTEXT + 1, reception.etatWifi);
-      TraitePaveWifi(COL5 + DELTALINESTEXT + 16, reception.etatWifi > 1);
-      /*union leds etatDesLeds;
-      etatDesLeds.etat = reception.etatLeds;*/
-      //TraitePave(XPAVEJOUR, reception.etatDesLeds.aujourdhui);
-      //TraitePave(XPAVEDEMAIN, reception.etatDesLeds.demain);
-      //TraitePaveJN(XPAVEJOURNUIT, reception.etatDesLeds.jourNuit);    //1=nuit sinon 0
-      //*************************************************
-      char HeureCourante[8];   //reception.NbMinuteActiveJourCourant
-      //int32_t NbMinuteActiveJourCourant=1120;
-      //supprim� sprintf voir ecran vertical
-      sprintf(HeureCourante, "%02u:%02u:%02u-%04u", reception.heures, reception.minutes, reception.secondes, reception.NbMinuteActiveJourCourant);
-      setCursor(COL1, TXTLIGNE7);
-      if (!reception.etat)
-      {
-        setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIPB);
-        print(HeureCourante);
-        setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIOK);
-      }
-      else
-        print(HeureCourante);
-      /*HeureCourante[2]=':';
-      HeureCourante[5] = ':';*/
-      /*    String str;
-          str = String(reception.heures);
-          str.toCharArray(HeureCourante,2, 0);
-          afficheInt(,COL1 + 10,TXTLIGNE7);
-          afficheInt(reception.minutes,COL1 + 50,TXTLIGNE7);
-          afficheInt(reception.secondes,COL1 + 100,TXTLIGNE7);*/
-#ifdef DEBUG_ST7735
-      debugInfos(reception);
-#endif
-    }
-    else
-    {
-      setCursor(COL2, TXTLIGNE1);
-      if (clignote)
-        setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIPB);
-      else
-        setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIOK);
-      print(MODES_AFF[8]);
-      clignote = !clignote;
-    }
-    setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIOK);
-    afficheDistants_H(reception);
-    afficheLocaux_H(reception);
-  }
-}
-#else
 void st7735::changementMode(void)
 {
   if (!changeModePrec)
@@ -320,8 +201,8 @@ void st7735::casNormal(struct_reception R)
     //********************traitement alarme garage**************************************
 //V_COLVARIABLES + 12  V_TXTLIGNEIVMC
 #ifdef ALARME
-    TraitePaveAlarme(V_COLCONSTANTES + 40, R.alarmeGarage);
-    TraitePaveAlarme(V_COLVARIABLES + 40, R.alarmePortail);    
+    TraitePaveAlarme(XPAVEALARMEGARAGE, R.alarmeGarage);
+    TraitePaveAlarme(XPAVEALARMEPORTAIL, R.alarmePortail);    
 #endif
     //TraitePaveAlarme(V_COLVARIABLES + 30, R.alarmePortail);
     //******************traitement des pav�s tempo et wifi*******************************
@@ -373,7 +254,7 @@ void st7735::casNormal(struct_reception R)
 void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
 {
   //pour utiliser le meme parametre ecran et led rgb--> pas cablé pour le st7735
- analogWrite(TFT_LEDA, reception.luminositeeLeds*25);  //param à 7  7-5=2*63=126=  3.3/256*126=1.62v       0 � 255   5-->0  7-->128    9-->255
+ analogWrite(TFT_LEDA,(512 * reception.luminositeeLeds)/7);  //0 to 1023
   //return;
 //132*162
 
@@ -397,7 +278,7 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
   else
     casNormal(reception);
 }
-#endif
+
 #ifdef ALARME
 void st7735::TraitePaveAlarme(int X, uint8_t etat)
 {

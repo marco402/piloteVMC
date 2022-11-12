@@ -21,19 +21,9 @@
 #define ST7735_H_
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
-#define WIDTH 128
+//*************definition des lignes*****************
 #define HEIGHT 160
 #define HAUTLIGNE  18
-#define TXTLIGNE1  2
-#define TXTLIGNE2  (TXTLIGNE1+HAUTLIGNE)
-#define TXTLIGNE3  (TXTLIGNE2+HAUTLIGNE)
-#define TXTLIGNE4  (TXTLIGNE3+HAUTLIGNE)
-#define TXTLIGNE5  (TXTLIGNE4+HAUTLIGNE)
-#define TXTLIGNE6  (TXTLIGNE5+HAUTLIGNE)
-#define TXTLIGNE7  (TXTLIGNE6+HAUTLIGNE)
-#define TXTLIGNE8  (TXTLIGNE7+HAUTLIGNE)
-#define TXTLIGNE9  (TXTLIGNE8+HAUTLIGNE)
-#define TXTLIGNE10  (TXTLIGNE9+HAUTLIGNE)
 #define V_NBLIGNE 9
 #define V_TXTLIGNETITRE  2
 #define V_TXTLIGNEMODES  V_TXTLIGNETITRE
@@ -51,6 +41,8 @@
 #define V_TXTLIGNEETAT  (V_TXTLIGNEHEURE+HAUTLIGNE)
 #define V_TXTSTATUS     V_TXTLIGNEHCUIS
 #define V_TXTSTATUS1    V_TXTLIGNEHSDB
+//*************definition des colonnes*****************
+#define WIDTH 128
 #define V_COLCONSTANTES  2
 #define V_COLMODE  2
 #define V_COLVARIABLES  63
@@ -63,7 +55,10 @@
 #define COL3  49
 #define COL5  116
 #ifdef ALARME
-  #define XPAVEALARMEGARAGE 3
+  #define XLABELALARMEGARAGE V_COLCONSTANTES
+  #define XPAVEALARMEGARAGE V_COLCONSTANTES + 40  
+  #define XLABELALARMEPORTAIL V_COLVARIABLES  
+  #define XPAVEALARMEPORTAIL V_COLVARIABLES + 40
 #endif
 #define XPAVEJOUR 3
 #define XPAVEDEMAIN 18
@@ -71,6 +66,8 @@
 #define XPAVELABELWIFI 48
 #define XPAVEWIFI XPAVELABELWIFI+4
 #define XPAVETEMPSRESTANT XPAVELABELWIFI+22+5
+
+//**************definition des couleurs**********************
 //https://ee-programming-notepad.blogspot.com/2016/10/16-bit-color-generator-picker.html
 #define COLORSCREEN 0xAFB7                    //bleu pale ST7735_GREEN
 #define COLORCONSTANTBACK ST7735_BLUE
@@ -83,11 +80,12 @@
 #define COLORREDDAYSWIFIPB ST7735_ORANGE
 #define COLORNIGHT ST7735_BLACK
 #define COLORDAY ST7735_BLUE
-#define COLORVARIABLESBACK ST7735_ORANGE
-#define COLORVARIABLESFORE ST7735_BLACK
-#define DELTALINESTEXT    3
-#define NBLIGNE 7
-#define NBPIXPARLETTERSIZE2    14
+//#define COLORVARIABLESBACK ST7735_ORANGE
+#define COLORVARIABLESFORE ST7735_RED
+//********************************************************
+//#define DELTALINESTEXT    3
+//#define NBLIGNE 7
+//#define NBPIXPARLETTERSIZE2    14
 class st7735 : public Adafruit_ST7735
 {
   public:

@@ -20,6 +20,7 @@
 #define LEDSRGBSERIAL_H
 #define colorSaturation 255
 #define  brightness 5			//150 130 100 50
+enum ETAT_JOUR {  ETAT_JOUR_JOUR = 0, ETAT_JOUR_NUIT = 1, ETAT_JOUR_INCONNU = 10 };
 class ledsRgbSerial
 {
 public:
@@ -28,6 +29,7 @@ public:
 	void traitement(struct_reception reception);
 private:
 	void traitementLedsRGB(unsigned char etat,LES_LEDS_RGB indiceLedRGB);
+  void traitementLedsRGBJourNuit(unsigned char etat,LES_LEDS_RGB indiceLedRGB); 
 };
 extern ledsRgbSerial LEDS_RGB_SERIAL;
 

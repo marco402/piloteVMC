@@ -65,7 +65,7 @@
 #include "canBus.h"  //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries for mcp_can.h to canBus.h
 //WARNING MVPCAN modifié chercher marc
 #include "ledsRgbSerial.h"
-#include "ledsClassiques.h"
+//#include "ledsClassiques.h"
 #include "poussoir.h"
 #include "buzzer.h"
 //###################################création des objets##################################  
@@ -73,12 +73,12 @@
 dht DHTCUISINE( PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE,0,0,10,1);   //la correction et l'ajustement décimal se font sur l'uc traitement
 can_bus CAN_BUS(MCP_8MHZ);
 st7735 AFFICHEUR;
-ledsClassiques LEDS_CLASSIQUES;
+//ledsClassiques LEDS_CLASSIQUES;
 ledsRgbSerial LEDS_RGB_SERIAL;
 poussoir POUSSOIR;
 buzzer BUZZER;
-//	int memoBrightness=2; //0 mini  7 maxi  (1 à 8)
-	int memoMinute=-1; //0 mini  7 maxi
+int memoBrightness=2;
+int memoMinute=-1;
 #ifdef  HORLOGETM1650
 //modifie C:\Users\mireille\Documents\Arduino\libraries\TM1650\src\TM1650.h TM1650_NUM_DIGITS   4 et TM1650_MAX_STRING   4 gain 
 //reste 358 de mémoire dynamique avec cette modif 202 sans
@@ -108,6 +108,7 @@ void setup()
 #endif
 #ifdef HORLOGETM1637
   display.setBrightness(2); //0 mini  7 maxi  warning 0 is not mini il faut 1 à 8
+  display.showNumberDecEx(1234,0x40, true, 4, 0);  //40 pour :
 #endif
 
     //display.setBrightness(memoBrightness); //0 mini  7 maxi
@@ -154,7 +155,7 @@ void loop()
 	BUZZER.setBuzzer(!retour);
 //########################################Traitement Affichage##########################################
 	LEDS_RGB_SERIAL.traitement(CAN_BUS.getStructReception());  //3 appels,compteur "en dur" dans getEtatReceptionInfos
-	retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());
+	//retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());
 	BUZZER.setBuzzer(retour) ;
 	structReception.decompteTempoArretMarcheForce = POUSSOIR.getTempsMilliCommandeTemporisees();
 	AFFICHEUR.affiche(structReception);
@@ -173,12 +174,15 @@ void loop()
 #ifdef  HORLOGETM1637
  // Print 1234 with the center colon:
  // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
-//	if (structReception.luminositeeLeds != memoBrightness)
-//	{
-//		memoBrightness = structReception.luminositeeLeds;
-//		display.setBrightness(memoBrightness); //0 mini  7 maxi
-//	}
-	if (memoMinute!=structReception.minutes)
+	if (structReception.luminositeeLeds != memoBrightness)
+	{
+		memoBrightness = structReception.luminositeeLeds;
+   if(memoBrightness>3)
+		display.setBrightness(memoBrightness-2); //1 mini  8 maximemoBrightness+1
+   else
+    display.setBrightness(1); //1 mini  8 maxi
+	}
+	if (memoMinute!=structReception.minutes &&  structReception.infos)
 	{
 		memoMinute = structReception.minutes;
 		display.showNumberDecEx(structReception.heures*100+structReception.minutes,0x40, true, 4, 0);  //40 pour :

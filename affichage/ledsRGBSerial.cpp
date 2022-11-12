@@ -42,9 +42,9 @@ ledsRgbSerial::ledsRgbSerial(void)
 void ledsRgbSerial::init(void)
 {
 	rgb_led.SetBrightness(brightness);
-	traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_JOUR);
-	traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_DEMAIN);
-    //traitementLedsRGB(COULEUR_JOUR::COULEUR_JOUR_INIT, LES_LEDS_RGB_LED_JOUR_NUIT);
+  rgb_led.SetPixelColor(0, red);
+  rgb_led.SetPixelColor(1, green);
+  rgb_led.SetPixelColor(2, orange);
 	rgb_led.Show();
 }
 
@@ -56,10 +56,10 @@ void ledsRgbSerial::traitement(struct_reception reception)
 	{	
 		if(reception.luminositeeLeds != memoLuminositeeLeds)
 		{
-			  rgb_led.SetBrightness(reception.luminositeeLeds);
-			  Serial.print(F("rgb_led.SetBrightness ")); Serial.println(reception.luminositeeLeds);  //a voir prise en compte uniquement au reboot???
+			  rgb_led.SetBrightness(reception.luminositeeLeds); 
+			  Serial.print(F("rgb_led.SetBrightness ")); Serial.println(reception.luminositeeLeds); 
 			  memoLuminositeeLeds = reception.luminositeeLeds;
-			  rgb_led.Show();                                                                     //voir s'il faut .show
+			  rgb_led.Show(); 
 		}        
 		if(reception.etatLeds != memoEtatDesLeds)
 		{ 
@@ -69,7 +69,7 @@ void ledsRgbSerial::traitement(struct_reception reception)
 		  etatDesLeds.etat=reception.etatLeds;
 		  traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
 		  traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
-		  //traitementLedsRGB(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
+		  traitementLedsRGBJourNuit(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
 		  memoEtatDesLeds=reception.etatLeds ; 
 		}
 	}
@@ -88,7 +88,23 @@ switch  (etat)
 		rgb_led.SetPixelColor(indiceLedRGB, red);
 		break;
 	case COULEUR_JOUR::COULEUR_JOUR_INIT:
-		rgb_led.SetPixelColor(indiceLedRGB, green);  //gris donne blanc
+		rgb_led.SetPixelColor(indiceLedRGB, black);  //gris donne blanc
 	}
 	rgb_led.Show();
+}
+
+void ledsRgbSerial::traitementLedsRGBJourNuit(unsigned char etat,LES_LEDS_RGB indiceLedRGB)
+{
+switch  (etat)
+  {
+  case ETAT_JOUR::ETAT_JOUR_JOUR:
+    rgb_led.SetPixelColor(indiceLedRGB, black);
+    break;
+  case ETAT_JOUR::ETAT_JOUR_NUIT:
+    rgb_led.SetPixelColor(indiceLedRGB, orange);
+    break;
+  case ETAT_JOUR::ETAT_JOUR_INCONNU:
+    rgb_led.SetPixelColor(indiceLedRGB, red);  //gris donne blanc
+  }
+  rgb_led.Show();
 }

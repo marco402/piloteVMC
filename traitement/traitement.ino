@@ -14,7 +14,7 @@
 //type de carte NodeMcu 0.9
 //cpu frequency 160Mhz
 //flash size 4M(1M OTA)
-//rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"
+//rename traitement.ino.bin to a.bin for upload with "site teleinfo"
 //C:\Users\mireille\AppData\Local\Temp\arduino_build_135849\traitement.ino.bin
 //10/07/2021->seuil air frais 25->20    pour ventiler plus la nuit en été
 

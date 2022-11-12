@@ -29,11 +29,11 @@
 //TX													      1	
 //INT0													    2
 // marc a voir si remplacé par PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE #define PIN_DHT22										3		//inversion smt160 et mq7 voir schéma pcb
-#define TFT_DC											4	    //
-#define PIN_LED_JOUR_NUIT						5		//passer sur 5 manque R14 utilise R13
+#define TFT_RS											4	    //
+#define XXPIN_LED_JOUR_NUIT						5		//passer sur 5 manque R14 utilise R13
 
 //There are six pins from the set of digital pins that are PWM (Pulse Width Modulation) pins, numbered as 3, 5, 6, 9, 10, and 11.
-#define TFT_LEDA							      6	    //via 2n2222 and 2N2907
+#define TFT_LEDA							      5	    //PWM via 2n2222 and 2N2907   pins PWM: 3, 5, 6, 9, 10, and 11.
 #define PIN_CS_CAN								  7		//sur test receive blink 15µs haut 15µs bas
 #define TFT_CS											8	    //
 #define PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE				9
@@ -41,7 +41,7 @@
 #define TFT_MOSI										11		//SPI	MOSI	sur test receive blink 0.5µs bas  1µs haut 1µs bas
 //														12		//SPI	MISO	sur test receive blink
 #define TFT_SCLK										13		//SPI	CLK		PIN_LED_CARTE_PRO_MINI
-#define TFT_RESET										-1
+#define TFT_RESET										-1      //3.3v via 1kohm
 //libre													A0		//14
 #define PIN_POUSSOIR_MODE						A1		//15
 #define PIN_LED_RGB									A2		//16
@@ -56,7 +56,7 @@
 //libre													A7		//21
 ////################################################enum##########################################################
 enum COULEUR_JOUR { COULEUR_JOUR_BLEU = 0, COULEUR_JOUR_BLANC , COULEUR_JOUR_ROUGE ,COULEUR_JOUR_INIT };
-enum LES_LEDS_RGB { LES_LEDS_RGB_LED_DEMAIN,LES_LEDS_RGB_LED_JOUR,FIN_LED};   //LES_LEDS_RGB_LED_JOUR_NUIT,
+enum LES_LEDS_RGB { LES_LEDS_RGB_LED_DEMAIN,LES_LEDS_RGB_LED_JOUR,LES_LEDS_RGB_LED_JOUR_NUIT,FIN_LED}; 
 enum ARRET_MARCHE { ARRET_REL = 0, MARCHE_REL };
 #ifdef ALARME
    enum CODES_ALARME { DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT };
@@ -105,20 +105,9 @@ struct struct_reception {
 	uint8_t alarmeGarage = 0;
 	uint8_t alarmePortail = 0;
 #endif
-//#ifdef TRAITMODE
 	uint16_t dureeForcageSec = 0;
 	MODES forcageMode;
-
-//#endif
 };
-//struct etatLeds {
-//	unsigned char aujourdhui : 2;   //lsb
-//	unsigned char demain : 2;
-//	unsigned char chauffage : 1;
-//	unsigned char cumulus : 1;
-//	unsigned char present : 1;
-//	unsigned char jourNuit : 1;
-//};
 //################################################union##########################################################
 union CANconv {
 	int16_t capteur;
