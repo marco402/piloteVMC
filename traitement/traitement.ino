@@ -407,7 +407,8 @@ void loop()
 #endif
 //**************************************Traitement des sorties****************************************************
 #ifdef COMP_CAN_BUS
-	CAN_BUS.TRAITEMENTEMISSIONCAN();
+	if(CAN_BUS.TRAITEMENTEMISSIONCAN())
+	    WEBSERVER.incNb_reinit();
 #endif 	
 	if (WIFIOK)
 	{
@@ -433,11 +434,11 @@ void loop()
 	  WEBCLIENT.jeedomPost();
 	else if (MYTINFO.getTask_httpRequest())
 	  WEBCLIENT.httpRequest();
- 	if (TINFO.getReinit())
+ 	if (TINFO.getReinit())   //pas utilise
 	{
     //Some polluted entries have been detected in Teleinfo ListValues
 		//need_reinit=false;
-		WEBSERVER.incNb_reinit();    //account of reinit operations, for system infos
+		//WEBSERVER.incNb_reinit();    //account of reinit operations, for system infos commente pour test initCan
 		MYTINFO.init(MODE_HISTORIQUE);//Clear ListValues, buffer, and wait for next STX
 	} 
 	else

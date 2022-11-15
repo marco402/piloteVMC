@@ -36,14 +36,14 @@
 #include <Arduino.h>
 #include "mcp_can.h"
 #include "mcp_can_dfs.h"
-
+//#include "webServer.h"
 
 #define CLOCKSPI 500000		//limitation � 500000 si adaptation 5v/3v3 avec bss138
 class can_bus : public MCP_CAN
 {
 	public:
 		can_bus(void);
-		void TRAITEMENTEMISSIONCAN(void);
+		bool TRAITEMENTEMISSIONCAN(void);
 		unsigned char mysendMsgBuf(unsigned long ident, unsigned char ext, unsigned char len,  unsigned char *buf);
 		
 		void traiteReception(void);

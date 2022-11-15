@@ -135,7 +135,7 @@ void st7735::initScreen(void)
   setCursor(XLABELALARMEPORTAIL, V_TXTLIGNEALARME);
   print(F("Por"));  //Al Portail
 #endif
-  //cadres vert   
+  //cadres vert
   drawRect(0, 0, WIDTH, HEIGHT, COLORCADRES);
   //lignes horizontales
   for (int oneLine = 0; oneLine < V_NBLIGNE; oneLine++)
@@ -155,6 +155,7 @@ void st7735::changementMode(void)
     changeModePrec = true;
   }
   setCursor(V_COLMODE + 4, V_TXTLIGNEMODES);
+  setTextColor(COLORVARIABLESMODES, COLORSCREEN);
   print(MODES_AFF[modeSelection]);
 }
 void st7735::decompteCgtVitesse(struct_reception R)
@@ -181,11 +182,11 @@ void st7735::casNormal(struct_reception R)
     setCursor(V_COLMODE+4, V_TXTLIGNEMODES);
     if (R.arret_marche == ARRET_MARCHE::MARCHE_REL)
     {
-      setTextColor(COLORVARIABLESFORE, ST7735_GREEN);
+      setTextColor(COLORVARIABLESMODES, ST7735_GREEN);
       //puis = R.puissanceVMC;
     }
     else
-      setTextColor(COLORVARIABLESFORE, COLORSCREEN);
+      setTextColor(COLORVARIABLESMODES, COLORSCREEN);
     if (R.NbMessage)
     {
       uint8_t mode = R.mode;
@@ -238,9 +239,9 @@ void st7735::casNormal(struct_reception R)
   {
     setCursor(V_COLMODE + 4, V_TXTLIGNEMODES);
     if (clignote<6)
-      setTextColor(COLORVARIABLESFORE, COLORREDDAYSWIFIPB);
+      setTextColor(COLORVARIABLESMODES, COLORREDDAYSWIFIPB);
     else
-      setTextColor(COLORVARIABLESFORE, COLORSCREEN);
+      setTextColor(COLORVARIABLESMODES, COLORSCREEN);
     print(MODES_AFF[9]);
     clignote -= 1;
     if (!clignote)

@@ -43,7 +43,7 @@
 
 
 class webServer : public ESP8266WebServer
-{
+ {
 public:
 	webServer();
 	void initSpiffs(void);

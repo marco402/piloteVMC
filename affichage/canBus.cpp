@@ -206,10 +206,10 @@ void can_bus::emission(INT32U id, INT8U len, INT8U *buf)
 		}
 		Serial.print(F("Error Sending Message...")); Serial.println(sndStat);
 		compteurErreurConsecutives += 1;
-		if (compteurErreurConsecutives == 10)  //10sec
+		if (compteurErreurConsecutives > 10)  //100sec pour laisser le temps a traitement de demarrer
 		{
 			initCanBus = false;
-			compteurErreurConsecutives = 0;
+			compteurErreurConsecutives = 0; 
 			initialiseCanBus();
 		}
 	}

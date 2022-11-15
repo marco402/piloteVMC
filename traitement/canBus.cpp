@@ -51,30 +51,34 @@
 #ifdef ALARME
   #include "alarme.h"
 #endif
+
 #ifdef PIN_CS_CAN
 ICACHE_FLASH_ATTR can_bus::can_bus(void) : MCP_CAN(PIN_CS_CAN, CLOCKSPI)
 {
 }
 #endif
-void can_bus::TRAITEMENTEMISSIONCAN(void)
+bool can_bus::TRAITEMENTEMISSIONCAN(void)
 {
 	if (!initCanBusOK)
-		return;
+		return false;
 	//DebugF("mcp2515_readStatus():"); Debugln(mcp2515_readStatus());
 	//DebugF("errorCountRX:"); Debugln(errorCountRX());
 	//DebugF("errorCountTX:"); Debugln(errorCountTX());
 	//DebugF("getError:"); Debugln(getError());
 	//DebugF("compteurErreurConsecutives:"); Debugln(compteurErreurConsecutives);
-	if (compteurErreurConsecutives == 40)  //10sec
+	if (compteurErreurConsecutives > 40)  //10sec
 	{
+    DebuglnF("ReinitCanBus");
 		initCanBusOK = false;
 		compteurErreurConsecutives = 0;
 		InitCanBus(MCP_16MHZ);
+    return true;
 	}
 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_0, Clock.getHour(), Clock.getMinute(), Clock.getSecond()); //90ms.
 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_1);
 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_4);
 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_5);
+  return false;
 }
  void ICACHE_FLASH_ATTR can_bus::InitCanBus(unsigned char freq_can)
  {

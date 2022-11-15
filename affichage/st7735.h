@@ -69,8 +69,8 @@
 
 //**************definition des couleurs**********************
 //https://ee-programming-notepad.blogspot.com/2016/10/16-bit-color-generator-picker.html
-#define COLORSCREEN 0xAFB7                    //bleu pale ST7735_GREEN
-#define COLORCONSTANTBACK ST7735_BLUE
+#define COLORSCREEN ST7735_BLACK              //0xAFB7                    //bleu pale ST7735_GREEN
+#define COLORCONSTANTBACK ST7735_BLACK
 #define COLORCONSTANTFORE ST7735_YELLOW
 #define COLORCADRES ST7735_ORANGE
 #define COLORBLUEDAYS ST7735_BLUE
@@ -81,7 +81,8 @@
 #define COLORNIGHT ST7735_BLACK
 #define COLORDAY ST7735_BLUE
 //#define COLORVARIABLESBACK ST7735_ORANGE
-#define COLORVARIABLESFORE ST7735_RED
+#define COLORVARIABLESFORE ST7735_WHITE     //ST7735_RED
+#define COLORVARIABLESMODES ST7735_BLACK
 //********************************************************
 //#define DELTALINESTEXT    3
 //#define NBLIGNE 7
