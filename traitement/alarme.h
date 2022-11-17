@@ -29,22 +29,22 @@
 #include <WiFiUdp.h>
 #include "enregistrement.h"  //for send a voir
 #define CFG_TEMPO_HOST_SIZE    32
-enum CODES_ALARME { NO_RECEPT = 0, DOOR_OPEN_WITH_ALARME = 1, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT };
-  //                       ROUGE                   VERT              BLEU                ORANGE
+enum enumCouleursALARME {ST7735_WHITE=0, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
+enum CODES_ALARME { NO_RECEPT = 0, DOOR_OPEN_WITH_ALARME, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT ,FIN};
+  //                 ST7735_WHITE,          ST7735_RED,     ST7735_GREEN,  ST7735_BLUE,           ST7735_ORANGE                                                    
 class myAlarme
 {
 public:
 	myAlarme(void);
 	void testReceptionAlarme(void);
-	void init(void);
+	void init(int indice);
 	void stop(void);
-	uint8_t getEtatAlarmeGarage(void);
-	uint8_t getEtatAlarmePortail(void);
+	char getEtatAlarme(void);
 private:
+    uint8_t indiceAlarme=0;
 	WiFiUDP udpAlarme;
-	bool send(IPAddress adressIP, uint32_t port, char * message, uint32_t * memPort, WiFiUDP udp, int16_t nbMessageEmis);
-	uint8_t etatAlarmeGarage = 2;  //bleu  0:black
-	uint8_t etatAlarmePortail = 3;  //orange  0:black
+	bool send(IPAddress adressIP, uint32_t port, char * message, uint32_t * memPort);
+	char etatAlarme;
 	uint32_t receptLastMessage = 0;
   uint32_t memoPort = 0;
   char  host_alarme[CFG_TEMPO_HOST_SIZE + 1]; //adresse IP

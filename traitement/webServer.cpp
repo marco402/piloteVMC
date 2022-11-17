@@ -245,9 +245,9 @@ webServer::webServer()
 			ENREGISTREMENT.init();
 #ifdef ALARME      
 			MYALARMEGARAGE.stop();
-			MYALARMEGARAGE.init();
+			MYALARMEGARAGE.init(1);
 			MYALARMEPORTAIL.stop();
-			MYALARMEPORTAIL.init();
+			MYALARMEPORTAIL.init(2);
 #endif
 			}
 			CONFIGURATION.showConfig();

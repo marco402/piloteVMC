@@ -23,13 +23,16 @@ class poussoir
 		poussoir();
 		boolean traitement(MODES forcageMode, int16_t dureeTempo);
 		MODES getLeMode(void);
+    boolean getTransitoirePoussoir(void);
 		void clearLeMode(void);
 		void setLemode(unsigned char leMode);
+    MODES getLemodeTransitoire(void);   
 		unsigned long  getTempsMilliCommandeTemporisees(void);
 //#ifdef TRAITMODE
 //		void testModeForce(int16_t decompteTempoArretMarcheForce);   // , uint16_t duree_forcage_sec);
 //#endif
 	private:
+    boolean  transitoirePoussoir=false;
 		MODES modeTransitoire= MODES::AUTO;   //ARRET
 		MODES memoModes= MODES::AUTO;
 		MODES leMode= MODES::AUTO;

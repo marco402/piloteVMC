@@ -145,21 +145,68 @@ void loop()
 //	//POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
 //#else
 	retour = POUSSOIR.traitement(structReception.forcageMode,structReception.dureeForcageSec);
+  if (!POUSSOIR.getTransitoirePoussoir())
+  {
+    //#endif
+	  BUZZER.setBuzzer(retour);
+	  DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
+	  DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls
+	  //au niveau affichage,le capteur est lu et envoyé sans correction à chaque cycle.
+	  retour = DHTCUISINE.lectureCapteur();
+	  BUZZER.setBuzzer(!retour);
+  //########################################Traitement Affichage##########################################
+	  LEDS_RGB_SERIAL.traitement(CAN_BUS.getStructReception());  //3 appels,compteur "en dur" dans getEtatReceptionInfos
+	  //retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());
+	  BUZZER.setBuzzer(retour) ;
+	  structReception.decompteTempoArretMarcheForce = POUSSOIR.getTempsMilliCommandeTemporisees();
+    AFFICHEUR.affiche(structReception);
+    BUZZER.traitement(structReception);  //buzzer permanent si plus de réception CAN
+    #ifdef  HORLOGETM1637
+ // Print 1234 with the center colon:
+ // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
+  if (structReception.luminositeeLeds != memoBrightness)
+  {
+    memoBrightness = structReception.luminositeeLeds;
+   if(memoBrightness>3)
+    display.setBrightness(memoBrightness-2); //1 mini  8 maximemoBrightness+1
+   else
+    display.setBrightness(1); //1 mini  8 maxi
+  }
+  if (memoMinute!=structReception.minutes &&  structReception.infos)
+  {
+    memoMinute = structReception.minutes;
+    display.showNumberDecEx(structReception.heures*100+structReception.minutes,0x40, true, 4, 0);  //40 pour :
+    //display.showNumberDec(m, true, 2, 2);
+    //display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
+    //display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
+    }
+#endif
 
-//#endif
-	BUZZER.setBuzzer(retour);
-	DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
-	DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls
-	//au niveau affichage,le capteur est lu et envoyé sans correction à chaque cycle.
-	retour = DHTCUISINE.lectureCapteur();
-	BUZZER.setBuzzer(!retour);
-//########################################Traitement Affichage##########################################
-	LEDS_RGB_SERIAL.traitement(CAN_BUS.getStructReception());  //3 appels,compteur "en dur" dans getEtatReceptionInfos
-	//retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());
-	BUZZER.setBuzzer(retour) ;
-	structReception.decompteTempoArretMarcheForce = POUSSOIR.getTempsMilliCommandeTemporisees();
-	AFFICHEUR.affiche(structReception);
-	BUZZER.traitement(structReception);  //buzzer permanent si plus de réception CAN
+#ifdef HORLOGETM1650
+    // Print 1234 with the center colon:
+    // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
+    if (structReception.luminositeeLeds != memoBrightness)
+    {
+      memoBrightness = structReception.luminositeeLeds;
+      display.setBrightness(memoBrightness); //0 mini  7 maxi
+    }
+    if (memoMinute!=structReception.minutes)
+    {
+      memoMinute = structReception.minutes;
+      sprintf(buf, "%02d%02d", structReception.heures, structReception.minutes);  //with zero
+      buf[1] = buf[1] | 0b10000000;   //second point
+      display.displayString(buf);
+      //display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
+      //display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
+      }
+#endif 
+  } //getTransitoirePoussoir 
+  else
+  {
+    AFFICHEUR.afficheMode(POUSSOIR.getLemodeTransitoire());
+  }
+  
+	
 //########################################Traitement des sorties##########################################
 //les moyennes se1110.ront faite au niveaux des UC
 //    Serial.print("Cuisine H  "); Serial.println(DHTCUISINE.DHT_H.getMesureCycleMsb());Serial.println(DHTCUISINE.DHT_H.getMesureCycleLsb());
@@ -171,46 +218,7 @@ void loop()
 	//Serial.print("temps libre:");Serial.println(delta);
  //################################################################################################################# 
 
-#ifdef  HORLOGETM1637
- // Print 1234 with the center colon:
- // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
-	if (structReception.luminositeeLeds != memoBrightness)
-	{
-		memoBrightness = structReception.luminositeeLeds;
-   if(memoBrightness>3)
-		display.setBrightness(memoBrightness-2); //1 mini  8 maximemoBrightness+1
-   else
-    display.setBrightness(1); //1 mini  8 maxi
-	}
-	if (memoMinute!=structReception.minutes &&  structReception.infos)
-	{
-		memoMinute = structReception.minutes;
-		display.showNumberDecEx(structReception.heures*100+structReception.minutes,0x40, true, 4, 0);  //40 pour :
-		//display.showNumberDec(m, true, 2, 2);
-		//display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
-		//display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
-    }
-#endif
-
-#ifdef HORLOGETM1650
- // Print 1234 with the center colon:
- // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
-  if (structReception.luminositeeLeds != memoBrightness)
-  {
-    memoBrightness = structReception.luminositeeLeds;
-    display.setBrightness(memoBrightness); //0 mini  7 maxi
-  }
-  if (memoMinute!=structReception.minutes)
-  {
-    memoMinute = structReception.minutes;
-    sprintf(buf, "%02d%02d", structReception.heures, structReception.minutes);  //with zero
-    buf[1] = buf[1] | 0b10000000;   //second point
-    display.displayString(buf);
-    //display.showNumberDecEx(structReception.heures, 0b01000000, false, 2, 0);
-    //display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
-    }
-#endif   
-  } //1 sec
+  } //CAN_BUS.traitementReception()||(task_1_sec==3)
 //########################################Traitement durée du cycle##########################################
   if((millis()- memoTempsMilli) > 1000)
   {

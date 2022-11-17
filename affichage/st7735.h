@@ -71,7 +71,7 @@
 //https://ee-programming-notepad.blogspot.com/2016/10/16-bit-color-generator-picker.html
 #define COLORSCREEN ST7735_BLACK              //0xAFB7                    //bleu pale ST7735_GREEN
 #define COLORCONSTANTBACK ST7735_BLACK
-#define COLORCONSTANTFORE ST7735_YELLOW
+#define COLORCONSTANTFORE ST7735_CYAN    //ST7735_YELLOW
 #define COLORCADRES ST7735_ORANGE
 #define COLORBLUEDAYS ST7735_BLUE
 #define COLORWHITEDAYS ST7735_WHITE
@@ -82,8 +82,17 @@
 #define COLORDAY ST7735_BLUE
 //#define COLORVARIABLESBACK ST7735_ORANGE
 #define COLORVARIABLESFORE ST7735_WHITE     //ST7735_RED
-#define COLORVARIABLESMODES ST7735_BLACK
+#define COLORVARIABLESMODES ST7735_WHITE
 //********************************************************
+//#define ST7735_BLACK      ST77XX_BLACK
+//#define ST7735_WHITE      ST77XX_WHITE
+//#define ST7735_RED        ST77XX_RED
+//#define ST7735_GREEN      ST77XX_GREEN
+//#define ST7735_BLUE       ST77XX_BLUE
+//#define ST7735_CYAN       ST77XX_CYAN
+//#define ST7735_MAGENTA    ST77XX_MAGENTA
+//#define ST7735_YELLOW     ST77XX_YELLOW
+//#define ST7735_ORANGE     ST77XX_ORANGE
 //#define DELTALINESTEXT    3
 //#define NBLIGNE 7
 //#define NBPIXPARLETTERSIZE2    14
@@ -94,6 +103,7 @@ class st7735 : public Adafruit_ST7735
     void affiche(struct_reception R);  //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
     void initAdafruit_ST7735(void);
     void setchangeMode(bool changeMode);
+    void afficheMode(MODES modeSelection );
     void setMode( int mode);
   private:
     bool changeMode = false;

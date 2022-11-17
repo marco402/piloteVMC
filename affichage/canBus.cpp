@@ -147,6 +147,8 @@ boolean can_bus::traitementReception(void )
 #ifdef ALARME
 					 reception.alarmeGarage = rxBuf[MESSAGE_TYPE_4::ALARME_GARAGE];
 					 reception.alarmePortail = rxBuf[MESSAGE_TYPE_4::ALARME_PORTAIL];
+//          Serial.print(F("alarmeGarage: "));Serial.println(rxBuf[MESSAGE_TYPE_4::ALARME_GARAGE]);  //54 violet
+//          Serial.print(F("alarmePortail: "));Serial.println(rxBuf[MESSAGE_TYPE_4::ALARME_PORTAIL]); //4  orange       
 #endif
 					 reception.locaux = true;
 					 reception.NbMessage += 1;

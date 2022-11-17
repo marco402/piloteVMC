@@ -39,10 +39,14 @@
 //7 CS    CSX   chip select         D8    adaptation 5v->3.3v   
 //8 LEDA  luminosit�e 3.3V ou pot. de 10k       via 1k
 extern "C" void __cxa_pure_virtual() { while (1); }
+//#ifdef ALARME
+//  enum enCouleursALARME{ST7735_WHITE = 0, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
+//#endif
 uint16_t couleursWIFI[] = {ST7735_RED, ST7735_RED, ST7735_ORANGE, ST7735_GREEN};
 uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, COLORSCREEN};
 #ifdef ALARME
-  uint16_t couleursALARME[] = {BIDON, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
+  //uint16_t couleursALARME[] = {enCouleursALARME::ST7735_BLACK, enCouleursALARME::ST7735_RED, enCouleursALARME::ST7735_GREEN,enCouleursALARME::ST7735_BLUE,enCouleursALARME::ST7735_ORANGE};
+  uint16_t couleursALARME[] = {ST7735_BLACK,ST7735_RED,ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
 #endif
 uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_ORANGE };
 // print pb avec string
@@ -154,8 +158,15 @@ void st7735::changementMode(void)
     fillScreen(COLORSCREEN);
     changeModePrec = true;
   }
-  setCursor(V_COLMODE + 4, V_TXTLIGNEMODES);
-  setTextColor(COLORVARIABLESMODES, COLORSCREEN);
+  setCursor(V_COLMODE + 3, V_TXTLIGNEMODES);
+  setTextColor(ST7735_ORANGE, COLORSCREEN);
+  print(MODES_AFF[modeSelection]);
+}
+void st7735::afficheMode(MODES modeSelection )
+{
+  //fillScreen(COLORSCREEN);
+  setCursor(V_COLMODE + 3, V_TXTLIGNEMODES);
+  setTextColor(ST7735_ORANGE, COLORSCREEN);
   print(MODES_AFF[modeSelection]);
 }
 void st7735::decompteCgtVitesse(struct_reception R)
@@ -179,14 +190,14 @@ void st7735::casNormal(struct_reception R)
   {
     //int8_t puis = 0;
     //*******************traitement du mode et arret marche***************************************
-    setCursor(V_COLMODE+4, V_TXTLIGNEMODES);
+    setCursor(V_COLMODE + 3, V_TXTLIGNEMODES);
     if (R.arret_marche == ARRET_MARCHE::MARCHE_REL)
     {
-      setTextColor(COLORVARIABLESMODES, ST7735_GREEN);
+      setTextColor(ST7735_BLACK, ST7735_GREEN);
       //puis = R.puissanceVMC;
     }
     else
-      setTextColor(COLORVARIABLESMODES, COLORSCREEN);
+      setTextColor(ST7735_WHITE, COLORSCREEN);
     if (R.NbMessage)
     {
       uint8_t mode = R.mode;
@@ -203,7 +214,9 @@ void st7735::casNormal(struct_reception R)
 //V_COLVARIABLES + 12  V_TXTLIGNEIVMC
 #ifdef ALARME
     TraitePaveAlarme(XPAVEALARMEGARAGE, R.alarmeGarage);
-    TraitePaveAlarme(XPAVEALARMEPORTAIL, R.alarmePortail);    
+    TraitePaveAlarme(XPAVEALARMEPORTAIL, R.alarmePortail); 
+              Serial.print(F("alarmeGarage: "));Serial.println(R.alarmeGarage);  //54 violet
+          Serial.print(F("alarmePortail: "));Serial.println(R.alarmePortail); //4  orange         
 #endif
     //TraitePaveAlarme(V_COLVARIABLES + 30, R.alarmePortail);
     //******************traitement des pav�s tempo et wifi*******************************
@@ -237,11 +250,11 @@ void st7735::casNormal(struct_reception R)
   }
   else               //*******pas de reception can***************
   {
-    setCursor(V_COLMODE + 4, V_TXTLIGNEMODES);
+    setCursor(V_COLMODE + 3, V_TXTLIGNEMODES);
     if (clignote<6)
-      setTextColor(COLORVARIABLESMODES, COLORREDDAYSWIFIPB);
+      setTextColor(ST7735_ORANGE, COLORREDDAYSWIFIPB);
     else
-      setTextColor(COLORVARIABLESMODES, COLORSCREEN);
+      setTextColor(ST7735_ORANGE, COLORSCREEN);
     print(MODES_AFF[9]);
     clignote -= 1;
     if (!clignote)

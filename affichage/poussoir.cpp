@@ -64,7 +64,7 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
 		leMode = memoModes ;
 		tempsMilliCommandeTemporisees = 0;
 	}
-	static boolean  transitoirePoussoir=false;
+//	static boolean  transitoirePoussoir=false;
 	boolean buzzer=false;
 	if ((millis()- tempsMilli) > 1000)
 	{
@@ -126,6 +126,15 @@ MODES poussoir::getLeMode()
 {
 return leMode;
 }
+boolean poussoir::getTransitoirePoussoir(void)
+{
+  return transitoirePoussoir;
+}
+MODES poussoir::getLemodeTransitoire(void)
+{
+  return modeTransitoire;
+}
+
 void poussoir::setLemode(unsigned char leMode)
 {
 	tempsMilli = 0;               //forcage de la prise en compte pour le retour en mode auto apres forcage

@@ -326,8 +326,8 @@ void ICACHE_FLASH_ATTR setup() {
 MYSNTP.init();
 ENREGISTREMENT.init();
 #ifdef ALARME
-	MYALARMEGARAGE.init();
-	MYALARMEPORTAIL.init();
+	MYALARMEGARAGE.init(1);
+	MYALARMEPORTAIL.init(2);
 #endif
 #ifdef COMP_CAN_BUS
   CAN_BUS.InitCanBus(MCP_16MHZ);

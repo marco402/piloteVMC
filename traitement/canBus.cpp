@@ -219,8 +219,10 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			buf[MESSAGE_TYPE_4::ETAT_WIFI] = WIFI.getWifiUser() | (MYTINFO.getEtatWifi() << 1);
 			buf[MESSAGE_TYPE_4::LUMINOSITE_LEDS_RGB] = CONFIGURATION.config.tempo.luminositeeLedsRgb;
 #ifdef ALARME
-			buf[MESSAGE_TYPE_4::ALARME_GARAGE] = MYALARMEGARAGE.getEtatAlarmeGarage();
-			buf[MESSAGE_TYPE_4::ALARME_PORTAIL] = MYALARMEPORTAIL.getEtatAlarmePortail();
+//          DebugF("alarmeGarage: ");Debugln(MYALARMEGARAGE.getEtatAlarme());  //54 violet
+//          DebugF("alarmePortail: ");Debugln(MYALARMEPORTAIL.getEtatAlarme()); //4  orange         
+			buf[MESSAGE_TYPE_4::ALARME_GARAGE] = MYALARMEGARAGE.getEtatAlarme();
+			buf[MESSAGE_TYPE_4::ALARME_PORTAIL] = MYALARMEPORTAIL.getEtatAlarme();
 #endif
 			sndStat = sendMsgBuf(LES_ID_CAN::ID_MESSAGE_TYPE_4, 0, MESSAGE_TYPE_4::FIN_MESSAGE_TYPE_4, buf);
 		}
