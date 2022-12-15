@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifiï¿½ par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-05-01 ()
-//		-intégré le code dans la classe myTinfo myTinfo.cpp
+// Modifiï¿½ par marc PRIEUR 2019-05-01 ()
+//		-intï¿½grï¿½ le code dans la classe myTinfo myTinfo.cpp
 //
 //
 //********************************************************************************
@@ -55,4 +55,3 @@ private:
 };
 extern myTinfo MYTINFO;
 #endif
-

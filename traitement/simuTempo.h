@@ -21,12 +21,20 @@
 #include <Arduino.h>
 #include "Wifinfo.h"
 
-#define END_STR '\0' // End of group 
-#define NBCHAR  23
-#define NBCHAMP  17 
+#define END_STR '\0' // End of string
+#define NBCHAR  30      //23-->30 for horodate
 #define SerialSimu Serial1
-enum lesIndices { STX, CPTJBN, CPTJWN, CPTJRN, CPTJBJ, CPTJWJ, CPTJRJ, ADCO, OPTARIF, ISOUSC, PTEC, DEMAIN, IINST, IMAX, HHPHC, MOTDETAT, HCJB, HPJB, HPJW, HCJR, HPJR, DERNIER
+#ifdef MODE_HISTORIQUE
+#define NBCHAMP  17 
+enum lesIndices { STX, CPTJBN, CPTJWN, CPTJRN, CPTJBJ, CPTJWJ, CPTJRJ, ADCO, OPTARIF, ISOUSC, PTEC, DEMAIN, IINST, IMAX,
+HHPHC, MOTDETAT, HCJB, HPJB, HPJW, HCJR, HPJR, DERNIER
 };
+#else
+#define NBCHAMP  15 
+enum lesIndices { STX, EASF01, EASF02, EASF03, EASF04, EASF05, EASF06, ADSC, DPM1, ISOUSC, NJOURF, NJOURFPLUS1, IRMS1, IMAX,
+HHPHC, RELAY, HCJB, HPJB, HPJW, HCJR, HPJR, DERNIER
+};
+#endif
 
 class SimuTempo
 {
@@ -37,7 +45,9 @@ private:
 	void emetTrameTempo(  unsigned long secondes, int compteurCourant,unsigned int  couleurDemain);
 	int randMinMax(int min, int max);
 	void traite1champ(char * trame, int longueur, int longueurEntete, int indice, char * buffer);
-	void traite1champ(char * trame, char * format, int longueur, int longueurEntete, int indice, unsigned long variable);
+	void traite1champ(char * trame, char * format, int longueur, int longueurEntete, int indice, unsigned long variable,bool horodate);
+	unsigned int _separator;
+	unsigned char calcChecksum(char *mot);
 };
 extern SimuTempo SIMU_TEMPO;
 

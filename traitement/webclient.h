@@ -18,8 +18,8 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par marc Prieur 2019
-//		-V2.0.0:intégré le code dans la classe webClient webClient.cpp  webClient.h
+// Modifiï¿½ par marc Prieur 2019
+//		-V2.0.0:intï¿½grï¿½ le code dans la classe webClient webClient.cpp  webClient.h
 //		-V2.0.2:ajout de TAILLEBUFEMONCMS
 // Using library ESP8266HTTPClient version 1.1
 //
@@ -29,9 +29,11 @@
 #define WEBCLIENT_H
 
 #include <Arduino.h> 
+#include <ESP8266HTTPClient.h>
 #include "Wifinfo.h"
 #include "enregistrement.h"
-#include <ESP8266HTTPClient.h>
+#include "LibTeleinfo.h" 
+
 #define TAILLEBUFEMONCMS 400
 
 const char FP_QC[] PROGMEM = "\"";
@@ -41,13 +43,13 @@ const char FP_JSON_START[] PROGMEM = "{\r\n";
 const char FP_JSON_END[] PROGMEM = "\r\n}\r\n";
 const char FP_QCQ[] PROGMEM = "\":\"";
 const char FP_QCNL[] PROGMEM = "\",\r\n\"";
-const char FP_RESTART[] PROGMEM = "OK, Redémarrage en cours\r\n";
+const char FP_RESTART[] PROGMEM = "OK, Redï¿½marrage en cours\r\n";
 const char FP_NL[] PROGMEM = "\r\n";
 
 class webClient
 {
 public:
-	webClient(boolean modeLinkyHistorique);
+	webClient();
 	boolean emoncmsPost(void);
 	boolean jeedomPost(void);
 	boolean httpRequest(void);
@@ -58,7 +60,8 @@ public:
 	//void httpGetPost(void);
 private:
 	boolean httpPost(char * host, uint16_t port, char * url);
-	boolean modeLinkyHistorique;
+	//boolean modeLinkyHistorique;
+	//modeTil   mode; // Teleinfo mode (legacy/historique vs standard)
 	boolean transfertHttpEnCours = false;
 	//HTTPClient http;
 	unsigned long attenteHttp = 0;

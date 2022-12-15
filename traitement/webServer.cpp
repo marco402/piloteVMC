@@ -364,6 +364,14 @@ webServer::webServer()
 						response += F("{\"na\":\"");
 						response += me->name;
 						response += F("\", \"va\":\"");
+//						if (strncmp(me->name, "BBR", 3) == 0) //6 cpt de watt a kw
+//						{
+//							double x = 0;
+//							int y = 0;
+//							memcpy(me->value, &x, sizeof(double));
+//							y = x / 1000.0;
+//							memcpy(&y, me->value, sizeof(int));
+//						}
 						response += me->value;
 						response += F("\", \"ck\":\"");
 						if (me->checksum == '"' || me->checksum == '\\' || me->checksum == '/')
@@ -1318,7 +1326,7 @@ void webServer::initOptVal(void)
 #else
 	strcat(optval, ", ");
 #endif
-#if MODE_HISTORIQUE
+#ifdef MODE_HISTORIQUE
 	strcat(optval, "MODE_HISTO, ");	//12
 #else
 	strcat(optval, "MODE_STANDARD,");

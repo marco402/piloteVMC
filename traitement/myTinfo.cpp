@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifiï¿½ par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-05-01 ()
-//		-intégré le code dans la classe myTinfo myTinfo.cpp
+// Modifiï¿½ par marc PRIEUR 2019-05-01 ()
+//		-intï¿½grï¿½ le code dans la classe myTinfo myTinfo.cpp
 //
 //
 //********************************************************************************
@@ -46,7 +46,7 @@ volatile boolean cgtCompteur = false;
 void PTECCallback(uint8_t etatPTEC)
 {
 	//DebuglnF("Changement de compteur");
-	//nouvelleTrame = false;   //essai pour problème de dernière trame
+	//nouvelleTrame = false;   //essai pour problï¿½me de derniï¿½re trame
 	cgtCompteur = true;	//il faut changer de compteur et enregistrer une trame 
 
 }
@@ -105,7 +105,7 @@ Comments: should have been initialised in the main sketch with a
 ====================================================================== */
 //void ADPSCallback(uint8_t phase)
 //{
-//	// Monophasé
+//	// Monophasï¿½
 //	if (phase == 0) {
 //		Debugln(F("ADPS"));
 //	}
@@ -337,4 +337,3 @@ uint8_t myTinfo::getEtResetErreur(void)
 	erreur = 0;
 	return temp;
 }
-

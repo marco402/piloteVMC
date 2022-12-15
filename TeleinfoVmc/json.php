@@ -826,7 +826,7 @@ function history() {
             //$timestampdebut = strtotime($decalage, $timestampdebut2);        // Début de période précédente
 
             $xlabel = $duree . ($duree==1 ? " jour" : " jours");
-            $dateformatsql = "%a %e";
+            $dateformatsql = "%a %e %b %Y";
             $divabonnement = 365;
             break;
         case "semaines":

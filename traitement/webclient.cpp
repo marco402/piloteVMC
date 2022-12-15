@@ -39,10 +39,11 @@
 #include "enregistrement.h"
 #include "webclient.h"
 
-webClient::webClient(boolean modeLinkyHistorique)
+webClient::webClient()
 {
-	this->modeLinkyHistorique = modeLinkyHistorique;
-	//http.setTimeout(200);   //1500
+	//this->mode = mode;
+	//this->modeLinkyHistorique = modeLinkyHistorique;
+	//http.setTimeout(200);   //1500  
 }
 
 
@@ -576,8 +577,9 @@ boolean webClient::httpRequest(void)
         if (!skip_item)
         {
           String valName = String(me->name);
-			if (!this->modeLinkyHistorique) /* FOR STANDARD TYPE */
-			{
+#ifndef MODE_HISTORIQUE
+			//if (mode == modeTil::TINFO_MODE_STANDARD) /* FOR STANDARD TYPE */
+			//{
 				if (valName == "SINSTS") {
 					url.replace("%SINSTS%", String(atol(me->value)));//Puissance app. Instantanée soutirée
 				}
@@ -590,7 +592,8 @@ boolean webClient::httpRequest(void)
 				if (valName == "EASF02") {
 					url.replace("%EASF02%", String(atol(me->value)));//Energie active soutirée Fournisseur, index 02
 				}
-			}
+			//}
+#endif
           if (valName == "HCHP")
           {
             url.replace("%HCHP%", me->value);

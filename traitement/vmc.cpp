@@ -20,6 +20,7 @@
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include "mySyslog.h"
+#include "mySntp.h"
 #include "constantes.h"
 #include "dht.h"
 #include "smt160.h"
@@ -72,7 +73,7 @@ void vmc::traiteRazCapteursAuto(void)
 	if (cptSecondesVmcAuto >= (uint16_t)CONFIGURATION.config.tempo.periode_vmc_sec)  //déplacé ici sinon capteur de courant a 0
 	{
 		traiteMoyennePeriode();
-		if (!(leMode == MODES::AUTO || leMode == MODES::ETE))   //pour continuer a traiter les moyennes a la cadence vmc
+		if (!(leMode == MODES::AUTO || leMode == MODES::ETE || leMode == MODES::HIVER))   //pour continuer a traiter les moyennes a la cadence vmc
 			cptSecondesVmcAuto = 0;
 	}
 }
@@ -98,16 +99,21 @@ void vmc::traitementVMCHiver()
 {
 	//DebugF("TEMPEXT: ");	Debugln((long)TEMPEXT.getMoyennePeriode());
 	//DebugF("TEMPSDB: ");	Debugln((long)DHTSDB.DHT_T.getMoyennePeriode());
-	if ((TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode())))
+//	if ((TEMPEXT.getMoyennePeriode() > (DHTSDB.DHT_T.getMoyennePeriode())))
+	//if (RELAIS.getJour_Nuit())		//0:jour,3:nuit
+	if(Clock.getHour() > 5 && Clock.getHour() < 23)
 	{
 		//DebugF("BIDON ");
-		forcageMode = MODES::BIDON;
-		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
+		//forcageMode = MODES::BIDON;
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
+		//RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);
 	}
 	else
 	{
+		traitementVMC();
+		cptSecondesVmcAuto = 0;
 		//DebugF("AUTO ");
-		forcageMode = MODES::AUTO;
+		//forcageMode = MODES::AUTO;
 		//leMode = MODES::AUTO;  //il faudrait indiquer a affichage->poussoir de forcer le mode auto
 		//memoModes = MODES::AUTO;
 //#ifndef TRAITMODE

@@ -148,6 +148,8 @@
 	un watchdog "user"
 
 */
+// 
+
 //###################################includes##################################  
 //#include "constantes.h"   ici,COMP_CAN_BUS pas vu??? il faut apres Wifinfo.h???
 #include <ESP8266WiFi.h>
@@ -222,7 +224,7 @@ webServer WEBSERVER;
 mySyslog MYSYSLOG;
 #endif
 myWifi WIFI;
-webClient WEBCLIENT(MODE_HISTORIQUE);
+webClient WEBCLIENT;
 vmc VMC;
 buzzer BUZZER;
 //###################################SETUP##################################  
@@ -279,14 +281,14 @@ void ICACHE_FLASH_ATTR setup() {
   DebuglnF("Fin des traces consoles voir avec syslog,la teleinfo est recue sur RXD2");
   DebuglnF("Changement de vitesse des traces consoles voir avec syslog,la teleinfo est maintenant recu sur RXD0 a la place de l'USB(OU RXD2 si Serial.swap())");
 #else
-	#if MODE_HISTORIQUE
+	#ifdef MODE_HISTORIQUE
 		DebuglnF("Les traces consoles continue de fonctionner sur TXD0 à 1200 bauds ou VITESSE_SIMUTRAMETEMPO si SIMUTRAMETEMPO");
 		DebuglnF("La teleinfo est recue sur RXD0");
 	#else
 		DebuglnF("Les traces consoles continue de fonctionner sur TXD0 à 9600 bauds ou VITESSE_SIMUTRAMETEMPO si SIMUTRAMETEMPO");
 	#endif
 #endif
-#if MODE_HISTORIQUE
+#ifdef MODE_HISTORIQUE
 	#ifdef SIMUTRAMETEMPO
 		#ifdef TELEINFO_RXD2
 			DebuglnF("Pour la simulation:strapper D4(TXD1) et D7(RXD2)");
