@@ -277,9 +277,9 @@ Comments: -
 ICACHE_FLASH_ATTR myTinfo::myTinfo()
 {
 }
-void ICACHE_FLASH_ATTR myTinfo::init(boolean modeLinkyHistorique)
+void ICACHE_FLASH_ATTR myTinfo::init()      //boolean modeLinkyHistorique
 {
-	TINFO.init(modeLinkyHistorique);
+	TINFO.init();      //modeLinkyHistorique
 	//TINFO.attachADPS(ADPSCallback);
 	TINFO.attachNewFrame(NewFrame);
 	//TINFO.attachUpdatedFrame(UpdatedFrame);

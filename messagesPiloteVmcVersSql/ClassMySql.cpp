@@ -121,7 +121,7 @@ bool  ClassMySql::messageVersBase(TeleInfoVmc *leMessageVersBase)
 	prep_stmt->setInt(16, leMessageVersBase->humSdb);
 	prep_stmt->setUInt(9, leMessageVersBase->iInstMax);
 	prep_stmt->setInt(11, leMessageVersBase->etatWifi);
-	prep_stmt->setInt(17, (leMessageVersBase->etatVmc >> 2) & 7);
+	prep_stmt->setInt(17, (leMessageVersBase->etatVmc >> 2) & 0xf);
 	prep_stmt->setInt(18, (leMessageVersBase->etatVmc >> 1) & 1);
 	prep_stmt->setInt(19, leMessageVersBase->etatVmc & 1);
 	try

@@ -36,7 +36,7 @@ class myTinfo
 {
 public:
 	myTinfo();
-	void init(boolean modeLinkyHistorique);
+	void init();    // boolean modeLinkyHistorique);
 	bool getTask_emoncms(void);
 	bool getTask_jeedom(void);
 	bool getTask_httpRequest(void);

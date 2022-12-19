@@ -108,7 +108,9 @@ extern "C" {
 //#define SIMUTRAMETEMPO			//Version standard:simulation des trames tempo. strapper D4(TXD1) et D7(RXD2) ou D9(RXD0) suivant TELEINFO_RXD2
 #define AVEC_NTP				//Serveur de temps
 //#define IPSTATIC				//Essayer adresse hors plage DHCP(voir box) ---->OK mais plus de liaison avec l'extérieur(NTP...)il faudrait du  routage au niveau de la box!
-#define MODE_HISTORIQUE   true	//Pour le linky true mode historique,false mode standard (mode standard incomplet)
+//ATTENTION MODE_HISTORIQUE ici n'est pas pris en compte par constantes.h?????
+//essai de le mettre dans constantes.h
+//#define MODE_HISTORIQUE   //true	//Pour le linky true mode historique,false mode standard (mode standard incomplet)
 
 #ifndef SIMUTRAMETEMPO				//meme pin D4
 	#ifdef PIN_CS_CAN

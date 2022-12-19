@@ -37,14 +37,12 @@
 			//	
 			// **********************************************************************************
 
-
-
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include "constantes.h"
 #include "mySyslog.h"
 #include "LibTeleinfo.h" 
-			int ValueItem = 0;					//Index of next position to use
+		int ValueItem = 0;					//Index of next position to use
 		struct _ValueList ValuesTab[TINFO_TABSIZE];	//Allocate static table of 50 items
 											// to don't use anymore malloc & free
 
@@ -82,9 +80,9 @@
 		Output  : -
 		Comments: -
 		====================================================================== */
-		void ICACHE_FLASH_ATTR TInfo::init(boolean modeLinkyHistorique)
+		void ICACHE_FLASH_ATTR TInfo::init()     //boolean modeLinkyHistorique
 		{
-			this->modeLinkyHistorique = modeLinkyHistorique;
+			//this->modeLinkyHistorique = modeLinkyHistorique;
 			// free up linked list (in case on recall init())
 			listDelete();
 			// clear our receive buffer
@@ -170,6 +168,8 @@
 			return ((ValueList *)NULL);
 		}
 
+
+#ifdef MODE_HISTORIQUE	
 		/* ======================================================================
 		Function: valueAdd
 		Purpose : Add element to the Linked List of values
@@ -276,7 +276,170 @@
 			} //Checksum check
 			return (me);
 		}
+#else
+/* ======================================================================
+Function: horodate2Timestamp
+Purpose : convert string date from frame to timestamp
+Input   : pdate : pointer to string containing the date SAAMMJJhhmmss
+				 season, year, month, day, hour, minute, second
+Output  : unix format timestamp
+Comments:
+====================================================================== */
+uint32_t TInfo::horodate2Timestamp(char * pdate)
+{
+	struct tm tm;
+	time_t ts;
+	char * p;
 
+	if (pdate == NULL || *pdate == '\0' || strlen(pdate) != 13) {
+		return 0;
+	}
+
+	p = pdate + strlen(pdate) - 2;
+	tm.tm_sec = atoi(p); *p = '\0'; p -= 2;
+	tm.tm_min = atoi(p); *p = '\0'; p -= 2;
+	tm.tm_hour = atoi(p); *p = '\0'; p -= 2;
+	tm.tm_mday = atoi(p); *p = '\0'; p -= 2;
+	tm.tm_mon = atoi(p); *p = '\0'; p -= 2;
+	tm.tm_year = atoi(p) + 2000;
+
+	tm.tm_year -= 1900;
+	tm.tm_mon -= 1;
+	tm.tm_isdst = 0;
+	ts = mktime(&tm);
+	if (ts == (time_t)-1) {
+		TI_Debug(F("Failed to convert time "));
+		TI_Debugln(pdate);
+		return 0;
+	}
+
+	return (uint32_t)ts;
+}
+
+/* ======================================================================
+Function: valueAdd
+Purpose : Add element to the Linked List of values
+Input   : Pointer to the label name
+		  pointer to the value
+		  checksum value
+		  flag state of the label (modified by function)
+Output  : pointer to the new node (or founded one)
+Comments: - state of the label changed by the function
+====================================================================== */
+ValueList * TInfo::valueAdd(char * name, char * value, uint8_t checksum, uint8_t * flags, char *horodate)
+{
+
+	uint8_t lgname = strlen(name);
+	uint8_t lgvalue = strlen(value);
+	uint8_t thischeck = calcChecksum(name, value);
+	int firstfree = -1;
+	ValueList * me = &ValuesTab[0];
+
+	if (!validateTag(name)) { //Not a valid tag
+		TI_Debug(name);
+		TI_Debugln(" is not a valid tag");
+		return NULL;
+	}
+	// just some paranoia 
+	if (thischeck != checksum) {
+		TI_Debug(name);
+		TI_Debug('=');
+		TI_Debug(value);
+	}
+	if (horodate && *horodate) {
+		TI_Debug(F(" Date="));
+		TI_Debug(horodate);
+		TI_Debug(F(" "));
+	}
+	// just some paranoia 
+	if (thischeck != checksum) {
+		TI_Debug(name);
+		TI_Debug('=');
+		TI_Debug(value);
+		TI_Debug(F(" '"));
+		TI_Debug((char)checksum);
+		TI_Debug(F("' Not added bad checksum calculated '"));
+		TI_Debug((char)thischeck);
+		TI_Debugln(F("'"));
+	}
+	else {
+		// Got one and all seems good ?
+		if (me && lgname && lgvalue && checksum) {
+			uint32_t ts = 0;
+			// Parameters seems to be coherent
+			// Scan the existing table
+			if (horodate && *horodate) {
+				ts = horodate2Timestamp(horodate);
+			}
+			int i;
+			for (i = 0; i < ValueItem || i < TINFO_TABSIZE; i++) {     //marc change , by ||
+				me = &ValuesTab[i];
+				if (!me->free) {
+					if (strncmp(me->name, name, lgname) == 0) {
+						if (ts) {
+							me->ts = ts;
+						}
+						//entry found for the same value name : reuse it !
+						if (strncmp(me->value, value, lgvalue) == 0) {
+							*flags |= TINFO_FLAGS_EXIST;
+							me->flags = *flags;
+							return (me);
+						}
+						else {
+							//Exist, but value changed
+							*flags |= TINFO_FLAGS_UPDATED;
+							me->flags = *flags;
+							// Copy new value
+							memset(me->value, 0, TAILLE_MAX_VALUE);
+							memcpy(me->value, value, lgvalue);
+							me->checksum = checksum;
+
+							// That's all
+							return (me);
+						}
+					} //name comparison
+				}
+				else {
+					//This entry is free
+					if (firstfree < 0)
+						firstfree = i;  //It's the 1st one detected
+				}
+			} //for
+
+			//No existing entry for this name : Create a new one
+			if (firstfree >= 0) {
+				//Use the 1st free entry found
+				i = firstfree;
+			}
+			else {
+				if (i < TINFO_TABSIZE)
+					ValueItem = i;  //Note new entry as last one
+				else
+					return ((ValueList *)NULL); //Table saturated !
+			}
+
+			// i points the entry to use : get our buffer Safe
+			me = &ValuesTab[i];
+			memset(me, 0, sizeof(_ValueList)); //Also reset the 'free' marker
+			me->checksum = checksum;
+			if (i < TINFO_TABSIZE - 1)
+				me->next = &ValuesTab[i + 1];
+
+			// Copy the string data (name & value)
+			memcpy(me->name, name, lgname);
+			memcpy(me->value, value, lgvalue);
+			if ((*flags & TINFO_FLAGS_UPDATED) == 0) {
+				// so we added this node !
+				*flags |= TINFO_FLAGS_ADDED;
+				me->flags = *flags;
+			}
+			// That's all
+			return (me);
+		}
+	} //Checksum check
+	return (me);
+}
+#endif
 		/* ======================================================================
 		Function: valueRemoveFlagged
 		Purpose : remove element to the Linked List of values where
@@ -483,6 +646,7 @@
 			return(true);
 		}
 
+#ifdef MODE_HISTORIQUE	
 		/* ======================================================================
 		Function: checksum
 		Purpose : calculate the checksum based on data/value fields
@@ -495,10 +659,9 @@
 		{
 			uint16_t sum = ' ';
 			//5.3.6. Couche liaison document enedis Enedis-NOI-CPT_54E.pdf  
-			if (!this->modeLinkyHistorique)
-			{
+#ifndef MODE_HISTORIQUE			//if (!this->modeLinkyHistorique)
 				sum = 0x09 * 2;// Somme des codes ASCII du message + un espace
-			}
+#endif
 			// avoid dead loop, always check all is fine 
 			if (etiquette && valeur) {
 				// this will not hurt and may save our life ;-)
@@ -508,15 +671,77 @@
 
 					while (*valeur)
 						sum += *valeur++;
-					if (this->modeLinkyHistorique)
+#ifdef MODE_HISTORIQUE	
 						return ((sum & 63) + ' ');
-					else
+#else
 						return ((sum & 0x3f) + 0x20);
+#endif
 				}
 			}
 			return 0;
 		}
+#else
+		/* ======================================================================
+		Function: checksum
+		Purpose : calculate the checksum based on data/value fields
+		Input   : label name
+		label value
+		Output  : checksum
+		Comments: return '\0' in case of error
+		====================================================================== */
+		unsigned char TInfo::calcChecksum(char *etiquette, char *valeur, char *horodate)
+		{
+			uint8_t sum = _separator;  // Somme des codes ASCII du message + 1 separateurs  
+#ifndef MODE_HISTORIQUE
+			sum *= 2;  // Somme des codes ASCII du message + 2 separateurs
+#endif
+	//uint8_t sum = (mode == TINFO_MODE_HISTORIQUE) ? _separator : (2 * _separator);  // Somme des codes ASCII du message + 2 separateurs
 
+	 // avoid dead loop, always check all is fine 
+			if (etiquette && valeur) {
+				// this will not hurt and may save our life ;-)
+				if (strlen(etiquette) && strlen(valeur)) {
+					while (*etiquette)
+						sum += *etiquette++;
+
+					while (*valeur)
+						sum += *valeur++;
+
+					if (horodate) {
+						sum += _separator;
+						while (*horodate)
+							sum += *horodate++;
+					}
+
+					return ((sum & 0x3f) + 0x20);
+				}
+			}
+			return 0;
+			// uint16_t sum = ' ';
+			//5.3.6. Couche liaison document enedis Enedis-NOI-CPT_54E.pdf  
+			// if (!this->modeLinkyHistorique)
+			// {
+				// sum = 0x09 * 2;// Somme des codes ASCII du message + un espace
+			// }
+			//avoid dead loop, always check all is fine 
+			// if (etiquette && valeur) {
+			//	this will not hurt and may save our life ;-)
+				// if (strlen(etiquette) && strlen(valeur)) {
+					// while (*etiquette)
+						// sum += *etiquette++;
+
+					// while (*valeur)
+						// sum += *valeur++;
+				// if (this->modeLinkyHistorique)
+					// return ((sum & 63) + ' ');
+				// else
+					// return ((sum & 0x3f) + 0x20);
+				// }
+			// }
+			// return 0;
+		}
+
+#endif
 		/* ======================================================================
 		Function: customLabel
 		Purpose : do action when received a correct label / value + checksum line
@@ -586,9 +811,9 @@
 			//TI_Debug("Got [");
 			//TI_Debug(len);
 			//TI_Debug("] ");
-			if (!this->modeLinkyHistorique)
+#ifndef MODE_HISTORIQUE			//if (!this->modeLinkyHistorique)
 				separateur = '\t';
-
+#endif
 			// Loop in buffer 
 			while (p < pend) {
 				// start of token value

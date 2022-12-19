@@ -368,9 +368,13 @@ webServer::webServer()
 //						{
 //							double x = 0;
 //							int y = 0;
-//							memcpy(me->value, &x, sizeof(double));
+//							memcpy( &x,me->value, sizeof(double));
 //							y = x / 1000.0;
-//							memcpy(&y, me->value, sizeof(int));
+//							memcpy( me->value,&y ,sizeof(int));
+//char  x[15];
+//strcpy_P(x, me->value);
+//int y =x.toFloat()/ 1000.0;
+//memcpy( me->value,&y ,sizeof(int));
 //						}
 						response += me->value;
 						response += F("\", \"ck\":\"");

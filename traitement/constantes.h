@@ -25,7 +25,7 @@
 
 #include "constantesPartagees.h"   //fichier identique avec affichage,il faut le charger dans les 2 projets pour qu'il soit transféré dans le dossier de generation(user...)
 
-
+#define MODE_HISTORIQUE
 
 //################################################define##########################################################
 #define WIFIOK ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP))
@@ -102,16 +102,16 @@ static const uint8_t   TEMPO_CGT_ETAT_RELAIS = 5;
 static const  uint16_t  REINIT = 65000;                    //ne pas mettre au max, pour ne pas revenir a 0 sur le +1
 
 //problem PROGMEM conflict __c
-//#ifdef MODE_HISTORIQUE
+#ifdef MODE_HISTORIQUE
 	static const char TableauTempoName[][8] = { "BBRHCJB","BBRHCJW","BBRHCJR","BBRHPJB","BBRHPJW","BBRHPJR","PTEC","DEMAIN","IINST" };
-//#else
- //	//EASF01(9) a EASF06   6 compteurs remplace BBRHxx  9 char
-//	//NJOURF(2) remplace PTEC
-//	//NJOURF+1(2) remplace DEMAIN	
-//	//IRMS1(3) remplace IINST
-//	//RELAIS(3) remplace MOTDETAT a voir
-//	static const char TableauTempoName[][9] = {"EASF01","EASF02","EASF03","EASF04","EASF05","EASF06","NJOURF","NJOURF+1","IRMS1" };
-//#endif
+#else
+ 	//EASF01(9) a EASF06   6 compteurs remplace BBRHxx  9 char
+	//NJOURF(2) remplace PTEC
+	//NJOURF+1(2) remplace DEMAIN	
+	//IRMS1(3) remplace IINST
+	//RELAIS(3) remplace MOTDETAT a voir
+	static const char TableauTempoName[][9] = {"EASF01","EASF02","EASF03","EASF04","EASF05","EASF06","NJOURF","NJOURF+1","IRMS1" };
+#endif
 static const char tableauPtec[][5] = { "HCJB", "HCJW", "HCJR", "HPJB", "HPJW", "HPJR" };
 
 PROGMEM const char MODES_AFF[][11] = { "Arret","Lent","Rapide","Auto","Force pv","Force gv","Forc arret","ETE","HIVER","AT CAN BUS","cas inex" };

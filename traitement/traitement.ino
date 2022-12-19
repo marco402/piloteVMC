@@ -283,10 +283,10 @@ void ICACHE_FLASH_ATTR setup() {
 #else
 	#ifdef MODE_HISTORIQUE
 		DebuglnF("Les traces consoles continue de fonctionner sur TXD0 à 1200 bauds ou VITESSE_SIMUTRAMETEMPO si SIMUTRAMETEMPO");
-		DebuglnF("La teleinfo est recue sur RXD0");
 	#else
 		DebuglnF("Les traces consoles continue de fonctionner sur TXD0 à 9600 bauds ou VITESSE_SIMUTRAMETEMPO si SIMUTRAMETEMPO");
 	#endif
+	DebuglnF("La teleinfo est recue sur RXD0");
 #endif
 #ifdef MODE_HISTORIQUE
 	#ifdef SIMUTRAMETEMPO
@@ -316,7 +316,7 @@ void ICACHE_FLASH_ATTR setup() {
 	SerialSimu.begin(VITESSE_SIMUTRAMETEMPO);	//19200, SERIAL_7E1
 #endif
 #ifdef 	WITHWIFINFO
-	MYTINFO.init(MODE_HISTORIQUE);
+	MYTINFO.init();    //MODE_HISTORIQUE
 #endif
   uint8_t timeout = 5;
   while (WIFINOOKOU && timeout)
@@ -441,7 +441,7 @@ void loop()
     //Some polluted entries have been detected in Teleinfo ListValues
 		//need_reinit=false;
 		//WEBSERVER.incNb_reinit();    //account of reinit operations, for system infos commente pour test initCan
-		MYTINFO.init(MODE_HISTORIQUE);//Clear ListValues, buffer, and wait for next STX
+		MYTINFO.init();   //MODE_HISTORIQUE//Clear ListValues, buffer, and wait for next STX
 	} 
 	else
 	{

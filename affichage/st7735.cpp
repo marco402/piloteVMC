@@ -50,7 +50,7 @@ uint16_t couleursTEMPO[] = {ST7735_BLUE, ST7735_WHITE, ST7735_RED, COLORSCREEN};
 #endif
 uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_ORANGE };
 // print pb avec string
-char MODES_AFF[][11] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc n�cessaires pour effacer la plus longue chaine
+char MODES_AFF[][11] = {"" , "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc n�cessaires pour effacer la plus longue chaine
 //String MODES_AFF[] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","AT CAN BUS" }; //blanc n�cessaires pour effacer la plus longue chaine
 char CAS_AUTO[][12] = { "           ","A-temp ext>","A-temp ext<","M-hum cuis>","M-hum  sdb>","cas inex   "};  //      ,"   arret   " ,"SHC","SHB","SCHAUD","SFROID"};
 #define NO_DEBUG_ST7735
@@ -215,8 +215,8 @@ void st7735::casNormal(struct_reception R)
 #ifdef ALARME
     TraitePaveAlarme(XPAVEALARMEGARAGE, R.alarmeGarage);
     TraitePaveAlarme(XPAVEALARMEPORTAIL, R.alarmePortail); 
-              Serial.print(F("alarmeGarage: "));Serial.println(R.alarmeGarage);  //54 violet
-          Serial.print(F("alarmePortail: "));Serial.println(R.alarmePortail); //4  orange         
+//          Serial.print(F("alarmeGarage: "));Serial.println(R.alarmeGarage);  //54 violet
+//          Serial.print(F("alarmePortail: "));Serial.println(R.alarmePortail); //4  orange         
 #endif
     //TraitePaveAlarme(V_COLVARIABLES + 30, R.alarmePortail);
     //******************traitement des pav�s tempo et wifi*******************************

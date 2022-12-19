@@ -24,6 +24,7 @@
 #include "poussoir.h"
 #include <mcp_can.h>   //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries
 #include "canBus.h"
+
  can_bus::can_bus(unsigned char  freq_can ) : MCP_CAN(PIN_CS_CAN,CLOCKSPI)
  {
 	 this->freq_can = freq_can;
@@ -82,15 +83,22 @@ boolean can_bus::traitementReception(void )
 						 reception.heures = rxBuf[MESSAGE_TYPE_0::HEURE];
 						 reception.minutes = rxBuf[MESSAGE_TYPE_0::MINUTE];
 						 reception.secondes = rxBuf[MESSAGE_TYPE_0::SECONDE];
-						 reception.etatLeds = rxBuf[MESSAGE_TYPE_0::LES_LEDS];
-						 reception.mode = rxBuf[MESSAGE_TYPE_0::MODE];
-						 //Serial.print("reception mode"); Serial.println(reception.mode);
-						 POUSSOIR.setLemode((reception.mode));	//sinon on revient sur le mode forcé en fin de tempo
-						 reception.etat = rxBuf[MESSAGE_TYPE_0::ETAT];  //libre
-						 reception.Rbuzzer = CAN_BUS.getEtResetErreur() | DHTCUISINE.DHT_T.getEtResetErreur() | rxBuf[MESSAGE_TYPE_0::LEBUZZER];
-						 //reception.puissanceVMC = rxBuf[MESSAGE_TYPE_0::COURANTVMC];
-						 reception.NbMessage += 1;
-						 reception.infos = true;
+						 //if (reception.heures>0 || reception.minutes > 0 || reception.secondes > 0)
+							//						//perte d'1 cycle a 0h0mn0sec
+							//                        //essai si reception.mode = 0, sur reinit can bus
+						 //{							//le mode repasse sur arret
+													//il aurait fallu commencer le mode a 1
+
+							 reception.etatLeds = rxBuf[MESSAGE_TYPE_0::LES_LEDS];
+							 reception.mode = rxBuf[MESSAGE_TYPE_0::MODE];
+							 //Serial.print("reception mode"); Serial.println(reception.mode);
+							 POUSSOIR.setLemode((reception.mode));	//sinon on revient sur le mode forcé en fin de tempo
+							 reception.etat = rxBuf[MESSAGE_TYPE_0::ETAT];  //libre
+							 reception.Rbuzzer = CAN_BUS.getEtResetErreur() | DHTCUISINE.DHT_T.getEtResetErreur() | rxBuf[MESSAGE_TYPE_0::LEBUZZER];
+							 //reception.puissanceVMC = rxBuf[MESSAGE_TYPE_0::COURANTVMC];
+							 reception.NbMessage += 1;
+							 reception.infos = true;
+						 //}
 					 }
 					 else
 					 {
@@ -189,6 +197,11 @@ boolean can_bus::traitementReception(void )
 						 reception.NbMessage += 1;
 						 reception.infos2 = true;
 					 }
+					 else
+					 {
+						 erreur = ERREURS::E_CAN_BUS_AFF;
+						 Serial.println(F("Problème de longueur message type 5"));
+					 }
 				 }
 			 }
 		}	//checkReceive()
@@ -197,13 +210,25 @@ boolean can_bus::traitementReception(void )
 	{
 		memoSecondes = reception.secondes;
 		compteurErreurConsecutivesReception = 0;
+
+#ifdef TESTCAN
+		cptTestInitCan += 1;
+		if (cptTestInitCan > 240)
+		{
+			initCanBus = false;
+			compteurErreurConsecutivesEmission = 0;
+			compteurErreurConsecutivesReception = 0;
+			initialiseCanBus();
+			cptTestInitCan = 0;
+		}
+#endif
 		return true;
 	}
 
 	if (memoSecondes == reception.secondes) //le temps n'evolue pas
 	{
 		compteurErreurConsecutivesReception += 1;
-		if (compteurErreurConsecutivesReception > 10)  //pendant 10 cycles
+		if (compteurErreurConsecutivesReception > 40)  //pendant 10 cycles
 		{
 			initCanBus = false;
 			compteurErreurConsecutivesEmission = 0;
@@ -213,8 +238,6 @@ boolean can_bus::traitementReception(void )
 		else
 			compteurErreurConsecutivesReception = 0;
 	}
-
-
     return false;    // avec ou sans message recu 
 }
 

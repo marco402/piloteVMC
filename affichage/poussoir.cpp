@@ -46,7 +46,7 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
             Serial.print(F("leMode: "));  Serial.println(leMode);
             Serial.print(F("forcageMode: "));  Serial.println(forcageMode);
             
-	if (leMode == MODES::HIVER && forcageMode != MODES::BIDON)  //le logiciel distant traitement indique si un forcage est en cours pour mode hiver
+	if (leMode == MODES::HIVER && forcageMode != MODES::DERNIER)  //le logiciel distant traitement indique si un forcage est en cours pour mode hiver
 	{
     leMode = forcageMode;  
     memoModes = leMode;  
@@ -76,7 +76,7 @@ boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
 			//passage par un mode transitoire pour prendre que le mode en cours au moment du relachement
 			int tempInt=(int)modeTransitoire;
 			tempInt++;
-			if (tempInt>(MODES::BIDON-1))
+			if (tempInt>(MODES::DERNIER-1))
 			{
 				modeTransitoire= MODES::ARRET;
 			}
@@ -143,7 +143,7 @@ void poussoir::setLemode(unsigned char leMode)
 }
 void poussoir::clearLeMode(void)
 {
-	this->leMode = MODES::BIDON;
+	this->leMode = MODES::DERNIER;
 }
 //#ifdef TRAITMODE
 //boolean startmodeTempo=false;

@@ -88,7 +88,7 @@ int memoMinute=-1;
 	TM1637Display display(CLK, DIO);
 #endif
 ///###################################initialisations globales##################################  
-int8_t task_1_sec = 0;
+//int8_t task_1_sec = 0;
 unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrait se caler sur la reception...
 //######################################setup#####################################
 //#ifdef  HORLOGE
@@ -135,8 +135,10 @@ void loop()
 	struct_reception structReception;
 	CAN_BUS.initialiseCanBus(); //a chaque cycle,si le distant est branché en second,inutile avec alimentation par le distant...
 //#####################################Traitement des entrées######################################
- if(CAN_BUS.traitementReception()||(task_1_sec==3)) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
-	task_1_sec=0;
+
+//||(task_1_sec==3)  pour test probleme sur reinit canbus(supposition)
+ if(CAN_BUS.traitementReception()) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
+	//task_1_sec=0;
 	structReception = CAN_BUS.getStructReception();
 //#ifdef TRAITMODE
 //	retour = POUSSOIR.traitement(structReception.forcageMode);
@@ -223,7 +225,7 @@ void loop()
   if((millis()- memoTempsMilli) > 1000)
   {
     memoTempsMilli=millis();
-    task_1_sec+=1;
+    //task_1_sec+=1;
   }
 //##############################################################################################################
 } 

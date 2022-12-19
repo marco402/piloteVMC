@@ -153,7 +153,9 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 			{
 				if (len == FIN_MESSAGE_TYPE_3)
 				{
-					VMC.setLeMode((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
+					VMC.setLeMode((MODES)(rxBuf[MESSAGE_TYPE_3::NOUV_MODE]-1)); //-1 pour ne pas utiliser le 0 
+		//ce qui faisait passer le mode sur arret sur reinit can bus
+					//il faudrait decaler mode mais beaucoup de modif...
 					//DebugF("Receive mode:"); Debugln((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
 					receptionCommandes = true;
 				}
@@ -184,7 +186,8 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 		buf[MESSAGE_TYPE_0::SECONDE] =seconde;
 		buf[MESSAGE_TYPE_0::LES_LEDS] =LESLEDS.getEtatLeds();
 		//DebugF("lesleds"); Debugln(buf[MESSAGE_TYPE_0::LES_LEDS] );
-		buf[MESSAGE_TYPE_0::MODE] = VMC.getLeMode();
+		buf[MESSAGE_TYPE_0::MODE] = VMC.getLeMode()+1;  //+1 pour ne pas utiliser le 0 
+		//ce qui faisait passer le mode sur arret sur reinit can bus
 		buf[MESSAGE_TYPE_0::ETAT] =0;  //libre
 		//buf[MESSAGE_TYPE_0::LEBUZZER] =BUZZER.getBuzzer();  //true->beep
    // buf[MESSAGE_TYPE_0::LEBUZZER] = TEMPEXT.getEtResetErreur()| DHTSDB.DHT_T.getEtResetErreur() | CAPTEURIINST.getEtResetErreur()| TA12.getEtResetErreur()| CAN_BUS.getEtResetErreur()| MYTINFO.getEtResetErreur();  //true->beep
