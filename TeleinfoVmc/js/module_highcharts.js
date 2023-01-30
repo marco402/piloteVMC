@@ -3,6 +3,7 @@
 /*jslint indent:4, todo:true, vars:true, unparam:true */
 
 // Fonctions et variables externes
+
 var start;
 var chart_loaded;
 
@@ -319,8 +320,7 @@ var modHighCharts = (function () {
                 yAxis: serie_num
             });
         });
-
-        //Highcharts.setOptions(defOptions);
+        //Highcharts.setOptions(defOptions);<script src="teleinfo.js"></script>
         var graphOptions = {
             chart: {
                 renderTo: 'chart0',
@@ -507,7 +507,7 @@ var modHighCharts = (function () {
             {
                 borderWidth: 1,
                 useHTML: true,
-				backgroundColor: 'rgba(255,255,128,0.8)',
+				backgroundColor: 'rgba(255,255,128,1)',
                  formatter: function () {
                     return tooltip_chart134(this); 
                  }
@@ -659,7 +659,7 @@ var modHighCharts = (function () {
             },
             series: graphSeries
         };
-
+        //return new Highcharts.StockChart(Highcharts.merge(defOptions, graphOptions));
         return new Highcharts.Chart(graphOptions);
     }
     function init_chart3(data) {

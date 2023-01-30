@@ -48,7 +48,6 @@ function init_chart0_navigation(data) {
 }
 function init_chart1_navigation(data) {
     "use strict";
-
     // Date du calendrier
   //  var curDate = new Date();
   //  curDate.setTime(data.debut);
@@ -57,7 +56,6 @@ function init_chart1_navigation(data) {
 }
 function init_chart2_navigation(data) {
     "use strict";
-
     var arrayDuree = [];
     var i;
     var txtdecalage;
@@ -163,7 +161,7 @@ function init_chart4_navigation(data) {
    // curDate.setDate(curDate.getDate() - 1); // -1 Jour
    // $("#chart4_date").val(curDate.getTime());
 }
-/*
+
 function chart_loaded(targetId, subtitle, chart_chrono) {
     "use strict";
 
@@ -188,7 +186,7 @@ function chart_loaded(targetId, subtitle, chart_chrono) {
         start = 0;
     }
 }
-*/
+
 function tooltip_chart0(thisSerieNum, thisPtX) {
     "use strict";
 
@@ -310,7 +308,7 @@ function tooltip_chart2(leChart2) {
         tooltip += 'Taxes :<br />';
         $.each(tipPrix.TAXES, function (serie_name, serie_data) {
             tooltip += serie_name + ' : ' + tipPrix.TAXES[serie_name][leChart2.point.x].toFixed(2) + ' &euro;<br />';
-        });
+         });
 
         // Coût détaillé
         tooltip += 'Consommé :<br />';
@@ -323,13 +321,15 @@ function tooltip_chart2(leChart2) {
                 tooltip += serie_name + ' : ' + tipPrix.TARIFS[serie_name][leChart2.point.x].toFixed(2) + ' &euro;';
                 tooltip += ' (' + tipDetail[serie_name + "_data"][leChart2.point.x].toFixed(1) + ' kWh)<br />';
                 tooltip += '</span>';
-            }
+                //console.log(tipDate,"\t");
+                //console.log(tipPrix.TOTAL[leChart2.point.x].toFixed(2));
+             }
         });
 
         // Coût total
         tooltip += '<b>Total : ' + tipPrix.TOTAL[leChart2.point.x].toFixed(2) + ' &euro;<b>';
         tooltip += '<b> (' + tipTotal.toFixed(1) + ' kWh)</b><br />';
-        
+     
         //marc ajout annotations
         if(tipDetail["ANNOTATIONS"][leChart2.point.x]!==null)
                  tooltip += '<span style="color:red">' + tipDetail["ANNOTATIONS"][leChart2.point.x];       
@@ -415,8 +415,11 @@ function refresh_chart1(date) {
 }
 function refresh_chart2(duree, periode, date) {
     "use strict";
-
-    // Seulement si le graphique est visible
+    var tipDate;
+    var tipPTEC;
+    var tipTotalKW;
+    var tipTotalEuro;
+     // Seulement si le graphique est visible
     if ($('#chart2').is(":visible")) {
         // Remise à zéro du chronomètre
         start = new Date();
@@ -428,10 +431,24 @@ function refresh_chart2(duree, periode, date) {
             if (chart_elec2) {
                 chart_elec2.destroy();
             }
+            //console.log(tipDate,"\t");
+            //console.log(tipPrix.TOTAL[leChart2.point.x].toFixed(2));
             // Keep some data
             chart2_data = data;
             chart_elec2 = modChart.init_chart2(data);
             init_chart2_navigation(data);
+            tipTotalEuro=chart2_data.prix;
+            for (tipDate = 0; tipDate < chart2_data.categories.length; tipDate += 1) {
+                tipTotalKW=0;
+                tipTotalKW+=chart2_data["HCJB_data"][tipDate]; //KW
+                tipTotalKW+=chart2_data["HCJW_data"][tipDate];
+                tipTotalKW+=chart2_data["HCJR_data"][tipDate];
+                tipTotalKW+=chart2_data["HPJB_data"][tipDate];
+                tipTotalKW+=chart2_data["HPJW_data"][tipDate];
+                tipTotalKW+=chart2_data["HPJR_data"][tipDate];
+                console.log(chart2_data.categories[tipDate].toString().padEnd(16)+','+tipTotalEuro.TOTAL[tipDate].toFixed(2).toString().padEnd(8)+','+tipTotalKW.toFixed(2).toString());
+            }
+            //console.log("\n");	
         });
     }
 }
@@ -694,35 +711,35 @@ function refresh_charts(pageName) {
 
     switch (pageName) {
     case 'page0':
-        // Crée le graphique 0 (instantly)
+        // Crée le graphique 0 (instantane)
         refresh_chart0();
         break;
     case 'page1':
-        // Crée le graphique 1 (daily)
+        // Crée le graphique 1 (tempo)
         refresh_chart1();
         break;
     case 'page2':
-        // Crée le graphique 2 (history)
+        // Crée le graphique 2 (historiques)
         refresh_chart2();
         break;
     case 'page3':
-        // Crée le graphique 3 (history)
+        // Crée le graphique 3 (vmc)
         refresh_chart3();
         break;
     case 'page4':
-        // Crée le graphique 4 (history)
+        // Crée le graphique 4 (fonctionnel)
         refresh_chart4();
         break;
     default:
-        // Crée le graphique 0 (instantly)
+        // Crée le graphique 0 (instantane)
         refresh_chart0();
-        // Crée le graphique 1 (daily)
+        // Crée le graphique 1 (tempo)
         refresh_chart1();
-        // Crée le graphique 2 (history)
+        // Crée le graphique 2 (historiques)
         refresh_chart2();
-        // Crée le graphique 3 (history)
+        // Crée le graphique 3 (vmc)
         refresh_chart3();
-        // Crée le graphique 4 (history)
+        // Crée le graphique 4 (fonctionnel)
         refresh_chart4();
 
     }
@@ -743,7 +760,7 @@ function change_date() {
         refresh_chart1(newdate);
         break;
     case 'chart2_date':
-        refresh_chart2(newdate);
+        refresh_chart2(null,null,newdate);  //7,"jours",
         break;
     case 'chart3_date':
         refresh_chart3(newdate);
@@ -910,14 +927,14 @@ if ($.mobile) {
         $('#chart2_date_suiv').button({icon: "ui-icon-arrowthick-1-e", iconPosition: "end"});
 
         // Initialisation jQueryUI selectmenu
-        $('.select_chart2').selectmenu({
-            dropdown: false
-        });
+       // $('.select_chart2').selectmenu({
+        //    dropdown: false
+        //});
         // Overflow : permet de limiter la hauteur des listes déroulantes (via css)
-        $('.select_chart2').selectmenu("menuWidget").addClass("ui-selectmenu-overflow");
+        //$('.select_chart2').selectmenu("menuWidget").addClass("ui-selectmenu-overflow");
 
         $('#chart3_date_prec').button({icon: "ui-icon-arrowthick-1-w", iconPosition: "beginning"});
-        $('#chart3_date_now').button({icon: "ui-icon-calendar", iconPosition: "beginning"});
+       // $('#chart3_date_now').button({icon: "ui-icon-calendar", iconPosition: "beginning"});
         $('#chart3_date_select').button({icon: "ui-icon-calendar", iconPosition: "beginning"})
             .append('<span class="ui-icon ui-icon-triangle-1-s">');
         $('#chart3_date_suiv').button({icon: "ui-icon-arrowthick-1-e", iconPosition: "end"});

@@ -1047,7 +1047,7 @@ function history() {
                     }
                 }
             }
-        }
+         }
 
         // Conserve les séries nécessaires
         $series = array_intersect_key($teleinfo["LIBELLES"]["PTEC"], array_flip($teleinfo["PERIODES"][$optarif]));

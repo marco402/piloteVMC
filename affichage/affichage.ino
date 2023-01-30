@@ -5,6 +5,18 @@
  *  Author: marc Prieur
  */
  //###################################memoire################################## 
+//04/01/2023
+// au demarrage ,les 3 led restent sur nuit et rouge rouge a confirmer
+//  et les 3 pavés sur l'ecran idem
+//un changement d'état est testé au niveau des leds mais pas au niveau des paves
+//est redevenu ok apres N minutes?
+//les couleurs sont bonnes au niveau traitement
+//l'heure etait bonne, meme message can bus que etatleds
+//autre probleme peut-etre lie au probleme ci-dessus?
+//en passant sur arret ou hiver, le decompte tourne sans arret.
+
+
+
 //OK
 //  Le croquis utilise 21844 octets (71%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
 //  Les variables globales utilisent 1446 octets (70%) de mémoire dynamique, ce qui laisse 602 octets pour les variables locales. Le maximum est de 2048 octets.

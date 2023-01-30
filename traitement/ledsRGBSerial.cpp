@@ -40,7 +40,7 @@
 #include "constantes.h"
 #include "myTinfo.h"
 #include "ledsRGBSerial.h"
-//pas reussi � mettre dans la classe
+//pas reussi a mettre dans la classe
 #ifdef PIN_LED_RGB
   #include <NeoPixelBus.h>
 	NeoPixelBus<NeoRgbFeature, NeoEsp8266BitBang800KbpsMethod> rgb_led( NBLEDENSERIE , PIN_LED_RGB);  
