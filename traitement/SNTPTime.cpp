@@ -134,13 +134,14 @@ time_t testDayLight(ulong secsSince1900)
   time_t seconds =0;
   tm t;
   t = *mkTmStruct(secsSince1900);
-//test dans calculIR.vbproj
+//test dans C:\marc\bricolage\electronique\capacimetre\cmetre_arduino\calculR\calculR.vbproj
   if (t.tm_mon < 2 || t.tm_mon > 9) // month 0, 1, 10, 11  -> Winter
 	  return 0;  // -> Winter
-  if (t.tm_mon > 2 && t.tm_mon < 9) // month 0, 1, 10, 11  -> Winter
+  if (t.tm_mon > 2 && t.tm_mon < 9) // month 3 to 8  -> Summer
 	  return 3600;  // -> Summer  //ajoute 12 par rapport a https://github.com/SensorsIot/SNTPtime/blob/master/SNTP.cpp ???
-  if (t.tm_mon == 2 && (t.tm_hour + 24 * t.tm_mday) >= (12+3 + 24 * (31 - (5 * t.tm_year / 4 + 4) % 7))
-	  || t.tm_mon == 9 && (t.tm_hour + 24 * t.tm_mday) < (12+3 + 24 * (31 - (5 * t.tm_year / 4 + 1) % 7)))
+	  //remplace 15 par 21(change d'heure le 26/03/2023 à 16heures => 14heures de retard=>1)
+  if (t.tm_mon == 2 && (t.tm_hour + 24 * t.tm_mday) >= (1 + 24 * (31 - (5 * t.tm_year / 4 + 4) % 7))
+	  || t.tm_mon == 9 && (t.tm_hour + 24 * t.tm_mday) < (1 + 24 * (31 - (5 * t.tm_year / 4 + 1) % 7)))
 	  return 3600;
   else
 	  return 0;

@@ -34,6 +34,9 @@
 //  Le croquis utilise 22608 octets (73%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
 //  Les variables globales utilisent 1167 octets (56%) de mémoire dynamique, ce qui laisse 881 octets pour les variables locales. Le maximum est de 2048 octets.
 
+//21/06/23:
+  //remplacement du bootloader pour watchdog
+  //ajout relance watchdog 8s. dans loop
 
  //###################################include################################## 
 //programmation: interface usb serial
@@ -51,7 +54,7 @@
 //***************************10/10/2022*****************************************
 //modification commandes temporisees:voir traitement.ino
 //******************************************************************************
-
+#include <avr/wdt.h>
 #include <gfxfont.h>  //add Adafruit-GFX-Library-master to arduino/libraries
 #include <Adafruit_SPITFT_Macros.h>
 #include <Adafruit_SPITFT.h>
@@ -140,6 +143,7 @@ void setup()
 
 void loop()
 {
+  wdt_enable(WDTO_8S);
 	boolean retour;
 #ifdef  HORLOGETM1650
 	char buf[4];

@@ -10,6 +10,8 @@
 //
 // History : V1.00 2018-03-23 - First release
 //
+//10/08/2023  ajout reinit can bus sur pas de reception 50 tests consécutifs compteurErreurConsecutivesReception(affichage visual syslog)
+//            ajout comptage des reinit en emission et en reception(affichage visual syslog)
 //
 // All text above must be included in any redistribution.
 //Using library MCP_CAN_lib-master version 0.0.0
@@ -65,12 +67,14 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 	//DebugF("errorCountRX:"); Debugln(errorCountRX());
 	//DebugF("errorCountTX:"); Debugln(errorCountTX());
 	//DebugF("getError:"); Debugln(getError());
-	//DebugF("compteurErreurConsecutives:"); Debugln(compteurErreurConsecutives);
-	if (compteurErreurConsecutives > 40)  //10sec
+	//DebugF("compteurErreurConsecutivesEmission:"); Debugln(compteurErreurConsecutivesEmission);
+	if (compteurErreurConsecutivesEmission > 40)  //10sec
 	{
-    DebuglnF("ReinitCanBus");
+    DebuglnF("ReinitCanBus(emission)");
+    nbReinitCanBusEmission+=1;
+    DebugF("nbReinitCanBusEmission: ");Debugln(nbReinitCanBusEmission);
 		initCanBusOK = false;
-		compteurErreurConsecutives = 0;
+		compteurErreurConsecutivesEmission = 0;
 		InitCanBus(MCP_16MHZ);
     return true;
 	}
@@ -82,7 +86,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 }
  void ICACHE_FLASH_ATTR can_bus::InitCanBus(unsigned char freq_can)
  {
-	  int nEssai = 10;
+	 int nEssai = 10;
 	 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN,freq_can )) && nEssai > 0)              //ok a 100 pb � CAN_500KBPS   MCP_16MHZ(vitesse du quartz sur la carte can a confirmer)
 	 {
 		 nEssai--;
@@ -111,10 +115,29 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 	 return initCanBusOK;
  }
  //charge les 2 capteurs cuisine et/ou le mode en cours ou a changer et positionne receptionCapteurs et/ou receptionCommandes
- void can_bus::traiteReception(void )
+ bool can_bus::traiteReception(void )
 {
 	if (!initCanBusOK)
-		return;
+		return false;
+  if (compteurErreurConsecutivesReception > 50)  //xxsec
+  {
+    DebuglnF("ReinitCanBus(reception)");
+    nbReinitCanBusReception+=1;
+    DebugF("nbReinitCanBusReception: ");Debugln(nbReinitCanBusReception);
+    initCanBusOK = false;
+    compteurErreurConsecutivesReception = 0;
+    InitCanBus(MCP_16MHZ);
+    return true;
+  }
+
+//  if(checkError()!=CAN_OK)
+//  {
+//     compteurErreurConsecutivesReception += 1;
+//     return false;
+//  } 
+
+//DebugF("getError: ");Debugln((unsigned int)getError());    //=64 =0x40 avec au sans affichage sous tension 
+//DebugF("errorCountRX: ");Debugln((unsigned int)errorCountRX());   //a tester
 	for (int mes = 0; mes < 2; mes++)
 	{
 		if (CAN_MSGAVAIL == checkReceive())   //pas it pour r�cup�rer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
@@ -123,7 +146,14 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 			unsigned char len = 0;
 			unsigned char rxBuf[CAN_MAX_CHAR_IN_MESSAGE];
 			if (readMsgBuf(&canId, &len, rxBuf) != CAN_OK)      // Read data: len = data length, buf = data byte(s)
-				return; 
+            return false;
+//      {
+//        compteurErreurConsecutivesReception += 1;
+//				return false;
+//      } 
+//      else
+//          compteurErreurConsecutivesReception =0; 
+               
 			if (canId == LES_ID_CAN::ID_MESSAGE_TYPE_2)  //tempo
 			{
 				if (len == FIN_MESSAGE_TYPE_2)
@@ -141,6 +171,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 					hCuis = motRecu.capteur;						//transfert des donn�es en m�me temps que lectureCapteurs
 					//DebugF("rec:DHTCUISINE_H: "); Debugln(motRecu.capteur);
 					receptionCapteurs = true;
+         compteurErreurConsecutivesReception =0;        //reinit toutes les 3 secondes cuisine reste a 0
 				}
 				else
 				{
@@ -153,7 +184,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 			{
 				if (len == FIN_MESSAGE_TYPE_3)
 				{
-					VMC.setLeMode((MODES)(rxBuf[MESSAGE_TYPE_3::NOUV_MODE]-1)); //-1 pour ne pas utiliser le 0 
+					VMC.setLeMode((MODES)(rxBuf[MESSAGE_TYPE_3::NOUV_MODE]-1)); //-1 pour ne pas utiliser le 0
 		//ce qui faisait passer le mode sur arret sur reinit can bus
 					//il faudrait decaler mode mais beaucoup de modif...
 					//DebugF("Receive mode:"); Debugln((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
@@ -166,9 +197,17 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 					//Serial.println("Probleme de longueur message type 3");
 				}
 			}
-		}
-	}
-}
+     else                                              //reinit toutes les 3 secondes cuisine reste a 0
+          compteurErreurConsecutivesReception += 1;
+		}  //if
+//   else
+//    {
+//       compteurErreurConsecutivesReception += 1;
+//       return false;
+//    } 
+	}   //for
+  return false; 
+}  //function
 unsigned char  can_bus::mysendMsgBuf(unsigned long ident, unsigned char ext, unsigned char len,  unsigned char *buf)
 {
 	return sendMsgBuf(ident, ext, len, buf);
@@ -252,10 +291,10 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 			erreur = ERREURS::E_CAN_BUS_TRAIT;
 		}
 		DebugF("Error Sending Message..."); Debugln(sndStat);  //12/10/22 error 6(parasite?)
-		compteurErreurConsecutives += 1;
+		compteurErreurConsecutivesEmission += 1;
 	}
 	else
-		compteurErreurConsecutives = 0;
+		compteurErreurConsecutivesEmission = 0;
 }
 bool can_bus::getReceptionCapteurs(void)const
 {

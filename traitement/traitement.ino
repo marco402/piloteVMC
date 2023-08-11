@@ -5,17 +5,26 @@
 //1-sans canbus: renommer PIN_CS_CAN constantes.h (a essayer)
 //2-sans wifinfo renommer WITHWIFINFO wifinfo.h (a essayer)
 
+//  *****************************************************************
+//  *Pour programmer par l'usb:                                     *
+//  *  pb si toutes les entrées débranchées sauf liaison can bus    *
+//  *a vérifier si debrancher que can bus                           *
+//  *****************************************************************
 //version carte nodemcu 3.0.2 probleme spiffs
 //install version 2.7.4 probleme spiffs
 //install version 2.6.0 probleme spiffs
 //install version 2.5.2 spiffs ok multiple definition of `time' renommé time to time_1 to SNTPTime.cpp
 //install version 2.5.0 spiffs ok multiple definition of `time'
-//paramétrage arduino
-//type de carte NodeMcu 0.9
-//cpu frequency 160Mhz
-//flash size 4M(1M OTA)
-//rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"
-//C:\Users\mireille\AppData\Local\Temp\arduino_build_135849\traitement.ino.bin
+//  *********************************************************************************************
+//  *            programmation:ne pas oublier cpu frequency 160Mhz et flash size 4M(1M OTA)     * 
+//  *    sinon OTA ne fonctionne plus ni le site smt160 si 80Mhz                                *
+//  *paramétrage arduino                                                                        * 
+//  *type de carte NodeMcu 0.9                                                                  *
+//  *cpu frequency 160Mhz                                                                       *
+//  *flash size 4M(1M OTA)                                                                      *
+//  *rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"  *
+//  *C:\Users\mireille\AppData\Local\Temp\arduino_build_xxxxxxx\traitement.ino.bin              *
+//  *********************************************************************************************
 //10/07/2021->seuil air frais 25->20    pour ventiler plus la nuit en été
 
 //10/07/2021->20,5,23,-0.5,-1.8,0,-17,20,1,15,300,300,0,24,192.168.1.69,8889,10
@@ -102,7 +111,12 @@
 //  arduino->menu outils->ESP8266 littleFS data upload
 //probleme de password si port=adresse IP avec le plugin esp8266fs.jar d'origine, telecharger:
 //https://github.com/877dev/arduino-esp8266littlefs-plugin
-
+//**************************************************************************************************
+//sur une autre appli(mesure Temperature,la page web fonctionnait mais aucune data.
+//au niveau de l'outils de développement du navigateur, dans la liste des fichiers n'aparaissait pas fonctions.js.
+//je l'ai transféré dans le dossier js, ajouté js dans index.htm (derniere ligne)
+//<script type="text/javascript" src="js/fonctions.js"></script> et c'est ok pourquoi ??
+//lecture de la liste des fichiers par http://192.168.1.XX/spiffs.json
 
 //********************************************************************
 //version wifinfo syslog d'origine:352 392 bytes
@@ -357,12 +371,19 @@ void loop()
   char  valeurs[] = { "\0" };
   CAPTEURIINST.traiteMaxi(atoi(TINFO.valueGet(&TableauTempoName[TEMPO_UTILISE::ETU_IINST][0], &valeurs[0])));
   }
-#ifdef COMP_CAN_BUS
-  CAN_BUS.traiteReception();
-#endif
+//#ifdef COMP_CAN_BUS                         transférer dans la partie sequencee a 1 seconde essai de reprise erreur can bus en reception
+//    if(CAN_BUS.traiteReception())
+//      WEBSERVER.incNb_reinit();
+//#endif
 //************************************************1 fois par seconde*************************************************************************************
   // Only once task per loop, let system do its own task
  if (MYSNTP.getCycle1Seconde()) {
+
+#ifdef COMP_CAN_BUS
+    if(CAN_BUS.traiteReception())
+      WEBSERVER.incNb_reinit();
+#endif
+  
 	WEBSERVER.handleClient();
 	MYOTA.handle();
 	//**************************************Traitement enregistrement****************************************************

@@ -46,7 +46,7 @@ class can_bus : public MCP_CAN
 		bool TRAITEMENTEMISSIONCAN(void);
 		unsigned char mysendMsgBuf(unsigned long ident, unsigned char ext, unsigned char len,  unsigned char *buf);
 		
-		void traiteReception(void);
+		bool traiteReception(void);
 		bool getReceptionCapteurs(void)const;
 		void resetReceptionCapteurs(void);
 		bool getEtResetReceptionCommandes(void);
@@ -60,7 +60,10 @@ class can_bus : public MCP_CAN
 		boolean initCanBusOK = false;
 		boolean receptionCapteurs = false;
 		boolean receptionCommandes = false;
-		int8_t compteurErreurConsecutives = 0;
+		int8_t compteurErreurConsecutivesEmission = 0;
+    int8_t compteurErreurConsecutivesReception = 0;    
+    int16_t nbReinitCanBusEmission = 0;
+    int16_t nbReinitCanBusReception = 0;
 		uint8_t erreur=0;
 		int16_t tCuis = 0;
 		int16_t hCuis = 0;

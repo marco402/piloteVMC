@@ -790,7 +790,7 @@ bool webServer::handleFileRead(String path) {
 			DebugF(".gz");
 		}
 
-		DebuglnF(" found on FS");
+		DebuglnF(" found on LittleFS");
 
 		File file = LittleFS.open(path, "r");
 #else
@@ -800,7 +800,7 @@ bool webServer::handleFileRead(String path) {
 			DebugF(".gz");
 		}
 
-		DebuglnF(" found on FS");
+		DebuglnF(" found on SPIFFS");
 
 		File file = SPIFFS.open(path, "r");
 #endif
