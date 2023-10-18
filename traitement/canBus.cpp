@@ -110,18 +110,24 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 		return;
 	 }
  }
+
+ 
   boolean can_bus::getInitCanBusOK(void)
  {
 	 return initCanBusOK;
  }
+
+ 
  //charge les 2 capteurs cuisine et/ou le mode en cours ou a changer et positionne receptionCapteurs et/ou receptionCommandes
  bool can_bus::traiteReception(void )
 {
 	if (!initCanBusOK)
 		return false;
+
+  //DebugF("compteurErreurConsecutivesReception ");Debugln(compteurErreurConsecutivesReception); 
   if (compteurErreurConsecutivesReception > 50)  //xxsec
   {
-    DebuglnF("ReinitCanBus(reception)");
+    //DebuglnF("ReinitCanBus(reception)");
     nbReinitCanBusReception+=1;
     DebugF("nbReinitCanBusReception: ");Debugln(nbReinitCanBusReception);
     initCanBusOK = false;
@@ -140,19 +146,21 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 //DebugF("errorCountRX: ");Debugln((unsigned int)errorCountRX());   //a tester
 	for (int mes = 0; mes < 2; mes++)
 	{
+    //DebuglnF("For(reception)");
 		if (CAN_MSGAVAIL == checkReceive())   //pas it pour r�cup�rer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
 		{
+      DebuglnF("checkReceive(reception)");
 			unsigned long canId = 0;
 			unsigned char len = 0;
 			unsigned char rxBuf[CAN_MAX_CHAR_IN_MESSAGE];
 			if (readMsgBuf(&canId, &len, rxBuf) != CAN_OK)      // Read data: len = data length, buf = data byte(s)
-            return false;
-//      {
-//        compteurErreurConsecutivesReception += 1;
-//				return false;
-//      } 
-//      else
-//          compteurErreurConsecutivesReception =0; 
+      {
+        DebuglnF("readMsgBuf(reception)");
+        compteurErreurConsecutivesReception += 1;
+				return false;
+      } 
+      //else
+          //compteurErreurConsecutivesReception =0; 
                
 			if (canId == LES_ID_CAN::ID_MESSAGE_TYPE_2)  //tempo
 			{
@@ -171,6 +179,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 					hCuis = motRecu.capteur;						//transfert des donn�es en m�me temps que lectureCapteurs
 					//DebugF("rec:DHTCUISINE_H: "); Debugln(motRecu.capteur);
 					receptionCapteurs = true;
+         //DebuglnF("ID_MESSAGE_TYPE_2(reception)");
          compteurErreurConsecutivesReception =0;        //reinit toutes les 3 secondes cuisine reste a 0
 				}
 				else
@@ -189,6 +198,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 					//il faudrait decaler mode mais beaucoup de modif...
 					//DebugF("Receive mode:"); Debugln((MODES)rxBuf[MESSAGE_TYPE_3::NOUV_MODE]);
 					receptionCommandes = true;
+          //DebuglnF("ID_MESSAGE_TYPE_3(reception)");
 				}
 				else
 				{ 
@@ -197,14 +207,18 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 					//Serial.println("Probleme de longueur message type 3");
 				}
 			}
-     else                                              //reinit toutes les 3 secondes cuisine reste a 0
-          compteurErreurConsecutivesReception += 1;
+    // else                                              //reinit toutes les 3 secondes cuisine reste a 0
+    // {
+     // DebuglnF("else(reception)");
+     //     compteurErreurConsecutivesReception += 1;    //pas de reception type 2 ni type 3 mais il faut passer ici
+    // }
 		}  //if
-//   else
-//    {
-//       compteurErreurConsecutivesReception += 1;
-//       return false;
-//    } 
+   else  //checkReceive
+    {
+       DebuglnF("else(checkReceive reception)");
+       compteurErreurConsecutivesReception += 1;
+       return false;
+    } 
 	}   //for
   return false; 
 }  //function

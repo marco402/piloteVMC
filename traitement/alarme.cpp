@@ -28,7 +28,7 @@
 		-test de reception du message toutes les cycles
 			-sans reception on reste sur la derniere valeur
 			-acquitement du message sur reception
-			-si pas de message recu depuis 90000secondes:code HEARTBEAT vers affichage->couleur orange
+			-si pas de message recu depuis 90000secondes:code HEARTBEAT vers affichage->couleur orange(mis a 60 cycles pour tests)
 			-si reception code DOOR_CLOSE, code DOOR_CLOSE vers affichage->couleur verte
 			-si reception code DOOR_OPEN_WITH_ALARME, code DOOR_OPEN_WITH_ALARME vers affichage->couleur rouge->porte ouverte sans desactivation de l'alarme->bip sonore:
 			-si DOOR_OPEN_WITH_ALARME allumage lampe
@@ -68,7 +68,7 @@ void ICACHE_FLASH_ATTR myAlarme::stop()
 ///
 void myAlarme::testReceptionAlarme(void)
 {
- char packetBuffer[100];
+  char packetBuffer[100];
 	char packetBufferAcquitement[2];
 	packetBufferAcquitement[0] = ( char)CODES_ALARME::HEAD_MESSAGE;
 	packetBufferAcquitement[1] = ( char)CODES_ALARME::AQUITEMENT;

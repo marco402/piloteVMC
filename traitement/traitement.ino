@@ -1,3 +1,21 @@
+
+//13/10/23
+//blocage canBus cote affichage
+//message debug cote traitement:
+//192.168.1.78  Oct 13 08:02:36 1 kern  info  -  Wifinfo - - - ﻿nbReinitCanBusReception 275 
+//192.168.1.78  Oct 13 08:02:37 1 kern  info    -  Wifinfo - - - ?CAN BUS Shield init (speed SPI:500k,speed CAN:250k,freq CAN 16Mhz) ok! 
+//reinit que affichage--->ok
+
+//a coder:le 18/10/23 ajout messages debug
+//9/2023 blocage liaison vers affichage dans les 2 sens
+//-redemarrage affichage pareil
+//-pas de message syslog server
+//-nombre d'erreur détectée = 3
+
+
+
+
+
 //11/2022 erreur changement d'heure:
 //changement dimanche à 2 heures du matin
 //lun. oct. 31 17:05:27 2022__1667232327  18:05:27 heure sur afficheur
@@ -10,6 +28,13 @@
 //  *  pb si toutes les entrées débranchées sauf liaison can bus    *
 //  *a vérifier si debrancher que can bus                           *
 //  *****************************************************************
+
+//  *****************************************************************
+//  *   ATTENTION trop de debug perturbe la liaison teleinfo        *
+//  *     peut-etre parceque wifi coupe la nuit?                    *
+//  *****************************************************************
+
+
 //version carte nodemcu 3.0.2 probleme spiffs
 //install version 2.7.4 probleme spiffs
 //install version 2.6.0 probleme spiffs
