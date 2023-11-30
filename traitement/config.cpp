@@ -42,7 +42,7 @@ void ICACHE_FLASH_ATTR configuration::initConfig(void) //
 		// Reset Configuration
 		ResetConfig();
 		// save back
-		saveConfig();
+		//saveConfig();   deja dans ResetConfig
 		// Indicate the error in global flags
 		config.config |= CFG_BAD_CRC;
 		//DebuglnF("Reset to default");
@@ -314,4 +314,3 @@ void ICACHE_FLASH_ATTR configuration::showConfig()
 
   delay(1000);
 }
-

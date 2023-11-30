@@ -1,4 +1,20 @@
 
+//2/11/23
+//blocage affichage
+//cote traitement else()a chaque cycle
+//reinit environ toutes 53 secondes
+//compteur sur page web 206...
+//reinit affichage->OK
+
+//21/10/23
+//rafraichissement affichage toutes les 12/15secondes
+//reinit affichage idem
+//pas de message syslog
+//site pilote vmc ok  temps rafraichi toutes les 2 secondes
+//reception enregistrements ok
+
+
+
 //13/10/23
 //blocage canBus cote affichage
 //message debug cote traitement:
@@ -13,6 +29,10 @@
 //-nombre d'erreur détectée = 3
 
 
+//12/11/23 arduino 1.8.19
+//a la compilation sant aucune mise a jour:
+//xtensa-lx106-elf-g++: error: unrecognized debug output level '++'  ???   reglage du probleme:arduino/menu/fichier/preference
+//avertissement du compilateur rien pb,tout ok,rien ok.
 
 
 
@@ -28,12 +48,6 @@
 //  *  pb si toutes les entrées débranchées sauf liaison can bus    *
 //  *a vérifier si debrancher que can bus                           *
 //  *****************************************************************
-
-//  *****************************************************************
-//  *   ATTENTION trop de debug perturbe la liaison teleinfo        *
-//  *     peut-etre parceque wifi coupe la nuit?                    *
-//  *****************************************************************
-
 
 //version carte nodemcu 3.0.2 probleme spiffs
 //install version 2.7.4 probleme spiffs
@@ -367,8 +381,8 @@ void ICACHE_FLASH_ATTR setup() {
 MYSNTP.init();
 ENREGISTREMENT.init();
 #ifdef ALARME
-	MYALARMEGARAGE.init(1);
-	MYALARMEPORTAIL.init(2);
+	MYALARMEGARAGE.init(INDICEALARMES::GARAGE);
+	MYALARMEPORTAIL.init(INDICEALARMES::PORTAIL);
 #endif
 #ifdef COMP_CAN_BUS
   CAN_BUS.InitCanBus(MCP_16MHZ);

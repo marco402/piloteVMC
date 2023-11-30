@@ -14,27 +14,35 @@
 //
 // **********************************************************************************
 /*principe:
-	cote alarme:
-		-relais reed ferme au repos(porte ouverte)
-		-emission d'un message etat de la porte au demarrage.
-		-emission d'un message etat de la porte 1 fois par jour entre 50000 et 80000 secondes(heartbeat->porte ouverte:code DOOR_OPEN_WITH_ALARME ou DOOR_OPEN_WITHOUT_ALARME ou porte fermee:code DOOR_CLOSE)
-		-emission d'un message sur changement d'etat du contact(porte ouverte:code DOOR_OPEN_WITH_ALARME ou DOOR_OPEN_WITHOUT_ALARME ou porte fermee:code DOOR_CLOSE)
-		-si DOOR_OPEN_WITH_ALARME envoi d'un mail et allumage lampe
-		-a l'ouverture de la porte,10 secondes pour appuyer sur un poussoir->emission code DOOR_OPEN_WITHOUT_ALARME
-		-l'alarme se reactive a la fermeture de la porte
-		-pour tous les messages:attente d'un acquitement, reemission si pas recu
-		-gerer les rebonds du relais
-	cote traitement tempo / affichage
-		-test de reception du message toutes les cycles
-			-sans reception on reste sur la derniere valeur
-			-acquitement du message sur reception
-			-si pas de message recu depuis 90000secondes:code HEARTBEAT vers affichage->couleur orange(mis a 60 cycles pour tests)
-			-si reception code DOOR_CLOSE, code DOOR_CLOSE vers affichage->couleur verte
-			-si reception code DOOR_OPEN_WITH_ALARME, code DOOR_OPEN_WITH_ALARME vers affichage->couleur rouge->porte ouverte sans desactivation de l'alarme->bip sonore:
-			-si DOOR_OPEN_WITH_ALARME allumage lampe
-			-si reception code DOOR_OPEN_WITHOUT_ALARME, code DOOR_OPEN_WITHOUT_ALARME vers affichage->couleur bleu->porte ouverte avec desactivation de l'alarme->pas de bip sonore::
+  cote alarme:
+    -relais reed ferme au repos(porte ouverte)actuellement 0:porte fermee
+    -poussoir arret alarme 0 pour arret.
+    -a l'ouverture de la porte,10 secondes pour appuyer sur un poussoir
+    -l'alarme se reactive a la fermeture de la porte
+    -reemission du dernier message toutes les heures
+    -traitement acquitement reemission 3 fois. 
+    codes messages:  
+      DOOR_OPEN_WITH_ALARME
+      DOOR_OPEN_WITHOUT_ALARME
+      DOOR_CLOSE_WITH_ALARME
+      DOOR_CLOSE_WITHOUT_ALARME
+      ALARME_DECLENCHEE
+  
+  cote traitement tempo
+    -test de reception du message toutes les cycles
+      -sans reception on reste sur la derniere valeur
+      -si DOOR_CLOSE_WITH_ALARME                                  ->couleur verte
+      -si DOOR_CLOSE_WITHOUT_ALARME                               ->couleur blanc  devrait pas arriver
+      -si DOOR_OPEN_WITH_ALARME                                   ->couleur jaune  temporaire max 10 secondes
+      -si DOOR_OPEN_WITHOUT_ALARME                                ->couleur bleu->porte ouverte avec desactivation de l'alarme
+      -si pas de message recu depuis > 60 secondes:code HEARTBEAT ->couleur orange
+      -si ALARME_DECLENCHEE                                       ->couleur rouge
+      -arret de l'alarme en passant par arret de la vmc si deja sur arret passer par lent puis arret
+      -reemission des acquitements
+
+  cote affichage
+      -juste affichage des couleurs
       
-			-arret de l'alarme en passant par arret de la vmc.
 */
 //***********************************************************************************
 #include <WiFiUdp.h>
@@ -43,18 +51,18 @@
 #include "mySyslog.h"
 myAlarme::myAlarme()
 {}
-void ICACHE_FLASH_ATTR myAlarme::init(int indice)
+void ICACHE_FLASH_ATTR myAlarme::init(INDICEALARMES indice)
 {
   indiceAlarme=indice;
-  if(indiceAlarme==1)
+  if(indiceAlarme==INDICEALARMES::GARAGE)
   {
-   DebuglnF("port garage");
-   etatAlarme = enumCouleursALARME::ST7735_GREEN;
+   DebugF("port garage: ");
+   etatAlarme = enumCouleursALARME::ST7735_ORANGE;
   }
   else
   {
-   DebuglnF("port portail");
-   etatAlarme = enumCouleursALARME::ST7735_BLUE; 
+   DebugF("port portail: ");
+   etatAlarme = enumCouleursALARME::ST7735_ORANGE; 
   }
 
   Debugln(CONFIGURATION.config.tempo.portEnr+indiceAlarme);
@@ -69,42 +77,52 @@ void ICACHE_FLASH_ATTR myAlarme::stop()
 void myAlarme::testReceptionAlarme(void)
 {
   char packetBuffer[100];
-	char packetBufferAcquitement[2];
-	packetBufferAcquitement[0] = ( char)CODES_ALARME::HEAD_MESSAGE;
-	packetBufferAcquitement[1] = ( char)CODES_ALARME::AQUITEMENT;
+	byte packetBufferAcquitement[3];
+	packetBufferAcquitement[0] = (byte) CODES_ALARME::HEAD_MESSAGE;
+	packetBufferAcquitement[1] = (byte) CODES_ALARME::ACQUITTEMENT;
  
 	int packetSize = udpAlarme.parsePacket();
 	receptLastMessage += 1;
 	if (packetSize)
 	{
 		int len = udpAlarme.read(packetBuffer, 255);
-		if (len > 0)
+		if (len > 1)
 		{
+    DebuglnF("reception udp alarme,len>1: ");
 			if (packetBuffer[0] == (char)CODES_ALARME::HEAD_MESSAGE)
 			{
-      if ((char)packetBuffer[1]>=(char)CODES_ALARME::FIN)
-        etatAlarme = (char)CODES_ALARME::NO_RECEPT;
-      else
-      {
+////      if ((char)packetBuffer[1]>=(char)CODES_ALARME::INCHANGE)
+////        etatAlarme = (char)CODES_ALARME::NO_RECEPT;
+////      else
+////      {
         etatAlarme = (char)packetBuffer[1];
-        if(indiceAlarme==1)
+        if(indiceAlarme==INDICEALARMES::GARAGE)
             DebugF("reception udp garage: ");
         else
-            DebugF("reception udp portail");           
+            DebugF("reception udp portail: ");           
         Debugln(etatAlarme);  
-        packetBufferAcquitement[2] = packetBuffer[1];  //reemission du code recu
+        packetBufferAcquitement[2] = etatAlarme;  //reemission du code recu
       //emission acquittement        
         if (!send(udpAlarme.remoteIP(),(uint32) CONFIGURATION.config.tempo.portEnr + indiceAlarme, packetBufferAcquitement,&memoPort))
-           DebugF("pb udp send: "); Debugln(indiceAlarme);       
-      } 
+           DebuglnF("pb udp send acq: ");
+        else
+           DebugF("send heartbeat: ");Debugln(etatAlarme);           
+////       } 
 			receptLastMessage = 0; 
 			}
 		}
 	}
 	if (receptLastMessage > 60)
 	{
-		receptLastMessage-=1;   //pour pas de debordement
-		etatAlarme = (char)CODES_ALARME::HEARTBEAT;
+    etatAlarme = (char)CODES_ALARME::HEARTBEAT;
+    packetBufferAcquitement[2] =etatAlarme;
+		receptLastMessage=0;
+  
+   if (!send(udpAlarme.remoteIP(),(uint32) CONFIGURATION.config.tempo.portEnr + indiceAlarme, packetBufferAcquitement,&memoPort))
+      DebugF("pb udp send heartbeat: ");
+   else
+      DebugF("send heartbeat: ");
+   Debugln(etatAlarme);
 	}
 }
  char myAlarme::getEtatAlarme(void)
@@ -112,7 +130,7 @@ void myAlarme::testReceptionAlarme(void)
 	return etatAlarme;
 }
 
-bool myAlarme::send(IPAddress adresseIP, uint32_t port, char * message, uint32_t * memPort)
+bool myAlarme::send(IPAddress adresseIP, uint32_t port, byte * message, uint32_t * memPort)
 {
 	if (*memPort != port)
 	{
@@ -122,8 +140,8 @@ bool myAlarme::send(IPAddress adresseIP, uint32_t port, char * message, uint32_t
 	}
  char  toprint[20];
   sprintf(toprint, "%d.%d.%d.%d", adresseIP[0], adresseIP[1], adresseIP[2], adresseIP[3]);
-  DebugF("adresseIP,Port:"); Debug(toprint); DebugF("-"); Debugln(port);
-	int ret = -1;
+  DebugF("adresseIP,Port: "); Debug(toprint); DebugF("-"); Debugln(port);
+  int ret = -1;
 	ret = udpAlarme.beginPacket(adresseIP, port);  //adresse et port distant
 	if (ret)
 	{
@@ -134,11 +152,11 @@ bool myAlarme::send(IPAddress adresseIP, uint32_t port, char * message, uint32_t
 			return true;
     }
 		else
-			DebugF("pb udp.endPacket:");
+			DebuglnF("pb udp.endPacket:");
 	}
 	else
 	{
-		DebugF("pb udp.beginPacket:");
+		DebuglnF("pb udp.beginPacket:");
 	}
 	
 

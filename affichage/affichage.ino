@@ -162,7 +162,7 @@ void loop()
 //	//POUSSOIR.testModeForce(CAN_BUS.decDecompteTempoArretMarcheForce(), structReception.dureeForcage);
 //	//POUSSOIR.testModeForce(structReception.decompteTempoArretMarcheForce);
 //#else
-	retour = POUSSOIR.traitement(structReception.forcageMode,structReception.dureeForcageSec);
+	retour = POUSSOIR.traitement(structReception.dureeForcageSec);
   if (!POUSSOIR.getTransitoirePoussoir())
   {
     //#endif

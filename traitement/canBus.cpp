@@ -149,7 +149,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
     //DebuglnF("For(reception)");
 		if (CAN_MSGAVAIL == checkReceive())   //pas it pour r�cup�rer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
 		{
-      DebuglnF("checkReceive(reception)");
+      // trop de messages DebuglnF("checkReceive(reception)");
 			unsigned long canId = 0;
 			unsigned char len = 0;
 			unsigned char rxBuf[CAN_MAX_CHAR_IN_MESSAGE];

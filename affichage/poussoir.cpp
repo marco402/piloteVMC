@@ -28,7 +28,7 @@ unsigned long  poussoir::getTempsMilliCommandeTemporisees(void)
 {
 	return tempsMilliCommandeTemporisees;
 }
-boolean poussoir::traitement(MODES forcageMode, int16_t dureeForcageSec)
+boolean poussoir::traitement(int16_t dureeForcageSec)
 {
 //            Serial.print(F("dureeForcageSec: "));
 //           Serial.println(dureeForcageSec);

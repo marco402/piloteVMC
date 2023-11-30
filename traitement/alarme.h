@@ -27,23 +27,35 @@
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include <WiFiUdp.h>
-#include "enregistrement.h"  //for send a voir
+#include "enregistrement.h"
 #define CFG_TEMPO_HOST_SIZE    32
+
+enum INDICEALARMES {GARAGE=1,PORTAIL=2  };
 enum enumCouleursALARME {ST7735_WHITE=0, ST7735_RED, ST7735_GREEN,ST7735_BLUE,ST7735_ORANGE};
-enum CODES_ALARME { NO_RECEPT = 0, DOOR_OPEN_WITH_ALARME, DOOR_CLOSE, DOOR_OPEN_WITHOUT_ALARME, HEARTBEAT, HEAD_MESSAGE, AQUITEMENT ,FIN};
-  //                 ST7735_WHITE,          ST7735_RED,     ST7735_GREEN,  ST7735_BLUE,           ST7735_ORANGE                                                    
+enum CODES_ALARME {  
+  PREMIER = 0,
+  DOOR_OPEN_WITH_ALARME,           //jaune transitoire maxi NBCYCLECONTACTSTOPALARME
+  DOOR_OPEN_WITHOUT_ALARME,        //bleu
+  DOOR_CLOSE_WITH_ALARME,          //vert
+  DOOR_CLOSE_WITHOUT_ALARME,       //blanc
+  HEARTBEAT,                       //orange
+  ALARME_DECLENCHEE,               //rouge  
+  HEAD_MESSAGE,
+  START,
+  ACQUITTEMENT,
+  LEDERNIER};
 class myAlarme
 {
 public:
 	myAlarme(void);
 	void testReceptionAlarme(void);
-	void init(int indice);
+	void init(INDICEALARMES indice);
 	void stop(void);
 	char getEtatAlarme(void);
 private:
-    uint8_t indiceAlarme=0;
+  INDICEALARMES indiceAlarme=INDICEALARMES::GARAGE;
 	WiFiUDP udpAlarme;
-	bool send(IPAddress adressIP, uint32_t port, char * message, uint32_t * memPort);
+	bool send(IPAddress adressIP, uint32_t port, byte * message, uint32_t * memPort);
 	char etatAlarme;
 	uint32_t receptLastMessage = 0;
   uint32_t memoPort = 0;
