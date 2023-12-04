@@ -45,7 +45,6 @@ public:
 	capteur DHT_H;
 private:
 	uint8_t pin;
-
 	int16_t getTemperatureDHT22(uint8_t bits[]) ;
 	int16_t getHumiditeDHT22(uint8_t bits[]) ;
 	int readDHT22(uint8_t pin, uint8_t wakeupDelay,uint8_t  bits[]) ;
@@ -57,9 +56,4 @@ private:
 };
 extern	dht DHTSDB;		  //pour traitement
 extern	dht DHTCUISINE;   //pour affichage
-
-
 #endif
-//
-// END OF FILE
-//

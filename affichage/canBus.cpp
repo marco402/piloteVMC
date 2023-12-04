@@ -36,6 +36,9 @@
 		 reception.infos = false;
 		 reception.locaux = false;
 		 reception.distants = false;
+     initCanBus = false;
+     compteurErreurConsecutivesEmission = 0;
+     compteurErreurConsecutivesReception = 0;
 		 int nEssai = 10;
 		 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN, freq_can)) && nEssai > 0)              //CAN_500KBPS init can bus : baudrate = 500k
 		 {
@@ -59,19 +62,33 @@
 			 enOneShotTX();
 			 setMode(MCP_NORMAL);   //MODE_ONESHOT Change to normal mode to allow messages to be transmitted
 			 initCanBus = true;
-			 return;
+			 //return;
 		 }
 	 }
-	return;
+	//return;
  }
-boolean can_bus::traitementReception(void )
+boolean can_bus::traitementReceptionCan(void )
 {
 	unsigned char rxBuf[CAN_MAX_CHAR_IN_MESSAGE];
 	unsigned char len = 0; 
 	unsigned long canId = 0;
   if(initCanBus)
   {
+    if (compteurErreurConsecutivesReception > 50)  //xxsec
+//    {
+//          initCanBus = false;
+//          compteurErreurConsecutivesEmission = 0;
+//          compteurErreurConsecutivesReception = 0;
+          initialiseCanBus();
 
+//      //DebuglnF("ReinitCanBus(reception)");
+//      nbReinitCanBusReception+=1;
+//      DebugF("nbReinitCanBusReception: ");Debugln(nbReinitCanBusReception);
+//      initCanBusOK = false;
+//      compteurErreurConsecutivesReception = 0;
+//      InitCanBus(MCP_16MHZ);
+//      return true;
+//    }
 		 if (checkReceive() == CAN_MSGAVAIL)
 		 {
 			 if (readMsgBuf(&canId, &len, rxBuf) == CAN_OK) //CAN_OK             (0)
@@ -203,25 +220,25 @@ boolean can_bus::traitementReception(void )
 						 Serial.println(F("Problème de longueur message type 5"));
 					 }
 				 }
-			 }
+			 }  //readMsgBuf
+       else
+       {
+        //DebuglnF("readMsgBuf(reception)");
+        compteurErreurConsecutivesReception += 1;
+        return false;
+       } 
 		}	//checkReceive()
+    else  //checkReceive
+    {
+       //DebuglnF("else(checkReceive reception)");
+       compteurErreurConsecutivesReception += 1;
+       return false;
+    } 
 	}	//initCanBus
 	if (reception.NbMessage == 4)
 	{
 		memoSecondes = reception.secondes;
 		compteurErreurConsecutivesReception = 0;
-
-#ifdef TESTCAN
-		cptTestInitCan += 1;
-		if (cptTestInitCan > 240)
-		{
-			initCanBus = false;
-			compteurErreurConsecutivesEmission = 0;
-			compteurErreurConsecutivesReception = 0;
-			initialiseCanBus();
-			cptTestInitCan = 0;
-		}
-#endif
 		return true;
 	}
 
@@ -230,9 +247,9 @@ boolean can_bus::traitementReception(void )
 		compteurErreurConsecutivesReception += 1;
 		if (compteurErreurConsecutivesReception > 40)  //pendant 10 cycles
 		{
-			initCanBus = false;
-			compteurErreurConsecutivesEmission = 0;
-			compteurErreurConsecutivesReception = 0;
+//			initCanBus = false;
+//			compteurErreurConsecutivesEmission = 0;
+//			compteurErreurConsecutivesReception = 0;
 			initialiseCanBus();
 		}
 		else
@@ -244,7 +261,7 @@ boolean can_bus::traitementReception(void )
 void can_bus::emission(INT32U id, INT8U len, INT8U *buf)
 {
 	char sndStat = sendMsgBuf(id, 0, len, buf);
-	if (!sndStat == CAN_OK) {
+	if (sndStat != CAN_OK) {
 		compteurBuzzer += 1;
 		if (compteurBuzzer >= TEMPO_BIP)
 		{
@@ -253,13 +270,13 @@ void can_bus::emission(INT32U id, INT8U len, INT8U *buf)
 		}
 		Serial.print(F("Error Sending Message...")); Serial.println(sndStat);
 		compteurErreurConsecutivesEmission += 1;
-		if (compteurErreurConsecutivesEmission > 10)  //10sec 
-		{
-			initCanBus = false;
-			compteurErreurConsecutivesEmission = 0;
-			compteurErreurConsecutivesReception = 0;
-			initialiseCanBus();
-		}
+//		if (compteurErreurConsecutivesEmission > 10)  //10sec 
+////		{
+////			initCanBus = false;
+////			compteurErreurConsecutivesEmission = 0;
+////			compteurErreurConsecutivesReception = 0;
+//			initialiseCanBus();
+////		}
 	}
 	else
 		compteurErreurConsecutivesEmission = 0;
@@ -272,26 +289,32 @@ void can_bus::traitementEmissionMESSAGE_TYPE_3(MODES leMode)
 	//Serial.print("emission mode"); Serial.println(leMode);
 	emission( ID_MESSAGE_TYPE_3,MESSAGE_TYPE_3::FIN_MESSAGE_TYPE_3, buf);
 }
-void can_bus::traitementEmission(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t CuisineHMsb,uint8_t CuisineHLsb,MODES leMode)
+void can_bus::traitementEmissionCan(uint8_t CuisineTMsb,uint8_t CuisineTLsb,uint8_t CuisineHMsb,uint8_t CuisineHLsb,MODES leMode)
 {
   
   if(initCanBus)
   {
-	unsigned char buf[MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2]; 
-	buf[MESSAGE_TYPE_2::DHT_CUISINE_T_MSB]=CuisineTMsb;
-	buf[MESSAGE_TYPE_2::DHT_CUISINE_T_LSB]=CuisineTLsb;
-	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_MSB]=CuisineHMsb;
-	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_LSB]=CuisineHLsb;
-//#ifdef TRAITMODE
-//	buf[MESSAGE_TYPE_2::DECOMPTE_FORCAGE] = reception.decompteTempoArretMarcheForce/60;
-//	//VMC.decompteTempoArretMarcheForce = rxBuf[(int)MESSAGE_TYPE_2::DECOMPTE_FORCAGE] * 60;
-//#endif
-	emission(ID_MESSAGE_TYPE_2,MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2, buf);
-	traitementEmissionMESSAGE_TYPE_3(leMode);        //POUSSOIR.getLeMode() 
-	//le mode repasse en AUTO et revient immédiatement en FORCE,
-	//probablement au niveau affichage emission d'un message force avant la prise
-	//en compte de la réception du message AUTO=>temporiser 5 sec.avant prise en comte d'un nouveau mode
-	//DebuglnF("leMode"); Debugln(leMode);   //------------------------>
+    if (compteurErreurConsecutivesEmission > 10)  //10sec 
+    {
+        initialiseCanBus();
+        return ;
+    }
+      
+  	unsigned char buf[MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2]; 
+  	buf[MESSAGE_TYPE_2::DHT_CUISINE_T_MSB]=CuisineTMsb;
+  	buf[MESSAGE_TYPE_2::DHT_CUISINE_T_LSB]=CuisineTLsb;
+  	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_MSB]=CuisineHMsb;
+  	buf[MESSAGE_TYPE_2::DHT_CUISINE_H_LSB]=CuisineHLsb;
+  //#ifdef TRAITMODE
+  //	buf[MESSAGE_TYPE_2::DECOMPTE_FORCAGE] = reception.decompteTempoArretMarcheForce/60;
+  //	//VMC.decompteTempoArretMarcheForce = rxBuf[(int)MESSAGE_TYPE_2::DECOMPTE_FORCAGE] * 60;
+  //#endif
+  	emission(ID_MESSAGE_TYPE_2,MESSAGE_TYPE_2::FIN_MESSAGE_TYPE_2, buf);
+  	traitementEmissionMESSAGE_TYPE_3(leMode);        //POUSSOIR.getLeMode() 
+  	//le mode repasse en AUTO et revient immédiatement en FORCE,
+  	//probablement au niveau affichage emission d'un message force avant la prise
+  	//en compte de la réception du message AUTO=>temporiser 5 sec.avant prise en comte d'un nouveau mode
+  	//DebuglnF("leMode"); Debugln(leMode);   //------------------------>
   }
 }
 struct_reception can_bus::getStructReception(void) const

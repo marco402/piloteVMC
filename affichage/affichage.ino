@@ -153,7 +153,7 @@ void loop()
 //#####################################Traitement des entrées######################################
 
 //||(task_1_sec==3)  pour test probleme sur reinit canbus(supposition)
- if(CAN_BUS.traitementReception()) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
+ if(CAN_BUS.traitementReceptionCan()) {   //sur la boucle sinon perte du 3° message   ATTENTION:pas de reception supplémentaire si la durée du cycle dépasse la seconde
 	//task_1_sec=0;
 	structReception = CAN_BUS.getStructReception();
 //#ifdef TRAITMODE
@@ -229,7 +229,7 @@ void loop()
 //les moyennes se1110.ront faite au niveaux des UC
 //    Serial.print("Cuisine H  "); Serial.println(DHTCUISINE.DHT_H.getMesureCycleMsb());Serial.println(DHTCUISINE.DHT_H.getMesureCycleLsb());
 //    Serial.print("Cuisine T  "); Serial.println(DHTCUISINE.DHT_T.getMesureCycleMsb());;Serial.println(DHTCUISINE.DHT_T.getMesureCycleLsb());
-	CAN_BUS.traitementEmission(DHTCUISINE.DHT_T.getMesureCycleMsb(),DHTCUISINE.DHT_T.getMesureCycleLsb(),DHTCUISINE.DHT_H.getMesureCycleMsb(),DHTCUISINE.DHT_H.getMesureCycleLsb(), POUSSOIR.getLeMode());
+	CAN_BUS.traitementEmissionCan(DHTCUISINE.DHT_T.getMesureCycleMsb(),DHTCUISINE.DHT_T.getMesureCycleLsb(),DHTCUISINE.DHT_H.getMesureCycleMsb(),DHTCUISINE.DHT_H.getMesureCycleLsb(), POUSSOIR.getLeMode());
 	CAN_BUS.clearStructReception();
 //########################################Traitement temps des traitements##########################################
 	//int32_t delta=1000-(memoTempsMilli-millis()) ;
