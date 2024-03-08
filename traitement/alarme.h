@@ -52,11 +52,13 @@ public:
 	void init(INDICEALARMES indice);
 	void stop(void);
 	char getEtatAlarme(void);
+  void setRazAlarme(void);
 private:
   INDICEALARMES indiceAlarme=INDICEALARMES::GARAGE;
 	WiFiUDP udpAlarme;
 	bool send(IPAddress adressIP, uint32_t port, byte * message, uint32_t * memPort);
 	char etatAlarme;
+  bool razAlarme=true;
 	uint32_t receptLastMessage = 0;
   uint32_t memoPort = 0;
   char  host_alarme[CFG_TEMPO_HOST_SIZE + 1]; //adresse IP

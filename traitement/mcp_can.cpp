@@ -1192,9 +1192,9 @@ INT8U MCP_CAN::checkError(void)
     INT8U eflg = mcp2515_readRegister(MCP_EFLG);
 
     if ( eflg & MCP_EFLG_ERRORMASK ) 
-        return CAN_CTRLERROR;
+        return CAN_CTRLERROR;  //5
     else
-        return CAN_OK;
+        return CAN_OK;        //0
 }
 
 /*********************************************************************************************************

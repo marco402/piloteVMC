@@ -27,6 +27,9 @@
 #ifdef TA12
 	#include "ta12.h"
 #endif
+#ifdef ALARME
+#include "alarme.h"
+#endif
 #include "buzzer.h"
 #include "config.h"
 #include "interRelais.h"
@@ -187,6 +190,8 @@ void vmc::initialisationMode()
 		case MODES::ARRET:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
 			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret, les modes marche sont après la tempo sinon erreur sur marche/arr�t
+      MYALARMEGARAGE.razAlarme();
+      MYALARMEPORTAIL.razAlarme();
 			break;
 		case MODES::PETITE_VITESSE:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);

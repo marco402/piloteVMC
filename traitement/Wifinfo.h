@@ -27,7 +27,7 @@
 #ifndef WIFINFO_H
 #define WIFINFO_H
 
-#define NO_TRAITMODE  //before constantes.h
+//#define NO_TRAITMODE  //before constantes.h
 /*modifications associées à TRAITMODE-->le ForcageMode est indépendant du mode force
 coté traitement:
 Wifinfo.h       ajout constante de compilation TRAITMODE

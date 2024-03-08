@@ -73,8 +73,8 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
     DebuglnF("ReinitCanBus(emission)");
     nbReinitCanBusEmission+=1;
     DebugF("nbReinitCanBusEmission: ");Debugln(nbReinitCanBusEmission);
-		initCanBusOK = false;
-		compteurErreurConsecutivesEmission = 0;
+//		initCanBusOK = false;
+//		compteurErreurConsecutivesEmission = 0;
 		InitCanBus(MCP_16MHZ);
     return true;
 	}
@@ -86,6 +86,9 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 }
  void ICACHE_FLASH_ATTR can_bus::InitCanBus(unsigned char freq_can)
  {
+   initCanBusOK= false;
+   compteurErreurConsecutivesEmission = 0;
+   compteurErreurConsecutivesReception = 0;    
 	 int nEssai = 10;
 	 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN,freq_can )) && nEssai > 0)              //ok a 100 pb � CAN_500KBPS   MCP_16MHZ(vitesse du quartz sur la carte can a confirmer)
 	 {
@@ -95,7 +98,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 	 if (nEssai == 0)
 	 {
 		 DebuglnF("CAN BUS Shield init fail 10 try");
-		 initCanBusOK= false;
+		// initCanBusOK= false;
 		 return;
 	 }
 	 else
@@ -107,7 +110,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 		 setMode(MCP_NORMAL);   // loopback par defaut
 		DebuglnF("CAN BUS Shield init (speed SPI:500k,speed CAN:250k,freq CAN 16Mhz) ok!");
 		initCanBusOK = true;
-		return;
+		//return;
 	 }
  }
 
@@ -130,8 +133,9 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
     //DebuglnF("ReinitCanBus(reception)");
     nbReinitCanBusReception+=1;
     DebugF("nbReinitCanBusReception: ");Debugln(nbReinitCanBusReception);
-    initCanBusOK = false;
-    compteurErreurConsecutivesReception = 0;
+//    initCanBusOK = false;
+//    compteurErreurConsecutivesReception = 0;
+//    compteurErreurConsecutivesEmission = 0;
     InitCanBus(MCP_16MHZ);
     return true;
   }
@@ -147,7 +151,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 	for (int mes = 0; mes < 2; mes++)
 	{
     //DebuglnF("For(reception)");
-		if (CAN_MSGAVAIL == checkReceive())   //pas it pour r�cup�rer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
+		if (CAN_MSGAVAIL == checkReceive())   // && !checkError() pas it pour recuperer une IO   if (!digitalRead(PIN_INT_SPI))                         // If CAN0_INT pin is low, read receive buffer
 		{
       // trop de messages DebuglnF("checkReceive(reception)");
 			unsigned long canId = 0;
@@ -213,9 +217,9 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
      //     compteurErreurConsecutivesReception += 1;    //pas de reception type 2 ni type 3 mais il faut passer ici
     // }
 		}  //if
-   else  //checkReceive
+    else  //checkReceive
     {
-       DebuglnF("else(checkReceive reception)");
+       DebugF("else(checkReceive reception) er= ");Debugln(getError());
        compteurErreurConsecutivesReception += 1;
        return false;
     } 
