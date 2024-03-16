@@ -94,7 +94,6 @@
     <XtensaCppItem Include="canBus.cpp" />
     <XtensaCppItem Include="capteur.cpp" />
     <XtensaCppItem Include="dht.cpp" />
-    <XtensaCppItem Include="ledsClassiques.cpp" />
     <XtensaCppItem Include="ledsRGBSerial.cpp" />
     <XtensaCppItem Include="poussoir.cpp" />
     <XtensaCppItem Include="st7735.cpp" />

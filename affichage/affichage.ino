@@ -100,6 +100,7 @@ int memoMinute=-1;
 	TM1650 display;
 #endif
 #ifdef  HORLOGETM1637
+	int cptTest = 0;
 	TM1637Display display(CLK, DIO);
 #endif
 ///###################################initialisations globales##################################  
@@ -143,7 +144,6 @@ void setup()
 
 void loop()
 {
-  wdt_enable(WDTO_8S);
 	boolean retour;
 #ifdef  HORLOGETM1650
 	char buf[4];
@@ -178,6 +178,7 @@ void loop()
 	  BUZZER.setBuzzer(retour) ;
 	  structReception.decompteTempoArretMarcheForce = POUSSOIR.getTempsMilliCommandeTemporisees();
     AFFICHEUR.affiche(structReception);
+    wdt_enable(WDTO_8S);
     BUZZER.traitement(structReception);  //buzzer permanent si plus de réception CAN
     #ifdef  HORLOGETM1637
  // Print 1234 with the center colon:
@@ -243,6 +244,13 @@ void loop()
     memoTempsMilli=millis();
     //task_1_sec+=1;
   }
+//#ifdef  HORLOGETM1637
+//    // Print 1234 with the center colon:
+//    display.showNumberDecEx(cptTest, 0x40, true, 4, 0);
+//    cptTest += 1;
+//    if (cptTest > 9999)
+//      cptTest = 0;
+//#endif
 //##############################################################################################################
 } 
 //#############################################FIN####################################"
