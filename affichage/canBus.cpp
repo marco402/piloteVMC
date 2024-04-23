@@ -98,14 +98,19 @@ boolean can_bus::traitementReceptionCan(void )
 					 if (len == MESSAGE_TYPE_0::FIN_MESSAGE_TYPE_0)
 					 {
 						 reception.heures = rxBuf[MESSAGE_TYPE_0::HEURE];
+
 						 reception.minutes = rxBuf[MESSAGE_TYPE_0::MINUTE];
-						 reception.secondes = rxBuf[MESSAGE_TYPE_0::SECONDE];
+             
+						 reception.secondes = rxBuf[MESSAGE_TYPE_0::SECONDE] & 0x7F;
+             
+             reception.cgtJourNuit = rxBuf[MESSAGE_TYPE_0::SECONDE] & 0x80;
+             
 						 //if (reception.heures>0 || reception.minutes > 0 || reception.secondes > 0)
 							//						//perte d'1 cycle a 0h0mn0sec
 							//                        //essai si reception.mode = 0, sur reinit can bus
 						 //{							//le mode repasse sur arret
-													//il aurait fallu commencer le mode a 1
-
+													//il aurait fallu commencer le mode a 
+						   
 							 reception.etatLeds = rxBuf[MESSAGE_TYPE_0::LES_LEDS];
 							 reception.mode = rxBuf[MESSAGE_TYPE_0::MODE];
 							 //Serial.print("reception mode"); Serial.println(reception.mode);

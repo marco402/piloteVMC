@@ -1,3 +1,6 @@
+//20/04/2024
+//blocage affichage ajout alternance :,sans : sur l'horloge 7 segments.
+//ajout indicateur CgtCompteur pour afficher l'heure du changement en bas de l'afficheur.
 
 //2/11/23
 //blocage affichage
@@ -469,7 +472,7 @@ void loop()
 #endif
 //**************************************Traitement des sorties****************************************************
 #ifdef COMP_CAN_BUS
-	if(CAN_BUS.TRAITEMENTEMISSIONCAN())
+	if(CAN_BUS.TRAITEMENTEMISSIONCAN(CgtCompteur))
 	    WEBSERVER.incNb_reinit();
 #endif 	
 	if (WIFIOK)

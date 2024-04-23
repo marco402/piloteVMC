@@ -4,6 +4,12 @@
  * Created: 24/02/2019 22:18:27
  *  Author: marc Prieur
  */
+
+//20/04/24
+//affichage bloqué en attente de message, il faudrait une evolution pour voir si le micro tourne.
+//ajoute heartbeat sur l'afficheur 4 digits sans les 2 points si pas de reception can
+
+
  //###################################memoire################################## 
 //04/01/2023
 // au demarrage ,les 3 led restent sur nuit et rouge rouge a confirmer
@@ -94,6 +100,7 @@ poussoir POUSSOIR;
 buzzer BUZZER;
 int memoBrightness=2;
 int memoMinute=-1;
+boolean heartbeat = false;
 #ifdef  HORLOGETM1650
 //modifie C:\Users\mireille\Documents\Arduino\libraries\TM1650\src\TM1650.h TM1650_NUM_DIGITS   4 et TM1650_MAX_STRING   4 gain 
 //reste 358 de mémoire dynamique avec cette modif 202 sans
@@ -148,6 +155,13 @@ void loop()
 #ifdef  HORLOGETM1650
 	char buf[4];
 #endif
+//pour test
+if(heartbeat)
+  LEDS_RGB_SERIAL.traitementLedsRGBJourNuit(ETAT_JOUR::ETAT_JOUR_INCONNU,LES_LEDS_RGB_LED_JOUR_NUIT);  //bleu
+else
+  LEDS_RGB_SERIAL.traitementLedsRGBJourNuit(ETAT_JOUR::ETAT_JOUR_TEST,LES_LEDS_RGB_LED_JOUR_NUIT);     //vert
+heartbeat=!heartbeat;
+  
 	struct_reception structReception;
 	CAN_BUS.initialiseCanBus(); //a chaque cycle,si le distant est branché en second,inutile avec alimentation par le distant...
 //#####################################Traitement des entrées######################################
@@ -238,11 +252,20 @@ void loop()
  //################################################################################################################# 
 
   } //CAN_BUS.traitementReception()||(task_1_sec==3)
+// else  //passe a 2 secondes...
+// {
+//	 if(heartbeat)
+//		 display.showNumberDecEx(structReception.heures * 100 + structReception.minutes, 0x40, true, 4, 0);  //40 avec :   heartbeat
+//	 else
+//		 display.showNumberDecEx(structReception.heures * 100 + structReception.minutes, 0, true, 4, 0);  //0 sans :   heartbeat
+//   heartbeat = !heartbeat;
+// }
+
 //########################################Traitement durée du cycle##########################################
   if((millis()- memoTempsMilli) > 1000)
   {
     memoTempsMilli=millis();
-    //task_1_sec+=1;
+    //task_1_sec+=1; 
   }
 //#ifdef  HORLOGETM1637
 //    // Print 1234 with the center colon:

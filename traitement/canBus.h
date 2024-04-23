@@ -43,14 +43,14 @@ class can_bus : public MCP_CAN
 {
 	public:
 		can_bus(void);
-		bool TRAITEMENTEMISSIONCAN(void);
+		bool TRAITEMENTEMISSIONCAN(boolean CgtCompteur);
 		unsigned char mysendMsgBuf(unsigned long ident, unsigned char ext, unsigned char len,  unsigned char *buf);
 		
 		bool traiteReception(void);
 		bool getReceptionCapteurs(void)const;
 		void resetReceptionCapteurs(void);
 		bool getEtResetReceptionCommandes(void);
-		void traiteEmissionCan(unsigned char type, unsigned char heure = 0, unsigned char minute = 0, unsigned char seconde = 0);
+		void traiteEmissionCan(unsigned char type,boolean CgtCompteur = false, unsigned char heure = 0, unsigned char minute = 0, unsigned char seconde = 0);
 		void InitCanBus(unsigned char  freq_can);
 		boolean getInitCanBusOK(void);
 		uint8_t getEtResetErreur(void);

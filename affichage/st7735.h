@@ -39,6 +39,7 @@
   #define V_TXTLIGNEHEURE  (V_TXTLIGNEHSDB+HAUTLIGNE)
 #endif
 #define V_TXTLIGNEETAT  (V_TXTLIGNEHEURE+HAUTLIGNE)
+//#define V_TXTLIGNEHEURECGTJOURNUIT  (V_TXTLIGNEETAT+HAUTLIGNE)
 #define V_TXTSTATUS     V_TXTLIGNEHCUIS
 #define V_TXTSTATUS1    V_TXTLIGNEHSDB
 //*************definition des colonnes*****************
@@ -112,6 +113,7 @@ class st7735 : public Adafruit_ST7735
     void afficheLocaux(struct_reception R);
     void fix_number_position(float number);
     void fix_number_position(int number);
+	  void TraiteHeure(struct_reception reception,int y);
     void TraitePave(int X,uint8_t etat);
     void TraitePaveJN(int X,uint8_t etat);
 #ifdef ALARME

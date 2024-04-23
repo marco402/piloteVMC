@@ -59,7 +59,7 @@ ICACHE_FLASH_ATTR can_bus::can_bus(void) : MCP_CAN(PIN_CS_CAN, CLOCKSPI)
 {
 }
 #endif
-bool can_bus::TRAITEMENTEMISSIONCAN(void)
+bool can_bus::TRAITEMENTEMISSIONCAN(boolean CgtCompteur)
 {
 	if (!initCanBusOK)
 		return false;
@@ -78,10 +78,10 @@ bool can_bus::TRAITEMENTEMISSIONCAN(void)
 		InitCanBus(MCP_16MHZ);
     return true;
 	}
-	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_0, Clock.getHour(), Clock.getMinute(), Clock.getSecond()); //90ms.
+	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_0, CgtCompteur, Clock.getHour(), Clock.getMinute(), Clock.getSecond()); //90ms.
 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_1);
 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_4);
-	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_5);
+ 	traiteEmissionCan((unsigned char)ID_MESSAGE_TYPE_5);
   return false;
 }
  void ICACHE_FLASH_ATTR can_bus::InitCanBus(unsigned char freq_can)
@@ -231,7 +231,7 @@ unsigned char  can_bus::mysendMsgBuf(unsigned long ident, unsigned char ext, uns
 	return sendMsgBuf(ident, ext, len, buf);
 }
 //type=0:emission du temps,du mode, de l'�tat courant et du buzzer, type=1:emission de la temp�rature et humidit� SDB et temp�rature exterieur.
-void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigned char minute, unsigned char seconde)
+void can_bus::traiteEmissionCan(unsigned char type, boolean CgtCompteur, unsigned char heure, unsigned char minute, unsigned char seconde)
 	{
 	byte sndStat = 0;
 		if (type== ID_MESSAGE_TYPE_0)
@@ -240,7 +240,15 @@ void can_bus::traiteEmissionCan(unsigned char type, unsigned char heure, unsigne
 		//max 8 byte pour can
 		buf[MESSAGE_TYPE_0::HEURE] = heure;
 		buf[MESSAGE_TYPE_0::MINUTE] = minute;
-		buf[MESSAGE_TYPE_0::SECONDE] =seconde;
+   if(CgtCompteur)
+  		buf[MESSAGE_TYPE_0::SECONDE] = seconde | 0x80;
+   else
+      buf[MESSAGE_TYPE_0::SECONDE] = seconde;   
+//pour test
+//    if(seconde==0)
+//        buf[MESSAGE_TYPE_0::SECONDE] =(byte) (seconde | 0x80);
+//    else
+//        buf[MESSAGE_TYPE_0::SECONDE] = (byte)seconde;    
 		buf[MESSAGE_TYPE_0::LES_LEDS] =LESLEDS.getEtatLeds();
 		//DebugF("lesleds"); Debugln(buf[MESSAGE_TYPE_0::LES_LEDS] );
 		buf[MESSAGE_TYPE_0::MODE] = VMC.getLeMode()+1;  //+1 pour ne pas utiliser le 0 

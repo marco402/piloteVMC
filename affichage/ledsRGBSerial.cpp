@@ -60,16 +60,16 @@ void ledsRgbSerial::traitement(struct_reception reception)
 			  Serial.print(F("rgb_led.SetBrightness ")); Serial.println(reception.luminositeeLeds); 
 			  memoLuminositeeLeds = reception.luminositeeLeds;
 			  rgb_led.Show(); 
-		}        
+		}   
 		if(reception.etatLeds != memoEtatDesLeds)
 		{ 
 		  union leds etatDesLeds;
-		  //   if(reception.etatLeds!=12)
-		  //      Serial.print("reception.etatLeds "); Serial.println(reception.etatLeds);
+//		     if(reception.etatLeds!=12)
+//		        Serial.print("reception.etatLeds "); Serial.println(reception.etatLeds);
 		  etatDesLeds.etat=reception.etatLeds;
 		  traitementLedsRGB(etatDesLeds.etatCourant.demain,LES_LEDS_RGB_LED_DEMAIN);
 		  traitementLedsRGB(etatDesLeds.etatCourant.aujourdhui,LES_LEDS_RGB_LED_JOUR);
-		  traitementLedsRGBJourNuit(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT);
+		  traitementLedsRGBJourNuit(etatDesLeds.etatCourant.jourNuit,LES_LEDS_RGB_LED_JOUR_NUIT); 
 		  memoEtatDesLeds=reception.etatLeds ; 
 		}
 	}
@@ -104,7 +104,11 @@ switch  (etat)
     rgb_led.SetPixelColor(indiceLedRGB, orange);
     break;
   case ETAT_JOUR::ETAT_JOUR_INCONNU:
-    rgb_led.SetPixelColor(indiceLedRGB, red);  //gris donne blanc
+    rgb_led.SetPixelColor(indiceLedRGB, blue);  //gris donne blanc  
+     break;     
+  case ETAT_JOUR::ETAT_JOUR_TEST:
+    rgb_led.SetPixelColor(indiceLedRGB,green );
+     break;      
   }
   rgb_led.Show();
 }

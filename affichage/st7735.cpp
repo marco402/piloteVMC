@@ -53,6 +53,11 @@ uint16_t couleursJOURNUIT[] = { COLORSCREEN, ST7735_ORANGE };
 char MODES_AFF[][11] = {"" , "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","    ETE   ","   HIVER  ","AT CAN BUS","cas inex" }; //blanc n�cessaires pour effacer la plus longue chaine
 //String MODES_AFF[] = { "  ARRET   ","   LENT   "," RAPIDE   ","  AUTO    ","FORCE PV  ","FORCE GV  ","FORC ARRET","AT CAN BUS" }; //blanc n�cessaires pour effacer la plus longue chaine
 char CAS_AUTO[][12] = { "           ","A-temp ext>","A-temp ext<","M-hum cuis>","M-hum  sdb>","cas inex   "};  //      ,"   arret   " ,"SHC","SHB","SCHAUD","SFROID"};
+
+unsigned char memoHeures=99;
+unsigned char memoMinutes=99;
+unsigned char memoSecondes=99;
+
 #define NO_DEBUG_ST7735
 
 st7735::st7735() : Adafruit_ST7735(TFT_CS, TFT_RS, TFT_RESET)           //-------->cycle d'affichage autour de 800ms.
@@ -169,38 +174,38 @@ void st7735::afficheMode(MODES modeSelection )
   setTextColor(ST7735_ORANGE, COLORSCREEN);
   print(MODES_AFF[modeSelection]);
 }
-void st7735::decompteCgtVitesse(struct_reception R)
+void st7735::decompteCgtVitesse(struct_reception reception)
 {
   fillScreen(COLORSCREEN);
   setCursor(V_COLMODE, V_TXTSTATUS);
   print(F("Decompte "));
   setCursor(V_COLMODE, V_TXTSTATUS1);
   print(F("relais: "));
-  print(R.decompteDelaiCgtVitesse);
+  print(reception.decompteDelaiCgtVitesse);
   changeModePrec = true;
 }
-void st7735::casNormal(struct_reception R)
+void st7735::casNormal(struct_reception reception)
 {
   if (changeModePrec)
   {
     changeModePrec = false;
     initScreen();
   }
-  if (R.infos)
+  if (reception.infos)
   {
     //int8_t puis = 0;
     //*******************traitement du mode et arret marche***************************************
     setCursor(V_COLMODE + 3, V_TXTLIGNEMODES);
-    if (R.arret_marche == ARRET_MARCHE::MARCHE_REL)
+    if (reception.arret_marche == ARRET_MARCHE::MARCHE_REL)
     {
       setTextColor(ST7735_BLACK, ST7735_GREEN);
-      //puis = R.puissanceVMC;
+      //puis = reception.puissanceVMC;
     }
     else
       setTextColor(ST7735_WHITE, COLORSCREEN);
-    if (R.NbMessage)
+    if (reception.NbMessage)
     {
-      uint8_t mode = R.mode;
+      uint8_t mode = reception.mode;
       if (mode > 9)
         mode = 10;    //cas inex
       print(MODES_AFF[mode]);
@@ -213,38 +218,30 @@ void st7735::casNormal(struct_reception R)
     //********************traitement alarme garage**************************************
 //V_COLVARIABLES + 12  V_TXTLIGNEIVMC
 #ifdef ALARME
-    TraitePaveAlarme(XPAVEALARMEGARAGE, R.alarmeGarage);
-    TraitePaveAlarme(XPAVEALARMEPORTAIL, R.alarmePortail); 
-//          Serial.print(F("alarmeGarage: "));Serial.println(R.alarmeGarage);  //54 violet
-//          Serial.print(F("alarmePortail: "));Serial.println(R.alarmePortail); //4  orange         
+    TraitePaveAlarme(XPAVEALARMEGARAGE, reception.alarmeGarage);
+    TraitePaveAlarme(XPAVEALARMEPORTAIL, reception.alarmePortail); 
+//          Serial.print(F("alarmeGarage: "));Serial.println(reception.alarmeGarage);  //54 violet
+//          Serial.print(F("alarmePortail: "));Serial.println(reception.alarmePortail); //4  orange         
 #endif
-    //TraitePaveAlarme(V_COLVARIABLES + 30, R.alarmePortail);
+    //TraitePaveAlarme(V_COLVARIABLES + 30, reception.alarmePortail);
     //******************traitement des pav�s tempo et wifi*******************************
     union leds etatDesLeds;
-    etatDesLeds.etat = R.etatLeds;
+    etatDesLeds.etat = reception.etatLeds;
     TraitePave(XPAVEJOUR, etatDesLeds.etatCourant.aujourdhui);
     TraitePave(XPAVEDEMAIN, etatDesLeds.etatCourant.demain);
     TraitePaveJN(XPAVEJOURNUIT, etatDesLeds.etatCourant.jourNuit);    //1=nuit sinon 0
     //Serial.print("wifi:"); Serial.println(reception.etatWifi);
-    TraiteLigneEtat(R);
+    TraiteLigneEtat(reception);
+
     //*******************traitement heure*****************************
-    //char HeureCourante[9];   //reception.NbMinuteActiveJourCourant
-    //sprintf(HeureCourante, "%02u:%02u:%02u", R.heures, R.minutes, R.secondes);  //ATTENTION aux sprintf, cause des pb leds
-    fillRect(V_COLHEURE, V_TXTLIGNEHEURE, WIDTH-V_COLHEURE-1, HAUTLIGNE - 2, COLORSCREEN);
-    setTextColor(COLORVARIABLESFORE, COLORSCREEN);
-    setCursor(V_COLHEURE, V_TXTLIGNEHEURE);
-    print(R.heures);
-    print(F(":"));
-    print(R.minutes);
-    print(F(":"));
-    print(R.secondes);
+	TraiteHeure(reception,V_TXTLIGNEHEURE);
     //**************************affichage erreur******************************
-    if (R.Rbuzzer != 0)       // on reste sur la derni�re erreur
+    if (reception.Rbuzzer != 0)       // on reste sur la derni�re erreur
     {
       setCursor(V_COLERREUR, V_TXTLIGNEHEURE + 5);
       setTextSize(1);
       print(F("e:"));
-      print(R.Rbuzzer);
+      print(reception.Rbuzzer);
       setTextSize(2);
     }
   }
@@ -262,8 +259,8 @@ void st7735::casNormal(struct_reception R)
   }
   setTextColor(COLORVARIABLESFORE, COLORSCREEN);
   //**********************affichage des capteurs*********************
-  afficheDistants(R);
-  afficheLocaux(R);
+  afficheDistants(reception);
+  afficheLocaux(reception);
 }
 void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minute,uint8_t secondes,float  temperature,float humidite
 {
@@ -282,6 +279,17 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
 //    etat
 //    etatleds
 //    courant vmc                 I VMC:     4.2A
+     if (reception.cgtJourNuit)
+     {
+      if (reception.secondes != 127)  //reception a 0xff--> 127-> 0x7f | 0x80
+      {
+        memoHeures=reception.heures;
+        memoMinutes=reception.minutes;
+        memoSecondes=reception.secondes;
+      }
+     }
+
+
   //********************traitement du changement de mode via poussoir**************************
   if (changeMode)
     changementMode();
@@ -291,6 +299,20 @@ void st7735::affiche(struct_reception reception)    //uint8_t heure,uint8_t minu
   //************************traitement cas courant**************************************
   else
     casNormal(reception);
+}
+
+void st7735::TraiteHeure(struct_reception reception,int y)
+{
+	//char HeureCourante[9];   //reception.NbMinuteActiveJourCourant
+	//sprintf(HeureCourante, "%02u:%02u:%02u", reception.heures, reception.minutes, reception.secondes);  //ATTENTION aux sprintf, cause des pb leds
+	fillRect(V_COLHEURE, y, WIDTH - V_COLHEURE - 1, HAUTLIGNE - 2, COLORSCREEN);
+	setTextColor(COLORVARIABLESFORE, COLORSCREEN);
+	setCursor(V_COLHEURE, y);
+ 	print(reception.heures);
+	print(F(":"));
+	print(reception.minutes);
+	print(F(":"));
+	print(reception.secondes);
 }
 
 #ifdef ALARME
@@ -314,17 +336,17 @@ void st7735::TraiteLigneEtat(struct_reception reception)
   setCursor(XPAVELABELWIFI, V_TXTLIGNEETAT + 5);
   tourniquet -= 1;
   if (!tourniquet)
-    tourniquet = 4;
+    tourniquet = 4;  //pb affichage avec etat mode auto
   switch (tourniquet)
   {
-  case 1:
+  case 4:
     if ((reception.etatWifi & 3) < 3)   //pas de wifi
     {
       print(F("Wi"));
       fillRect(XPAVEWIFI + 10, V_TXTLIGNEETAT + 2, 14, HAUTLIGNE - 8, couleursWIFI[reception.etatWifi & 3]);
     }
     break;
-  case 2:
+  case 3:
     //**********************traitement seuil et cas auto********************
     if (reception.decompteTempoArretMarcheForce > 0)
     {
@@ -332,7 +354,7 @@ void st7735::TraiteLigneEtat(struct_reception reception)
       print((reception.decompteTempoArretMarcheForce-(unsigned long) millis())/1000);
     }
     break;
-  case 3:
+  case 2:
     if (reception.casAuto == CASSTATUS::ST_START || reception.mode != 3)
     {
       //**********************traitement temps restant********************
@@ -340,13 +362,25 @@ void st7735::TraiteLigneEtat(struct_reception reception)
       print(reception.NbMinuteActiveJourCourant);
     }
     break;
-  case 4://etat mode auto
-      CASSTATUS cas =(CASSTATUS) reception.casAuto;
-      if (cas > CASSTATUS::ST_FIN)
-        cas = CASSTATUS::ST_FIN;
-      print(CAS_AUTO[cas]);
-      print(reception.seuilAuto);
-    break;
+//  case 5://etat mode auto
+//      CASSTATUS cas =(CASSTATUS) reception.casAuto;
+//      if (cas > CASSTATUS::ST_FIN)
+//        cas = CASSTATUS::ST_FIN;
+//      print(CAS_AUTO[cas]);
+//      print(reception.seuilAuto);
+//    break;
+  case 1:      //heure changement jour nuit  
+      print(memoHeures);
+      print(F(":"));
+      print(memoMinutes);
+      print(F(":"));
+      print(memoSecondes);
+//      print(23);
+//      print(F(":"));
+//      print(59);
+//      print(F(":"));
+//      print(59);
+     break;   
   }
   setTextSize(2);
 }
@@ -399,24 +433,24 @@ void st7735::afficheInt(int param, unsigned char positionX, unsigned char positi
   fix_number_position(param);
   print(param);
 }
-void st7735::debugInfos(struct_reception R)
+void st7735::debugInfos(struct_reception reception)
 {
-  Serial.print(R.heures);Serial.print(F("-"));Serial.print(R.minutes);Serial.print(F("-"));Serial.print(R.secondes );Serial.print(F("-"));
-  Serial.print(R.Rbuzzer);Serial.print(F("-"));Serial.print(R.mode);Serial.print(F("-"));Serial.print(R.etatWifi);Serial.print(F("-"));Serial.print(R.etatLeds);
+  Serial.print(reception.heures);Serial.print(F("-"));Serial.print(reception.minutes);Serial.print(F("-"));Serial.print(reception.secondes );Serial.print(F("-"));
+  Serial.print(reception.Rbuzzer);Serial.print(F("-"));Serial.print(reception.mode);Serial.print(F("-"));Serial.print(reception.etatWifi);Serial.print(F("-"));Serial.print(reception.etatLeds);
 }
-void st7735::debugDistants(struct_reception R)
+void st7735::debugDistants(struct_reception reception)
 {
-  Serial.print(R.temperature_sdb_aff / 10.0f);
+  Serial.print(reception.temperature_sdb_aff / 10.0f);
   Serial.print(F("-"));
-  Serial.print(R.humidite_sdb_aff);
+  Serial.print(reception.humidite_sdb_aff);
   Serial.print(F("-"));
-  Serial.println(R.temperature_ext_aff / 10.0f);
+  Serial.println(reception.temperature_ext_aff / 10.0f);
 }
-void st7735::debugLocaux(struct_reception R)
+void st7735::debugLocaux(struct_reception reception)
 {
-  Serial.print(R.temperature_cuis_aff / 10.0f);
+  Serial.print(reception.temperature_cuis_aff / 10.0f);
   Serial.print(F("-"));
-  Serial.println(R.humidite_cuis_aff);
+  Serial.println(reception.humidite_cuis_aff);
 }
 void st7735::setchangeMode(bool changeMode)
 {

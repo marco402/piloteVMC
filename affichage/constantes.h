@@ -81,6 +81,7 @@ struct struct_reception {
 	unsigned char secondes;
 	unsigned char mode;
 	unsigned char etat;
+	unsigned char cgtJourNuit;
 	uint8_t Rbuzzer=0;
 	//int8_t puissanceVMC=0;
 	int16_t temperature_cuis_aff;
