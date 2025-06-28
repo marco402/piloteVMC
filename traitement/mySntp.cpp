@@ -16,7 +16,7 @@ const sint8 TIMEZONE = 0;   //heure TU
 //*************************ClockCbFunction***********************************
 //copy de Clock.getTimeStruct dans cbLocalTimeStruct						*
 //Clock.getTimeStruct=localtime=f(heure tu 1970,m_timezone et m_daylight)	*
-//ajoute 300 � cbLocalTimeStruct											*
+//ajoute 300 e cbLocalTimeStruct											*
 //attachCb ClockCbFunction avec ce temps									*
 //**************************attachCb*****************************************
 // m_cbLocalTimeSec =cbLocalTimeStruct-m_timezone							*
@@ -30,7 +30,7 @@ const sint8 TIMEZONE = 0;   //heure TU
 //if heure 1970>=m_cbLocalTimeSec--->m_callback()=ClockCbFunction			*
 //***************************localtime***************************************
 //heure1900+timezone														*
-//si m_daylight ajoute 0 ou 3600 suivant �t� hiver							*
+//si m_daylight ajoute 0 ou 3600 suivant ete hiver							*
 //retourne la structure localTime
 //***************************************************************************
 //10 heures
@@ -63,14 +63,14 @@ void  mySntp::init(void)   //ICACHE_FLASH_ATTR
 	sntp_setservername(2, (char*)"time.nist.gov");
 
 	//**************************Clock.begin**********************************
-	//m�morise m_timezone=3600 et m_daylight=1								*
+	//memorise m_timezone=3600 et m_daylight=1								*
 	//interroge le serveur "de.pool.ntp.org"--> m_secsSince1900				*
 	//attache secondTicker interval 1 seconde								*
 	//retourne l'heure tu 1970												*
-	//le serveur sera de nouveau interrog� toutes les heures par d�faut,	*
+	//le serveur sera de nouveau interroge toutes les heures par defaut,	*
 	//***********************************************************************
-	//--daylight=1: prise en compte heure d'�t�(+3600) heure d'hiver(+0)
-	Clock.begin("de.pool.ntp.org", 3600, 1);  //3600 d�calage Paris / TU (heure d'hiver) 1 heure d'�t�
+	//--daylight=1: prise en compte heure d'ete(+3600) heure d'hiver(+0)
+	Clock.begin("de.pool.ntp.org", 3600, 1);  //3600 decalage Paris / TU (heure d'hiver) 1 heure d'ete
 	ClockCbFunction();
 }
 /* ======================================================================
@@ -99,14 +99,14 @@ void  mySntp::clrMinuit(void) {      //ICACHE_FLASH_ATTR
 /* ======================================================================
 Function: TestSiMinuit
 Purpose : test si minuit
-	-passe reste true la premi�re minute
-	-minuit reste true jusqu'a l'appel de clrMinuit lors de la prise en compte de minuit(1 seul appel sinon impl�menter un compteur)
+	-passe reste true la premiere minute
+	-minuit reste true jusqu'a l'appel de clrMinuit lors de la prise en compte de minuit(1 seul appel sinon implementer un compteur)
 Input   : -
 Output  : -
 Comments: -
 ====================================================================== */
 bool passe = false;
-ulong memoSecondesToMidnight = 0;  //protection contre la d�tection de minuit quelques cycles par jour ?
+ulong memoSecondesToMidnight = 0;  //protection contre la detection de minuit quelques cycles par jour ?
 bool mySntp::TestSiMinuit()
 {
 	//static bool passe = false;

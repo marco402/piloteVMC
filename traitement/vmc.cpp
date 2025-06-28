@@ -189,7 +189,7 @@ void vmc::initialisationMode()
 		{
 		case MODES::ARRET:
 			RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL);
-			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret, les modes marche sont après la tempo sinon erreur sur marche/arr�t
+			ENREGISTREMENT.setCptSecPeriodeEnregistrement();		//pour les modes arret, les modes marche sont après la tempo sinon erreur sur marche/arret
       MYALARMEGARAGE.setRazAlarme();
        MYALARMEPORTAIL.setRazAlarme();
 			break;
@@ -293,7 +293,7 @@ boolean vmc::traitementTempsMiniVMC(void)
 	// OK if (((int)(HEURE.tm.Hour*60)+HEURE.tm.Minute)>=1425)    //(1440-((int)LECTURESERIAL.tempsVmcMinParJour-(NbSecondeActiveJourCourant/60))) && (leMode==AUTO)	)        //il est temps de ventiler jusqu'a minuit
 	if (((Clock.getHour() * 60 + Clock.getMinute() ) > (1339 - CONFIGURATION.config.tempo.duree_mini_sec/60.0 + RELAIS.getNbMinuteActiveJourCourant())) && (leMode == AUTO))
 	{
-		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);   //toujours lent en mode auto ou forc� pour temps mini
+		RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::MARCHE_REL);   //toujours lent en mode auto ou force pour temps mini
 		return true;
 	}
 	return false;
@@ -387,9 +387,9 @@ void vmc::traitementVMC(void)
 		////DebugF("SeuilHBav: "); Debugln(SeuilHB);
 
 		////if ((DHTCUISINE_T.getMoyennePeriode()<= CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres) && (CONFIGURATION.config.tempo.pourcent_hum > 0))  //c'est l'hiver:moins d'air frais si...
-		////	SeuilHC += (DHTCUISINE_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixi�me
+		////	SeuilHC += (DHTCUISINE_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixieme
 		////if ((DHTSDB.DHT_T.getMoyennePeriode() <= CONFIGURATION.config.tempo.seuil_temp_froid_dixieme_degres) && (CONFIGURATION.config.tempo.pourcent_hum > 0))  //c'est l'hiver:moins d'air frais si...
-		////	SeuilHB += (DHTSDB.DHT_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixi�me
+		////	SeuilHB += (DHTSDB.DHT_T.getMoyennePeriode() - TEMPEXT.getMoyennePeriode()) / (CONFIGURATION.config.tempo.pourcent_hum*10);//*10 temperature en dixieme
 		///*	DebugF("SeuilHC: "); Debugln(SeuilHC);
 		//	DebugF("SeuilHB: "); Debugln(SeuilHB);*/
 		//DebugF("TEMPEXT.getMoyennePeriode(): "); Debugln(TEMPEXT.getMoyennePeriode());
@@ -432,7 +432,7 @@ void vmc::traitementVMC(void)
 		//else 
 		//if (tropChaudDehors)
 		//{
-		//	RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'été trop chaud dehors seuil de temp�rature qui permet de ventiler la nuit.
+		//	RELAIS.traitementRelais(VITESSE_RELAIS::LENT_REL, ARRET_MARCHE::ARRET_REL );							//c'est l'été trop chaud dehors seuil de temperature qui permet de ventiler la nuit.
 		//	casAuto = CASSTATUS::ST_TROPCHAUD;
 		//	seuilAuto = CONFIGURATION.config.tempo.seuil_temp_chaud_dixieme_degres/10;
 		//	//DebuglnF("2");

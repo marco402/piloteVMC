@@ -149,7 +149,7 @@ time_t testDayLight(ulong secsSince1900)
 
   //if (t.tm_mon == 2 || t.tm_mon == 9)  // Mars ou Octobre -> Winter
   //{                                    // sunday=0
-	 // if ((t.tm_mday - t.tm_wday >= 25) && (t.tm_wday == 0) && (t.tm_hour >= 2))  // > dernier dimanche  de mars � octobre
+	 // if ((t.tm_mday - t.tm_wday >= 25) && (t.tm_wday == 0) && (t.tm_hour >= 2))  // > dernier dimanche  de mars e octobre
 	 // {
 		//  if (t.tm_mon == 2)
 		//  {

@@ -20,9 +20,9 @@
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include "constantes.h"
-//#define GetPresentAbsent()  digitalRead(PIN_PRESENT_ABSENT)   //exprès pas de ;
+//#define GetPresentAbsent()  digitalRead(PIN_PRESENT_ABSENT)   //expres pas de ;
 
-#define HYSTERESIS_TEMPERATURE 20    //en dixièmes
+#define HYSTERESIS_TEMPERATURE 20    //en dixiemes
 
 class relais 
 {
@@ -57,10 +57,7 @@ private:
 	ARRET_MARCHE etatRelaisMarcheArret = ARRET_MARCHE::ARRET_REL; //Etat du relais marche arret
 	ARRET_MARCHE etatReelRelaisMarcheArret = ARRET_MARCHE::ARRET_REL; //Etat du relais marche arret	
 	int32_t nbSecondeActiveJourCourant = 0;   //pour ventiler un minimum par jour
-	int8_t decompteDelaiCgtVitesse = 0;		//pour laisser un délai entre les changement de vitesse
+	int8_t decompteDelaiCgtVitesse = 0;		//pour laisser un delai entre les changement de vitesse
 };
 extern relais RELAIS;
 #endif
-
-
-

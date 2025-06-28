@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifie par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-03-21 ()
-//		-intégré le code dans la classe myOTA myOTA.cpp
+// Modifie par marc PRIEUR 2019-03-21 ()
+//		-integre le code dans la classe myOTA myOTA.cpp
 //
 //Using library ArduinoOTA version 1.0 
 //
@@ -129,4 +129,3 @@ void ICACHE_FLASH_ATTR myOTA::configuration(void)
 	{
 		ota_blink = !ota_blink;
 	}
-

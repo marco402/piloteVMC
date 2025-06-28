@@ -8,17 +8,17 @@
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
-//06/06/2018 pass� NBMESSAGE de 100 � 300     pour 5 minutes 24 heures:288
+//06/06/2018 passe NBMESSAGE de 100 e 300     pour 5 minutes 24 heures:288
 
 //avec 300 et vmc
-//Program traitement_tempo size: 372�588 bytes (used 36% of a 1�044�464 byte maximum) (121,39 secs)
+//Program traitement_tempo size: 372e588 bytes (used 36% of a 1e044e464 byte maximum) (121,39 secs)
 //Minimum Memory Usage : 63260 bytes(77 % of a 81920 byte maximum)
 //avec 500
-//Program traitement_tempo size : 372�588 bytes(used 36 % of a 1�044�464 byte maximum) (122, 30 secs)
+//Program traitement_tempo size : 372e588 bytes(used 36 % of a 1e044e464 byte maximum) (122, 30 secs)
 //Minimum Memory Usage : 75660 bytes(92 % of a 81920 byte maximum)
 
-//en version structure num�rique et 200 messages vmc+tempo:
-//Program traitement_tempo size: 371�848 bytes (used 36% of a 1�044�464 byte maximum) (126,71 secs)
+//en version structure numerique et 200 messages vmc+tempo:
+//Program traitement_tempo size: 371e848 bytes (used 36% of a 1e044e464 byte maximum) (126,71 secs)
 //Minimum Memory Usage : 49944 bytes(61 % of a 81920 byte maximum)
 
 

@@ -1,3 +1,58 @@
+//  **********************************************************************************************
+//  *            programmation:ne pas oublier cpu frequency 160Mhz et flash size 4M(FS:2M OTA:1M)* 
+//  *    sinon OTA ne fonctionne plus ni le site smt160 si 80Mhz                                 *
+//  *paramétrage arduino                                                                         * 
+//  *type de carte NodeMcu 1.0 carte verte 0.9 si carte jaune                                    *
+//  *cpu frequency 160Mhz                                                                        *
+//  *flash size 4M(FS:2M OTA:1019k)                                                              *
+//  *rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"   *
+//  *C:\Users\mireille\AppData\Local\Temp\arduino_build_xxxxxxx\traitement.ino.bin               *
+//  ****************************************************************************************
+//                           PROGRAMMATION PAR USB                                         *
+//  *  pb meme toutes les entrées débranchées????? Commutation d'un relais                 *
+//  l'usb ne fonctionnait plus tout débranché-->ok en sortant la carte du boitier??????    *
+//  via usb                                                                                *
+//  brancher  sur l'USB                                                                    *
+//  gestionnaire de peripherique-->port com-->il faut USB-SERIAL CH340(COMX)               *
+//  dans arduino-->outils-->port,selectionner le port X                                    *
+//  voir si http://192.168.1.XX/config.json fonctionne                                     *
+//  voir si http://192.168.1.XX/system.json fonctionne                                     *
+//  voir si http://192.168.1.XX/spiffs.json fonctionne                                     *
+//si les adresses ip on changées,soit les changer dans la config si accessibles            *
+//******************************************************************************************
+//                                       TRANSFERT DATA                                                                         *
+//-si necessaire reinitialiser la config, mettre les valeurs necessaires par defaut        *
+//   dans config.cpp enlever le no de noRESETCONFIG televerser-->verifier                  *
+//   remettre le no  de RESETCONFIG televerser-->verifier                                  *
+//******************************************************************************************
+// 06/2022                              SPIFFS to LITTLEFS
+//* installation esp8266:https://arduino-esp8266.readthedocs.io/en/3.0.2/installing.html?highlight=python
+//* problème python3:
+//*C:\Users\mireille\Documents\Arduino>mklink python3.exe C:\Users\mireille\AppData
+//*\Local\Arduino15\packages\esp8266\tools\python\3.7.2-post1\python.exe
+//*Lien symbolique créé pour python3.exe <<===>> C:\Users\mireille\AppData\Local\Ar
+//*duino15\packages\esp8266\tools\python\3.7.2-post1\python.exe
+//**************************************************************************************************
+//passage du systeme de fichier de SPIFFS a littleFS
+//transfert du dossier data via plugin arduino si SPIFFS:
+//  C:\Program Files (x86)\Arduino\tools\ESP8266FS\tool\esp8266fs.jar
+//transfert du dossier data via plugin arduino  si littleFS:
+//  C:\Program Files (x86)\Arduino\tools\ESP8266LittleFS\tool\esp8266littlefs.jar
+//  arduino->menu outils->ESP8266 littleFS data  
+//probleme de password si port=adresse IP avec le plugin esp8266fs.jar d'origine, telecharger:
+//https://github.com/877dev/arduino-esp8266littlefs-plugin
+//**************************************************************************************************
+//plusieurs fois la programmation du programme m'a efface les fichers data????             *
+//  **********************************************************************************************
+//pour info le logiciel fonctionne sur une carte nodemcu nue                                     *
+//************************************************************************************************
+
+
+//28/06/2025
+//passage adsl vers fibre
+//pas de modif mais reinit config
+//ajout option de compilation RESETCONFIG
+
 //20/04/2024
 //blocage affichage ajout alternance :,sans : sur l'horloge 7 segments.
 //ajout indicateur CgtCompteur pour afficher l'heure du changement en bas de l'afficheur.
@@ -15,9 +70,6 @@
 //pas de message syslog
 //site pilote vmc ok  temps rafraichi toutes les 2 secondes
 //reception enregistrements ok
-
-
-
 //13/10/23
 //blocage canBus cote affichage
 //message debug cote traitement:
@@ -31,13 +83,10 @@
 //-pas de message syslog server
 //-nombre d'erreur détectée = 3
 
-
 //12/11/23 arduino 1.8.19
 //a la compilation sant aucune mise a jour:
 //xtensa-lx106-elf-g++: error: unrecognized debug output level '++'  ???   reglage du probleme:arduino/menu/fichier/preference
 //avertissement du compilateur rien pb,tout ok,rien ok.
-
-
 
 //11/2022 erreur changement d'heure:
 //changement dimanche à 2 heures du matin
@@ -46,28 +95,48 @@
 //1-sans canbus: renommer PIN_CS_CAN constantes.h (a essayer)
 //2-sans wifinfo renommer WITHWIFINFO wifinfo.h (a essayer)
 
-//  *****************************************************************
-//  *Pour programmer par l'usb:                                     *
-//  *  pb si toutes les entrées débranchées sauf liaison can bus    *
-//  *a vérifier si debrancher que can bus                           *
-//  *****************************************************************
 
 //version carte nodemcu 3.0.2 probleme spiffs
 //install version 2.7.4 probleme spiffs
 //install version 2.6.0 probleme spiffs
 //install version 2.5.2 spiffs ok multiple definition of `time' renommé time to time_1 to SNTPTime.cpp
 //install version 2.5.0 spiffs ok multiple definition of `time'
+
+//via usb
+//brancher  sur l'USB
+//gestionnaire de peripherique-->port com-->il faut USB-SERIAL CH340(COMX)
+//dans arduino-->outils-->port,selectionner le port X
+//il faut debrancher les 2 fils blanc 2iem borne en partant du haut(5v filtre du smt160 et dht22)
+//voir si http://192.168.1.XX/config.json fonctionne 
+//voir si http://192.168.1.XX/system.json fonctionne
+//si les adresses ip on changées,soit les changer dans la config si accessibles
+
+//si USB, verifier http://192.168.1.XX/spiffs.json
+//j'avais ceci apres avoir uploade le programme:
+/*{
+"files":[
+],
+"spiffs":[
+{"Total":2072576, "Used":16384, "ram":19200}
+]
+}
+*/
+//dans ce cas relancer arduino->menu outils->ESP8266 littleFS data 
+
+//soit changer l'adresse ip de la carte:ncpa.cpl dans console puis internet V4 dans proprietees
+//soit 
+//      -effacer le config voir commentaires dans config.c
+//      -mettre les bonnes adresses dans la config par defaut
+//      -recompiler
+//      -uploader le programme
+
 //  *********************************************************************************************
-//  *            programmation:ne pas oublier cpu frequency 160Mhz et flash size 4M(1M OTA)     * 
-//  *    sinon OTA ne fonctionne plus ni le site smt160 si 80Mhz                                *
-//  *paramétrage arduino                                                                        * 
-//  *type de carte NodeMcu 0.9                                                                  *
-//  *cpu frequency 160Mhz                                                                       *
-//  *flash size 4M(1M OTA)                                                                      *
-//  *rename traitement.ino.bin to traitement_tempo_vmc.ino.bin for upload with "site teleinfo"  *
-//  *C:\Users\mireille\AppData\Local\Temp\arduino_build_xxxxxxx\traitement.ino.bin              *
-//  *********************************************************************************************
+//tests
+//filtre wireshark:ip.src == 192.168.1.238 && http.response.version == "HTTP/1.1"
+
 //10/07/2021->seuil air frais 25->20    pour ventiler plus la nuit en été
+
+
 
 //10/07/2021->20,5,23,-0.5,-1.8,0,-17,20,1,15,300,300,0,24,192.168.1.69,8889,10
 //10/07/2021->blanc,OTA_AUTH,8266,192.168.1.69,514
@@ -133,32 +202,30 @@
 // **********************************************************************************
 // Modifié par marc PRIEUR 2019-03-21 V2.0.0
 //		V2.0.2:2019/05/01 ajout de la classe myTinfo
-//#####################################################################  
-// 06/2022  SPIFFS to LITTLEFS
-//* installation esp8266:https://arduino-esp8266.readthedocs.io/en/3.0.2/installing.html?highlight=python
-//* problème python3:
-//*C:\Users\mireille\Documents\Arduino>mklink python3.exe C:\Users\mireille\AppData
-//*\Local\Arduino15\packages\esp8266\tools\python\3.7.2-post1\python.exe
-//*Lien symbolique créé pour python3.exe <<===>> C:\Users\mireille\AppData\Local\Ar
-//*duino15\packages\esp8266\tools\python\3.7.2-post1\python.exe
-//**************************************************************************************************
 //version esp8266 3.0.2
 //version arduino 1.8.19
 //
-//passage du systeme de fichier de SPIFFS a littleFS
-//transfert du dossier data via plugin arduino si SPIFFS:
-//  C:\Program Files (x86)\Arduino\tools\ESP8266FS\tool\esp8266fs.jar
-//transfert du dossier data via plugin arduino  si littleFS:
-//  C:\Program Files (x86)\Arduino\tools\ESP8266LittleFS\tool\esp8266littlefs.jar
-//  arduino->menu outils->ESP8266 littleFS data upload
-//probleme de password si port=adresse IP avec le plugin esp8266fs.jar d'origine, telecharger:
-//https://github.com/877dev/arduino-esp8266littlefs-plugin
-//**************************************************************************************************
 //sur une autre appli(mesure Temperature,la page web fonctionnait mais aucune data.
 //au niveau de l'outils de développement du navigateur, dans la liste des fichiers n'aparaissait pas fonctions.js.
 //je l'ai transféré dans le dossier js, ajouté js dans index.htm (derniere ligne)
 //<script type="text/javascript" src="js/fonctions.js"></script> et c'est ok pourquoi ??
 //lecture de la liste des fichiers par http://192.168.1.XX/spiffs.json
+/*
+{
+"files":[
+{"na":"/favicon.ico","va":"1150"}
+,{"na":"/fonctions.js","va":"15908"}
+,{"na":"/index.htm","va":"37766"}
+,{"na":"/css/wifinfo.css","va":"130179"}
+,{"na":"/fonts/glyphicons.woff2","va":"18028"}
+,{"na":"/fonts/glyphicons.woff","va":"23424"}
+,{"na":"/js/wifinfo.js","va":"186849"}
+],
+"spiffs":[
+{"Total":2072576, "Used":4294279168, "ram":19288}
+]
+}
+ */
 
 //********************************************************************
 //version wifinfo syslog d'origine:352 392 bytes
@@ -277,7 +344,7 @@ TInfo TINFO;
 myOTA MYOTA;
 webServer WEBSERVER;
 #ifdef SYSLOG
-mySyslog MYSYSLOG;
+  mySyslog MYSYSLOG;
 #endif
 myWifi WIFI;
 webClient WEBCLIENT;
@@ -292,7 +359,8 @@ Output  : -
 Comments: -
 ====================================================================== */
 void ICACHE_FLASH_ATTR setup() {
-
+//  Serial.begin(115200);
+//  Serial.setDebugOutput(false);
 //  system_update_cpu_freq(160);
 
 #ifdef SYSLOG
@@ -360,7 +428,7 @@ void ICACHE_FLASH_ATTR setup() {
 		DebuglnF("Serial.begin");
 	#endif
 #else
-	Serial.begin(9600, SERIAL_7E1);       //5.3.5. Couche physique document enedis Enedis-NOI-CPT_54E.pdf 
+//	Serial.begin(9600, SERIAL_7E1);       //5.3.5. Couche physique document enedis Enedis-NOI-CPT_54E.pdf 
 #endif
 #ifdef TELEINFO_RXD2
   Serial.swap();  // reception teleinfo sur rxd2 sinon passe la reception teleinfo sur rx0 pour recuperer rx2 pour mosi
@@ -368,7 +436,7 @@ void ICACHE_FLASH_ATTR setup() {
 					  //pour programmer ou debuguer via la console, pas de pb en OTA.
 #endif
 #ifdef SIMUTRAMETEMPO
-	SIMU_TEMPO.initSimuTrameTempo();
+  SIMU_TEMPO.initSimuTrameTempo();
 	SerialSimu.begin(VITESSE_SIMUTRAMETEMPO);	//19200, SERIAL_7E1
 #endif
 #ifdef 	WITHWIFINFO
@@ -384,7 +452,7 @@ void ICACHE_FLASH_ATTR setup() {
 MYSNTP.init();
 ENREGISTREMENT.init();
 #ifdef ALARME
-	MYALARMEGARAGE.init(INDICEALARMES::GARAGE);
+  MYALARMEGARAGE.init(INDICEALARMES::GARAGE);
 	MYALARMEPORTAIL.init(INDICEALARMES::PORTAIL);
 #endif
 #ifdef COMP_CAN_BUS
@@ -402,6 +470,7 @@ Comments: -
 bool passeMinuit = false;
 void loop()
 {
+  //DebugF("loop");
 	unsigned long start = 0;
 	unsigned long duree = 0;
 	static uint16_t dureeMax = 0; 

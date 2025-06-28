@@ -34,13 +34,12 @@ void secondTicker() {
   Clock.secondTick();
 }
 
-SNTPClock::SNTPClock()
-{
+SNTPClock::SNTPClock() {
   m_timeServerName = "time.windows.com";
   m_timezone = 0;
   m_daylight = 0;
   m_localTimeStr[0] = 0;
-  memset (&m_localTimeStruct, 0, sizeof(m_localTimeStruct));
+  memset(&m_localTimeStruct, 0, sizeof(m_localTimeStruct));
   m_secsSince1900 = 0;
   m_callback = NULL;
   m_tickerCycle = TICKER_CYCLE;
@@ -51,14 +50,12 @@ SNTPClock::~SNTPClock() {
   m_secondTicker.detach();
 }
 
-void SNTPClock::attachCb(ulong seconds, callback_t callback)
-{
+void SNTPClock::attachCb(ulong seconds, callback_t callback) {
   m_cbLocalTimeSec = m_secsSince1900 + seconds;
   m_callback = callback;
 }
 
-void SNTPClock::attachCb(tm * cbLocalTimeStruct, callback_t callback)
-{
+void SNTPClock::attachCb(tm* cbLocalTimeStruct, callback_t callback) {
   // first remove timezone
   m_cbLocalTimeSec = mktime(cbLocalTimeStruct) - m_timezone;
   // then remove daylight -> secsSince1900
@@ -66,14 +63,12 @@ void SNTPClock::attachCb(tm * cbLocalTimeStruct, callback_t callback)
   m_callback = callback;
 }
 
-void SNTPClock::detachCb()
-{
+void SNTPClock::detachCb() {
   m_callback = NULL;
 }
 
 //**** this is called from ticker! ****
-void SNTPClock::secondTick()
-{
+void SNTPClock::secondTick() {
   // set a new cycle length, if any
   m_secondTicker.attach_ms(m_tickerCycle, secondTicker);
 
@@ -82,22 +77,19 @@ void SNTPClock::secondTick()
 
   // check for callback
   if (m_callback != NULL)
-    if (m_secsSince1900 + DIFF1900TO1970 >= m_cbLocalTimeSec)
-    {
+    if (m_secsSince1900 + DIFF1900TO1970 >= m_cbLocalTimeSec) {
       m_callback();
     }
 }
 
-int SNTPClock::begin(String timeServerName = "time.windows.com", long timezone = 0, int daylight = 0)
-{
+int SNTPClock::begin(String timeServerName = "time.windows.com", long timezone = 0, int daylight = 0) {
   m_timeServerName = timeServerName;
   m_timezone = timezone;
   m_daylight = daylight;
   sntp_setservername(0, (char*)timeServerName.c_str());
 
   // we have to wait for sntp
-  while (!m_secsSince1900)
-  {
+  while (!m_secsSince1900) {
     m_secsSince1900 = sntp_get_current_timestamp();
     delay(200);
   }
@@ -115,15 +107,13 @@ ulong SNTPClock::getTimeSeconds() {
   return m_secsSince1900;
 }
 
-char* SNTPClock::getTimeStr()
-{
+char* SNTPClock::getTimeStr() {
   sprintf(m_localTimeStr, "%02i:%02i:%02i",
           m_localTimeStruct.tm_hour, m_localTimeStruct.tm_min, m_localTimeStruct.tm_sec);
   return m_localTimeStr;
 }
 
-char* SNTPClock::getDateTimeStr()
-{
+char* SNTPClock::getDateTimeStr() {
   sprintf(m_localDateTimeStr, "%04i-%02i-%02i %02i:%02i:%02i",
           m_localTimeStruct.tm_year, m_localTimeStruct.tm_mon + MONTH_START, m_localTimeStruct.tm_mday,
           m_localTimeStruct.tm_hour, m_localTimeStruct.tm_min, m_localTimeStruct.tm_sec);
@@ -147,10 +137,9 @@ int SNTPClock::getDay() {
 }
 
 int SNTPClock::getMonth() {
-  return m_localTimeStruct.tm_mon/*+MONTH_START*/;
+  return m_localTimeStruct.tm_mon /*+MONTH_START*/;
 }
 
 int SNTPClock::getYear() {
   return m_localTimeStruct.tm_year;
 }
-

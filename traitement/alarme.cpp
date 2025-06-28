@@ -20,14 +20,14 @@
     -a l'ouverture de la porte,10 secondes pour appuyer sur un poussoir
     -l'alarme se reactive a la fermeture de la porte
     -reemission du dernier message toutes les heures
-    -traitement acquitement reemission 3 fois. 
-    codes messages:  
+    -traitement acquitement reemission 3 fois.
+    codes messages:
       DOOR_OPEN_WITH_ALARME
       DOOR_OPEN_WITHOUT_ALARME
       DOOR_CLOSE_WITH_ALARME
       DOOR_CLOSE_WITHOUT_ALARME
       ALARME_DECLENCHEE
-  
+
   cote traitement tempo
     -test de reception du message toutes les cycles
       -sans reception on reste sur la derniere valeur
@@ -42,7 +42,7 @@
 
   cote affichage
       -juste affichage des couleurs
-      
+
 */
 //***********************************************************************************
 #include <WiFiUdp.h>
@@ -66,32 +66,32 @@ void ICACHE_FLASH_ATTR myAlarme::init(INDICEALARMES indice)
   }
 
   Debugln(CONFIGURATION.config.tempo.portEnr+indiceAlarme);
-	udpAlarme.begin(CONFIGURATION.config.tempo.portEnr+indiceAlarme);
+  udpAlarme.begin(CONFIGURATION.config.tempo.portEnr+indiceAlarme);
     memoPort = CONFIGURATION.config.tempo.portEnr+indiceAlarme;
 }
 void ICACHE_FLASH_ATTR myAlarme::stop()
 {
-	udpAlarme.stop();
+  udpAlarme.stop();
 }
 ///
 void myAlarme::testReceptionAlarme(void)
 {
   char packetBuffer[100];
-	byte packetBufferAcquitement[3];
-	packetBufferAcquitement[0] = (byte) CODES_ALARME::HEAD_MESSAGE;
-	packetBufferAcquitement[1] = (byte) CODES_ALARME::ACQUITTEMENT;
+  byte packetBufferAcquitement[3];
+  packetBufferAcquitement[0] = (byte) CODES_ALARME::HEAD_MESSAGE;
+  packetBufferAcquitement[1] = (byte) CODES_ALARME::ACQUITTEMENT;
  
-	int packetSize = udpAlarme.parsePacket();
-	if(razAlarme)
+  int packetSize = udpAlarme.parsePacket();
+  if(razAlarme)
     {
-    	if (packetSize)
-    	{
-    		int len = udpAlarme.read(packetBuffer, 255);
-    		if (len > 1)
-    		{
+      if (packetSize)
+      {
+        int len = udpAlarme.read(packetBuffer, 255);
+        if (len > 1)
+        {
         DebuglnF("reception udp alarme,len>1: ");
-    			if (packetBuffer[0] == (char)CODES_ALARME::HEAD_MESSAGE)
-    			{
+          if (packetBuffer[0] == (char)CODES_ALARME::HEAD_MESSAGE)
+          {
     ////      if ((char)packetBuffer[1]>=(char)CODES_ALARME::INCHANGE)
     ////        etatAlarme = (char)CODES_ALARME::NO_RECEPT;
     ////      else
@@ -114,27 +114,27 @@ void myAlarme::testReceptionAlarme(void)
             else
                DebugF("send heartbeat: ");Debugln(etatAlarme);           
     ////       } 
-    			receptLastMessage = 0; 
-			  }
-			}
-		}
-	}
-	if (receptLastMessage > 60)
-	{
+          receptLastMessage = 0; 
+        }
+      }
+    }
+  }
+  if (receptLastMessage > 60)
+  {
     etatAlarme = (char)CODES_ALARME::HEARTBEAT;
 //    packetBufferAcquitement[2] =etatAlarme;
-		receptLastMessage=0;
+    receptLastMessage=0;
   
 //   if (!send(udpAlarme.remoteIP(),(uint32) CONFIGURATION.config.tempo.portEnr + indiceAlarme, packetBufferAcquitement,&memoPort))
 //      DebugF("pb udp send heartbeat: ");
 //   else
 //      DebugF("send heartbeat: ");
    Debugln(etatAlarme);
-	}
+  }
 }
  char myAlarme::getEtatAlarme(void)
 {
-	return etatAlarme;
+  return etatAlarme;
 }
 void  myAlarme::setRazAlarme(void)
 {
@@ -143,36 +143,36 @@ void  myAlarme::setRazAlarme(void)
 
 bool myAlarme::send(IPAddress adresseIP, uint32_t port, byte * message, uint32_t * memPort)
 {
-	if (*memPort != port)
-	{
-		stop();
-		udpAlarme.begin(port);
-		*memPort = port;
-	}
+  if (*memPort != port)
+  {
+    stop();
+    udpAlarme.begin(port);
+    *memPort = port;
+  }
  char  toprint[20];
   sprintf(toprint, "%d.%d.%d.%d", adresseIP[0], adresseIP[1], adresseIP[2], adresseIP[3]);
   DebugF("adresseIP,Port: "); Debug(toprint); DebugF("-"); Debugln(port);
 if (adresseIP[0]>0)
   {
     int ret = -1;
-  	ret = udpAlarme.beginPacket(adresseIP, port);  //adresse et port distant
-  	if (ret)
-  	{
-  		udpAlarme.write(message, sizeof(message));  //4 octet sur wireshark  le 4eim=3f ?                return le nombre de byte emis  
-  		ret = udpAlarme.endPacket();
-  		if (ret)
+    ret = udpAlarme.beginPacket(adresseIP, port);  //adresse et port distant
+    if (ret)
+    {
+      udpAlarme.write(message, sizeof(message));  //4 octet sur wireshark  le 4eim=3f ?                return le nombre de byte emis  
+      ret = udpAlarme.endPacket();
+      if (ret)
       {
-  			return true;
+        return true;
       }
-  		else
-  			DebuglnF("pb udp.endPacket:");
-  	}
-  	else
-  	{
-  		DebuglnF("pb udp.beginPacket:");
-  	}
+      else
+        DebuglnF("pb udp.endPacket:");
+    }
+    else
+    {
+      DebuglnF("pb udp.beginPacket:");
+    }
   }
   else
      return true;
-	return false;
+  return false;
 }

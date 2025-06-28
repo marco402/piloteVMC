@@ -18,16 +18,16 @@
 //
 // **********************************************************************************
 
-//� 160-->100n haut/front 100n/300n bas/front 100n pendant 65�s    reset 50�s  entre 2 leds
-//� 80 -->200n haut/front 100n/600n bas/front 100n pendant 130�s   reset 50�s  entre 2 leds
-//avec AAPA106,il faut 0.35�s+-150ns et 1.36�s+-150ns et reset 50�s
+//e 160-->100n haut/front 100n/300n bas/front 100n pendant 65es    reset 50es  entre 2 leds
+//e 80 -->200n haut/front 100n/600n bas/front 100n pendant 130es   reset 50es  entre 2 leds
+//avec AAPA106,il faut 0.35es+-150ns et 1.36es+-150ns et reset 50es
 
 //leds ---------->WS2812
 //#define CYCLES_800_T0H  (F_CPU / 2500000) // 0.4us    1Mhz?
 //#define CYCLES_800_T1H  (F_CPU / 1250000) // 0.8us
 //#define CYCLES_800      (F_CPU /  800000) // 1.25us per bit
 //leds ---------->APA106
-//#define CYCLES_800_T0H  (F_CPU / 1250000) // 0.35us    10Mhz?  pour APA106,il faut 0.35�s et 1.36�s
+//#define CYCLES_800_T0H  (F_CPU / 1250000) // 0.35us    10Mhz?  pour APA106,il faut 0.35es et 1.36es
 //#define CYCLES_800_T1H  (F_CPU / 420000) // 1.36us
 //#define CYCLES_800      (F_CPU / 1250000)+(F_CPU / 420000) // 1.71us per bit
 #include <Ticker.h>

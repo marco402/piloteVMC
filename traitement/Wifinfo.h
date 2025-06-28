@@ -92,7 +92,7 @@ extern "C" {
 
 // Décommenter SYSLOG pour une version capable d'envoyer du Debug
 //  vers un serveur rsyslog du réseau
-#define SYSLOG			//messages syslog(sous windows-->visual syslog server)
+#define SYSLOG	                //messages syslog(sous windows-->visual syslog server)
 //parametrer le port et l'adresse ip du serveur sur la page web
 //avec visual syslog sous windows,paramétrer le parefeu
 

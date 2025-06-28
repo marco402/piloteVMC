@@ -1,5 +1,5 @@
 // ***************************************************************************************************************
-// Programme traitement ESP8266 Pilotage VMC et TEMPO->Mesure et surveillance du courant consommé par le moteur VMC avec un TA12-200.
+// Programme traitement ESP8266 Pilotage VMC et TEMPO->Mesure et surveillance du courant consomme par le moteur VMC avec un TA12-200.
 // ***************************************************************************************************************
 // Creative Commons Attrib Share-Alike License
 // You are free to use/extend this library but please abide with the CC-BY-SA license:
@@ -15,11 +15,11 @@
 //
 // **********************************************************************************
  //principe de fonctionnement:
- //lorsque la ventilation est arrêtée, on mesure le courant de repos qu'on déduira de la mesure.
- //pour détecter le maximum de l'onde,à 50 hertz il faut boucler 20ms et garder le maximum
- //la mesure de courant est moyennée sur la durée du cycle VMC.
- //a la lecture cyclique de la mesure ,la mesure moyenne est comparée aux seuils petite ou grande vitesse.
- //Si le mesure est hors tolérance, un bip sonore sera émis toutes les 15 secondes.
+ //lorsque la ventilation est arretee, on mesure le courant de repos qu'on deduira de la mesure.
+ //pour detecter le maximum de l'onde,e 50 hertz il faut boucler 20ms et garder le maximum
+ //la mesure de courant est moyennee sur la duree du cycle VMC.
+ //a la lecture cyclique de la mesure ,la mesure moyenne est comparee aux seuils petite ou grande vitesse.
+ //Si le mesure est hors tolerance, un bip sonore sera emis toutes les 15 secondes.
 #include "Wifinfo.h"
 #include <Arduino.h>
 #include "constantes.h"
@@ -37,7 +37,7 @@
 #define ADC_REF_VOLT 5							//5v adc reference voltage (see adc_init function for reference)
 #endif
 #define TENSION_MAX 220.0*1.414
-#define ADC_RMOYEN 658.0					//800 pour la résistance parallèle 658 calculée
+#define ADC_RMOYEN 658.0					//800 pour la resistance parallele 658 calculee
 #define ADC_RAPPORT_TA12_200 2000.0		//Transformation ratio 2000*1000 pour ma	
 #define ADC_REFRESH 1024.0					//reference resolution used for conversions
 #define DUREE_LECTURE_MS 20
@@ -63,7 +63,7 @@ ICACHE_FLASH_ATTR ta12::ta12(uint8_t pin,uint8_t ajustDecimal)
 	pinMode(pin, INPUT);
 	this->mesureCycle =0;
 }
-//nécessaire si iniatialisation de la config
+//necessaire si iniatialisation de la config
 void ICACHE_FLASH_ATTR ta12::initCapteur(uint8_t pin, uint8_t ajustDecimal)
 {
 	this->pin=pin;
@@ -71,15 +71,15 @@ void ICACHE_FLASH_ATTR ta12::initCapteur(uint8_t pin, uint8_t ajustDecimal)
 	pinMode(pin, INPUT);
 	this->mesureCycle =0;
 }
-//en petite vitesse, le seuil est testé à seuil nominal+-seuil nominal/5
-void ta12::setSeuilPetiteVitesse(int16_t seuil)   //esp8266:17 à 24
+//en petite vitesse, le seuil est teste e seuil nominal+-seuil nominal/5
+void ta12::setSeuilPetiteVitesse(int16_t seuil)   //esp8266:17 e 24
 {
 	seuilPetiteVitesse=(seuil);
 	seuilPetiteVitesseMin= seuilPetiteVitesse-(seuilPetiteVitesse/20);
 	seuilPetiteVitesseMax= seuilPetiteVitesse+(seuilPetiteVitesse/20);
 	mesureCycle=0;
 }
-//en grande vitesse, le seuil est testé à seuil nominal+-seuil nominal/10
+//en grande vitesse, le seuil est teste e seuil nominal+-seuil nominal/10
 void ta12::setSeuilGrandeVitesse(int16_t seuil)
 {
 	seuilGrandeVitesse=(seuil);
@@ -91,13 +91,13 @@ void ta12::setSeuilGrandeVitesse(int16_t seuil)
 void ta12::LectureCapteur(void)
 {
 	//etalonnage de la consommation
-	//il faut la puissance de l'appareil, mesurée ou indiquée sur la notice.
-	//TEST_CAPTEURS option de compilation dans ta12.h = 0 en version normale, les versions 1 et 2 pour l'étalonnage.
-	//1° TEST_CAPTEURS==1 
-	//		relever la valeur brute vmc arrêtée
-	//2° TEST_CAPTEURS == 2
+	//il faut la puissance de l'appareil, mesuree ou indiquee sur la notice.
+	//TEST_CAPTEURS option de compilation dans ta12.h = 0 en version normale, les versions 1 et 2 pour l'etalonnage.
+	//1e TEST_CAPTEURS==1 
+	//		relever la valeur brute vmc arretee
+	//2e TEST_CAPTEURS == 2
 	//	affecter la moyenne de cette valeur a zero
-	//3° relancer pour afficher les valeurs
+	//3e relancer pour afficher les valeurs
 			float adc_voltage = 0.0;
 #if TEST_CAPTEURS ==1
 			int max_voltage = ta12_lectureTA12();
@@ -106,10 +106,10 @@ void ta12::LectureCapteur(void)
 	int max_voltage=ta12_lectureTA12()-zero;
 #endif
 			adc_voltage = (((double)(max_voltage)) * ADC_REF_VOLT) / ADC_REFRESH;
-			float courantMax = adc_voltage / ADC_RMOYEN * ADC_RAPPORT_TA12_200;  //2000 rapport pour le TA12-200    800 pour la résistance parallèle 658 calculée
+			float courantMax = adc_voltage / ADC_RMOYEN * ADC_RAPPORT_TA12_200;  //2000 rapport pour le TA12-200    800 pour la resistance parallele 658 calculee
 
-			//avec 800ohms en parallèle, 1 zener de 5.1V en parallèle,1kohm en série,10kohm à la masse et 1.8kohm en série
-			//ampoule à filament	mesure	mV		correction du zero	mesure ma au controleur
+			//avec 800ohms en parallele, 1 zener de 5.1V en parallele,1kohm en serie,10kohm e la masse et 1.8kohm en serie
+			//ampoule e filament	mesure	mV		correction du zero	mesure ma au controleur
 			//0						2B		209
 			//40W					3C		292		83					185
 			//60					43		327		118					250
@@ -138,7 +138,7 @@ void ta12::LectureCapteur(void)
 void ta12::lectureCapteur(void)
 {
 	//mPuissanceVMC = String.Format("{0:0.00}", Conversion.Val(value) * ADC_REF_VOLT / ADC_REFRES / ADC_RMOYEN * ADC_RAPPORT_TA12_200 / 1.414 * TENSION_SECTEUR / 1000.0)
-	//TEST_CAPTEURS option de compilation dans ta12.h = 0 en version normale, les versions 1 et 2 pour l'étalonnage.
+	//TEST_CAPTEURS option de compilation dans ta12.h = 0 en version normale, les versions 1 et 2 pour l'etalonnage.
 
 	int16_t capteur = (int16_t)(ta12_lectureTA12() - zeroCapteur);
 	traiteMesure(capteur);
@@ -151,7 +151,7 @@ uint16_t ta12::ta12_lectureTA12(void)
 	int16_t  courant_max = 0;
 	while(millis()-fin > DUREE_LECTURE_MS)
 	{
-		int courant = analogRead(pin);   //maxi=1V en entrée
+		int courant = analogRead(pin);   //maxi=1V en entree
 
 		if (courant>courant_max)
 		{

@@ -8,7 +8,13 @@
 //20/04/24
 //affichage bloqué en attente de message, il faudrait une evolution pour voir si le micro tourne.
 //ajoute heartbeat sur l'afficheur 4 digits sans les 2 points si pas de reception can
-
+//********************************************************************************
+//30/06/2024
+//pas de clignotement voyant jour/nuit
+//pas d'affichage ecran
+//pas de relance poussoir sensitif ni sur coupure alim.
+//pas d'info cuisine
+//		ok apres reboot traitement
 
  //###################################memoire################################## 
 //04/01/2023
@@ -20,9 +26,14 @@
 //l'heure etait bonne, meme message can bus que etatleds
 //autre probleme peut-etre lie au probleme ci-dessus?
 //en passant sur arret ou hiver, le decompte tourne sans arret.
+//###################################memoire################################## 
+//07/06/2025
+  //le voyant ne clignote pas, il semblee que le blocage arrive avant l'activation du watchdog
+  //essai de relance cdg dans le setup
+  //Le croquis utilise 23688 octets (77%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
+  //Les variables globales utilisent 1129 octets (55%) de mémoire dynamique, ce qui laisse 919 octets pour les variables locales. Le maximum est de 2048 octets.
 
-
-
+//###################################memoire##################################   
 //OK
 //  Le croquis utilise 21844 octets (71%) de l'espace de stockage de programmes. Le maximum est de 30720 octets.
 //  Les variables globales utilisent 1446 octets (70%) de mémoire dynamique, ce qui laisse 602 octets pour les variables locales. Le maximum est de 2048 octets.
@@ -100,14 +111,14 @@ poussoir POUSSOIR;
 buzzer BUZZER;
 int memoBrightness=2;
 int memoMinute=-1;
-boolean heartbeat = false;
+//boolean heartbeat = false;
 #ifdef  HORLOGETM1650
 //modifie C:\Users\mireille\Documents\Arduino\libraries\TM1650\src\TM1650.h TM1650_NUM_DIGITS   4 et TM1650_MAX_STRING   4 gain 
 //reste 358 de mémoire dynamique avec cette modif 202 sans
 	TM1650 display;
 #endif
 #ifdef  HORLOGETM1637
-	int cptTest = 0;
+	//int cptTest = 0;
 	TM1637Display display(CLK, DIO);
 #endif
 ///###################################initialisations globales##################################  
@@ -122,6 +133,7 @@ unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrai
 //#endif
 void setup()
 {
+  wdt_enable(WDTO_8S);
   Serial.begin(115200);
   Serial.println(F("setup"));
 
@@ -137,6 +149,7 @@ void setup()
     //display.setBrightness(memoBrightness); //0 mini  7 maxi
     //display.clear();
   AFFICHEUR.initAdafruit_ST7735();
+  wdt_enable(WDTO_8S);
   LEDS_RGB_SERIAL.init();
   BUZZER.test();
   delay(1000);
@@ -156,11 +169,11 @@ void loop()
 	char buf[4];
 #endif
 //pour test
-if(heartbeat)
-  LEDS_RGB_SERIAL.traitementLedsRGBJourNuit(ETAT_JOUR::ETAT_JOUR_INCONNU,LES_LEDS_RGB_LED_JOUR_NUIT);  //bleu
-else
-  LEDS_RGB_SERIAL.traitementLedsRGBJourNuit(ETAT_JOUR::ETAT_JOUR_TEST,LES_LEDS_RGB_LED_JOUR_NUIT);     //vert
-heartbeat=!heartbeat;
+//if(heartbeat)
+//  LEDS_RGB_SERIAL.traitementLedsRGBJourNuit(ETAT_JOUR::ETAT_JOUR_INCONNU,LES_LEDS_RGB_LED_JOUR_NUIT);  //bleu
+//else
+//  LEDS_RGB_SERIAL.traitementLedsRGBJourNuit(ETAT_JOUR::ETAT_JOUR_TEST,LES_LEDS_RGB_LED_JOUR_NUIT);     //vert
+//heartbeat=!heartbeat;
   
 	struct_reception structReception;
 	CAN_BUS.initialiseCanBus(); //a chaque cycle,si le distant est branché en second,inutile avec alimentation par le distant...

@@ -38,7 +38,7 @@
 #include "mcp_can_dfs.h"
 //#include "webServer.h"
 
-#define CLOCKSPI 500000		//limitation � 500000 si adaptation 5v/3v3 avec bss138
+#define CLOCKSPI 500000		//limitation e 500000 si adaptation 5v/3v3 avec bss138
 class can_bus : public MCP_CAN
 {
 	public:

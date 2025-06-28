@@ -38,7 +38,7 @@
 #define CFG_EMON_APIKEY_SIZE 	32
 #define CFG_EMON_URL_SIZE 		32
 #define CFG_EMON_DEFAULT_PORT 80
-#define CFG_EMON_DEFAULT_HOST "192.168.1.69"
+#define CFG_EMON_DEFAULT_HOST "192.168.1.242"
 #define CFG_EMON_DEFAULT_URL  "/emoncms/input/post.json"
 #define CFG_EMON_DEFAULT_NODE_ID  99
 
@@ -66,7 +66,7 @@
 // Bit definition for different configuration modes
 #define CFG_LCD				  0x0001	// Enable display
 #define CFG_DEBUG			  0x0002	// Enable serial debug
-#define CFG_RGB_LED     0x0004  // Enable RGB LED	#define CFG_PRESENT			  0x0008	// à 1 si présent
+#define CFG_RGB_LED     0x0004  // Enable RGB LED	#define CFG_PRESENT			  0x0008	// e 1 si present
 #define CFG_BAD_CRC     0x8000  // Bad CRC when reading configuration
 
 // Web Interface Configuration Form field names
@@ -100,17 +100,17 @@
 #define CFG_FORM_HTTPREQ_FREQ  FPSTR("httpreq_freq")
 #define CFG_FORM_HTTPREQ_SWIDX FPSTR("httpreq_swidx")
 
-#define CFG_DEF_CORRECTION_TEMP_EXT_PAR10 0
-#define CFG_DEF_CORRECTION_H_SDB 0
-#define CFG_DEF_CORRECTION_H_CUISINE 0
-#define CFG_DEF_CORRECTION_T_SDB_PAR10 0
-#define CFG_DEF_CORRECTION_T_CUISINE_PAR10 0
+#define CFG_DEF_CORRECTION_TEMP_EXT_PAR10 -5
+#define CFG_DEF_CORRECTION_H_SDB 10
+#define CFG_DEF_CORRECTION_H_CUISINE -37
+#define CFG_DEF_CORRECTION_T_SDB_PAR10 -10
+#define CFG_DEF_CORRECTION_T_CUISINE_PAR10 -8
 #define CFG_DEF_PERIODE_VMC 300
-#define CFG_DEF_DUREE_FORCAGE_SEC 600
-#define CFG_DEF_DUREE_MINI_SEC 3600
-#define CFG_DEF_SEUILTEMPERATUREFROIDENDIXIEMES  230
-#define CFG_DEF_POURCENT_HUMIDITE  15				   //plus seuil mais delta
-#define CFG_DEF_SEUILTEMPERATURECHAUDENDIXIEMES  250
+#define CFG_DEF_DUREE_FORCAGE_SEC 300
+#define CFG_DEF_DUREE_MINI_SEC 600
+#define CFG_DEF_SEUILTEMPERATUREFROIDENDIXIEMES  200
+#define CFG_DEF_POURCENT_HUMIDITE  5				   //plus seuil mais delta
+#define CFG_DEF_SEUILTEMPERATURECHAUDENDIXIEMES  230
 
 
 #define CFG_FORM_TEMPO_SEUILTEMPERATUREFROIDENDIXIEMES FPSTR("seuil_temp_froid")
@@ -139,7 +139,7 @@
 #define CFG_FORM_GW  FPSTR("wifi_gw");
 #define CFG_FORM_MSK FPSTR("wifi_msk");
 
-//#define CFG_DEF_TEMP_MIN_BLEU_PRESENT_J 190   // 19° 0.32 + 0.0047 * temp;
+//#define CFG_DEF_TEMP_MIN_BLEU_PRESENT_J 190   // 19e 0.32 + 0.0047 * temp;
 //#define CFG_DEF_TEMP_MIN_BLANC_PRESENT_J 170  // 17
 //#define CFG_DEF_TEMP_MIN_ROUGE_PRESENT_J 90   // 9
 //#define CFG_DEF_TEMP_MIN_BLEU_ABSENT_J 170    // 17
@@ -156,13 +156,13 @@
 
 
 
-#define CFG_DEF_PERIODE_ENR  300
+#define CFG_DEF_PERIODE_ENR  600
 #define CFG_DEF_DEFART_WIFI  0
-#define CFG_DEF_FIN_WIFI   23
-#define CFG_DEF_PORT_ENR   8887
-#define CFG_DEF_HOST_ENR   "192.168.1.69"
+#define CFG_DEF_FIN_WIFI   24
+#define CFG_DEF_PORT_ENR   8889
+#define CFG_DEF_HOST_ENR   "192.168.1.242"
 #define CFG_DEF_ARRET_WIFI  0
-#define CFG_DEF_LUM_LED_RGB     10
+#define CFG_DEF_LUM_LED_RGB     3
 //#define CFG_DEF_ACQUITEMENT_ENR     1
 
 
@@ -177,7 +177,7 @@
 // Config pour tempo
 typedef struct 
 {
- //int temperatures[12];  //en degres,à *10 à l'arrivee et /10 au départ
+ //int temperatures[12];  //en degres,e *10 e l'arrivee et /10 au depart
 
 	int8_t cor_temp_ext_dixieme_degres;
 	int8_t cor_temp_cuis_dixieme_degres;
@@ -193,8 +193,8 @@ typedef struct
 	uint16_t seuil_temp_chaud_dixieme_degres;
 
 	uint16_t periode_enr;		//en seconde
- uint8_t depart_wifi;	//en heure 0 à 23
- uint8_t fin_wifi;		//en heure 0 à 23
+ uint8_t depart_wifi;	//en heure 0 e 23
+ uint8_t fin_wifi;		//en heure 0 e 23
  uint16_t portEnr;		//
  //int host_enr;		//adresse IP
  char  host_enr[CFG_TEMPO_HOST_SIZE + 1];	//adresse IP
@@ -281,4 +281,3 @@ private:
 extern configuration CONFIGURATION;
 
 #endif 
-

@@ -24,7 +24,7 @@ ICACHE_FLASH_ATTR buzzer::buzzer(void)
  }
 void buzzer::setBuzzer(boolean etat)
 {
-if (etat)    //pour ne pas annuler les précedents du cycle
+if (etat)    //pour ne pas annuler les precedents du cycle
 	leBuzzer=true;
 }
 uint8_t buzzer::getBuzzer(void) const

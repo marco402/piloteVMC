@@ -19,8 +19,11 @@
 // All text above must be included in any redistribution.
 //
 //Using library EEPROM version 1.0
-//
+// 
 // **********************************************************************************
+
+#define noRESETCONFIG
+
 #include <Arduino.h>
 #include "Wifinfo.h"
 #include "mySyslog.h"
@@ -34,11 +37,20 @@ void ICACHE_FLASH_ATTR configuration::initConfig(void) //
 	EEPROM.begin(sizeof(_Config));
 	// Clear our global flags
 	config.config = 0;
+
+#ifdef RESETCONFIG
+  ResetConfig();
+#endif  
 	// Read Configuration from EEP
+  //start comment for reset config
+	///*
+  
 	if (readConfig()) {
 		DebuglnF("Good CRC, not set! From now, we can use EEPROM config !");
 	}
 	else {
+  //*/
+  //end comment
 		// Reset Configuration
 		ResetConfig();
 		// save back
@@ -46,7 +58,11 @@ void ICACHE_FLASH_ATTR configuration::initConfig(void) //
 		// Indicate the error in global flags
 		config.config |= CFG_BAD_CRC;
 		//DebuglnF("Reset to default");
+   //start comment
+   ///*
 	}
+ //*/
+ //end comment
 }
 /* ======================================================================
 Function: ResetConfig
@@ -142,7 +158,7 @@ void ICACHE_FLASH_ATTR configuration::eepromDump(uint8_t bytesPerRow)
     if (j==0) {
 			// Display Address
       sprintf(buf,"%04X : ", i);
-      Debug(buf);
+//      Debug(buf);
     }
     // write byte in hex form
     sprintf(buf,"%02X ", EEPROM.read(i));
@@ -151,7 +167,7 @@ void ICACHE_FLASH_ATTR configuration::eepromDump(uint8_t bytesPerRow)
     // start a new line
     if (++j >= bytesPerRow) {
 			j=0;
-			Debugln();
+//			Debugln();
 		}
   }
 }
@@ -248,7 +264,7 @@ void ICACHE_FLASH_ATTR configuration::showConfig()
   DebuglnF("===== Wifi"); 
   DebugF("ssid     :"); Debugln(config.ssid);
 #ifdef SYSLOG
-  Debugln(config.psk);   // DebugF("psk      :***********"); sinon remplacé par des * au prochain changement de config
+  //Debugln(config.psk);   // DebugF("psk      :***********"); sinon remplacé par des * au prochain changement de config
 #endif
 #ifdef DEBUGSERIAL
   DEBUG_SERIAL.print("psk      :");
@@ -271,7 +287,7 @@ void ICACHE_FLASH_ATTR configuration::showConfig()
   DebugF("host     :"); Debugln(config.emoncms.host);
   DebugF("port     :"); Debugln((int)config.emoncms.port);
   DebugF("url      :"); Debugln(config.emoncms.url);
-  DebugF("key      :"); Debugln(config.emoncms.apikey);
+  DebugF("key      :"); Debugln("*****************");      //Debugln(config.emoncms.apikey);
   DebugF("node     :"); Debugln(config.emoncms.node);
   DebugF("freq     :"); Debugln(config.emoncms.freq);
 

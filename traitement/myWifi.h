@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifie par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-03-21 ()
-//		-intégré le code dans la classe myWifi myWifi.h
+// Modifie par marc PRIEUR 2019-03-21 ()
+//		-integre le code dans la classe myWifi myWifi.h
 //
 //Using library ESP8266WiFi version 1.0
 //Using library ESP8266mDNS version 0.0.0
@@ -46,7 +46,7 @@ private:
 	void on(void);
 	void off(void);
 	bool testMySsid(void);
-	//état de la liaison wifi coupure externe(box...) ou coupure utilisateur
+	//etat de la liaison wifi coupure externe(box...) ou coupure utilisateur
 	bool wifiUser = false;
 	int nb_reconnect = 0;
 	int cptBoot = 300;			//wifi 5 minutes au boot-->affiche pageweb,OTA....

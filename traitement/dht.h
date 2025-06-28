@@ -33,7 +33,7 @@
 #define DHTLIB_DHT22_WAKEUP     1
 #define ONE_DURATION_THRESH_US 30
 
-//static const uint8_t   DEF_MOY_H = 70;   //mettre des seuils assez haut pour l'init, capteur->traiteMesure prend  en compte au départ que les cycles sous ce seuil.
+//static const uint8_t   DEF_MOY_H = 70;   //mettre des seuils assez haut pour l'init, capteur->traiteMesure prend  en compte au depart que les cycles sous ce seuil.
 
 typedef enum {TEMPERATURE=0,HUMIDITE}DHT_TouH;
 

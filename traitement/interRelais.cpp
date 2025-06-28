@@ -40,29 +40,29 @@ ICACHE_FLASH_ATTR relais::relais()
 }
 void relais::traitementRelais(VITESSE_RELAIS vitesse, ARRET_MARCHE arretMarche)
 {
-	//**************Si changement d'�tat arr�t marche ou vitesse
+	//**************Si changement d'etat arret marche ou vitesse
 	if (((etatRelaisMarcheArret != arretMarche) || (etatRelaisVitesse != vitesse)) && (demarrage == false))
 	{
 		if (etatReelRelaisMarcheArret != ARRET_MARCHE::ARRET_REL)
 		{
-			//arr�t pour changer de vitesse ou pour arr�ter
+			//arret pour changer de vitesse ou pour arreter
 			digitalWrite(PIN_RELAIS_MARCHE_ARRET, ARRET_MARCHE::ARRET_REL);
 			//DebuglnF(" relais M/A->arret");
-			//fonctionne en remplacant etatreelRelaisMarcheArret par etatRelaisMarcheArret mais incoherence � l'analyse des courbes
+			//fonctionne en remplacant etatreelRelaisMarcheArret par etatRelaisMarcheArret mais incoherence e l'analyse des courbes
 			etatReelRelaisMarcheArret = ARRET_MARCHE::ARRET_REL;
-			//for�age d'un enregistrement sur changement d'�tat
+			//foreage d'un enregistrement sur changement d'etat
 			//ENREGISTREMENT.setCptSecondesEnregistrement(REINIT);
 			ENREGISTREMENT.forceEnregistrementSurMarche();
 		}
 		etatRelaisMarcheArret = ARRET_MARCHE::ARRET_REL;
-		//Changement de vitesse si n�cessaire
+		//Changement de vitesse si necessaire
 		this->etatRelaisVitesse = vitesse;
 		//changement de vitesse en sortie
 //#ifndef SIMUTRAMETEMPO
 		digitalWrite(PIN_RELAIS_VITESSE, etatRelaisVitesse);
 		//DebugF(" relais vitesse:"); Debugln((int)etatRelaisVitesse);
 //#endif
-		//positionnement de l'indicateur pour d�marrage apr�s N secondes(5)
+		//positionnement de l'indicateur pour demarrage apres N secondes(5)
 		if (arretMarche == ARRET_MARCHE::MARCHE_REL)
 		{
 //DebuglnF("demarrage = true");
@@ -71,19 +71,19 @@ void relais::traitementRelais(VITESSE_RELAIS vitesse, ARRET_MARCHE arretMarche)
 		}
 	}
 }
-//***********traitement de l'activation du relais marche arr�t � appeler toutes les secondes********
-//appel� par la boucle principale sans condition
+//***********traitement de l'activation du relais marche arret e appeler toutes les secondes********
+//appele par la boucle principale sans condition
 void relais::tempoChangementEtatRelais()
 {
-	//*********si moteur en marche, increment du compteur de seconde pour ventiler un minimum en fin de journ�e******
+	//*********si moteur en marche, increment du compteur de seconde pour ventiler un minimum en fin de journee******
 	if (etatReelRelaisMarcheArret == ARRET_MARCHE::MARCHE_REL)
 		nbSecondeActiveJourCourant += 1;
-	//*********Si l'�tat du relais marche arret doit changer et si la temporisation est atteinte,on peux red�marrer
+	//*********Si l'etat du relais marche arret doit changer et si la temporisation est atteinte,on peux redemarrer
 	if (demarrage == true)
 	{
 		//DebugF("decompteDelaiCgtVitesse:"); Debugln((int)decompteDelaiCgtVitesse);
 		//*********Decrementation de la temporisation entre 2 activation des relais***********
-		if (decompteDelaiCgtVitesse > -1)		// < TEMPO_CGT_ETAT_RELAIS)		//pour �viter un d�bordement
+		if (decompteDelaiCgtVitesse > -1)		// < TEMPO_CGT_ETAT_RELAIS)		//pour eviter un debordement
 		{
 			decompteDelaiCgtVitesse -= 1;		// += 1;
 		}

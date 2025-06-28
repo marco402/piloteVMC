@@ -1,5 +1,5 @@
 // **********************************************************************************
-// ESP8266 Pilotage VMC et TEMPO->mesure de température extérieur avec sonde smt160
+// ESP8266 Pilotage VMC et TEMPO->mesure de temperature exterieur avec sonde smt160
 // **********************************************************************************
 // Creative Commons Attrib Share-Alike License
 // You are free to use/extend this library but please abide with the CC-BY-SA license:

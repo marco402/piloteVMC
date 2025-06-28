@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifie par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-03-21 ()
-//		-intégré le code dans la classe myWifi myWifi.cpp
+// Modifie par marc PRIEUR 2019-03-21 ()
+//		-integre le code dans la classe myWifi myWifi.cpp
 //
 //Using library ESP8266WiFi version 1.0
 //Using library ESP8266mDNS version 0.0.0
@@ -43,8 +43,8 @@
 #include "myWifi.h"
 //#define FPM_SLEEP_MAX_TIME 0xFFFFFFF
 //**************************************WiFiOn**********************************
-//essaye de redémarrer la liaison wifi retour=true si ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP)) sinon false
-//si true->augmente le nombre de reconnexion affichée sur la page web onglet système.
+//essaye de redemarrer la liaison wifi retour=true si ((WiFi.status() == WL_CONNECTED) && (wifi_station_get_connect_status() == STATION_GOT_IP)) sinon false
+//si true->augmente le nombre de reconnexion affichee sur la page web onglet systeme.
 bool myWifi::WiFiOn() {
 	if (!WIFIOK)
 	{
@@ -133,12 +133,12 @@ bool myWifi::getWifiUser(void)
 {
 	return wifiUser;
 }
-//test la coupure wifi programmée par l'utilisateur
-//quelquesoit la programmation horaire:maintient la liaison pendant 1 heure après un démarrage(cptBoot).
+//test la coupure wifi programmee par l'utilisateur
+//quelquesoit la programmation horaire:maintient la liaison pendant 1 heure apres un demarrage(cptBoot).
 //en fonction de la programmation horaire, appelle la fonction on ou off.
 void myWifi::testWifi()
 {
-	if (cptBoot)   //5 minutes de wifi après un démarrage
+	if (cptBoot)   //5 minutes de wifi apres un demarrage
 	{
 		cptBoot--;
 		on();
@@ -153,7 +153,7 @@ void myWifi::testWifi()
 		else
 			off();
 	}
-	else                                                                                       //ex:  depart 20h arret 8h-->wifi de 20 h à 8 h
+	else                                                                                       //ex:  depart 20h arret 8h-->wifi de 20 h e 8 h
 	{
 		if ((Clock.getHour() >= CONFIGURATION.config.tempo.depart_wifi) || (Clock.getHour() < CONFIGURATION.config.tempo.fin_wifi))
 			on();
@@ -161,7 +161,7 @@ void myWifi::testWifi()
 			off();
 	}
 }
-//si wifi=false:essaye de démarrer la wifi->wifi=true si ok
+//si wifi=false:essaye de demarrer la wifi->wifi=true si ok
 void myWifi::on(void)
 {
 	//if (!wifiUser)
@@ -191,11 +191,16 @@ Input   : setup true if we're called 1st Time from setup
 Output  : state of the wifi status
 Comments: -
 ====================================================================== */
+//#define STASSID "SFR_186F"
+//#define STAPSK "y3s9gy8pxb58rx91lqgq"
 int myWifi::WifiHandleConn(boolean setup = false)
 {
 	char  toprint[20];
 	IPAddress ad;
-
+//DebugF("ssid: ");Debug(CONFIGURATION.config.ssid);
+//DebugF("key: ");Debug(CONFIGURATION.config.psk);
+//strncpy(CONFIGURATION.config.ssid, STASSID, CFG_SSID_SIZE);
+//strncpy(CONFIGURATION.config.psk, STAPSK, CFG_PSK_SIZE);
 	if (setup) {
 #ifdef DEBUGSERIAL
 		DebuglnF("========== WiFi diags start");
@@ -243,7 +248,7 @@ int myWifi::WifiHandleConn(boolean setup = false)
 			Debugflush();
 #ifdef IPSTATIC
 			// NETWORK: Static IP details...
-			IPAddress ip(192, 168, 1, AdresseStatic::TEMPOVMC);        //dhcp sur box 1.20 à 1.100
+			IPAddress ip(192, 168, 1, AdresseStatic::TEMPOVMC);        //dhcp sur box 1.20 e 1.100
 			IPAddress gateway(192, 168, 1, 1);
 			IPAddress subnet(255, 255, 255, 0);
 			WiFi.config(ip, gateway, subnet);
@@ -251,10 +256,11 @@ int myWifi::WifiHandleConn(boolean setup = false)
 			// Do wa have a PSK ?
 			if (*CONFIGURATION.config.psk) {
 				// protected network
-			    Debug(F(" with key '"));
-				Debug(CONFIGURATION.config.psk);
+			  //  Debug(F(" with key '"));
+				//Debug(CONFIGURATION.config.psk);
 				Debug(F("'..."));
 				Debugflush();
+        WiFi.mode(WIFI_STA);
 				WiFi.begin(CFG_DEF_SSID, CFG_DEF_PSK); //si pb config...
 				//WiFi.begin(CONFIGURATION.config.ssid, CONFIGURATION.config.psk);
 			}
@@ -272,9 +278,9 @@ int myWifi::WifiHandleConn(boolean setup = false)
 	   // while ( ( WiFi.status() != WL_CONNECTED) && timeout )
 		while (WIFINOOKET && timeout)
 		{
-			LESLEDS.ledRGBON(LES_LEDS_EN_SERIE::LED_BWRDEMAIN, COULEURS::C_WIFI);
-			delay(50);
-			LESLEDS.ledRGBOFF(LES_LEDS_EN_SERIE::LED_BWRDEMAIN);
+//			LESLEDS.ledRGBON(LES_LEDS_EN_SERIE::LED_BWRDEMAIN, COULEURS::C_WIFI);
+//			delay(50);
+//			LESLEDS.ledRGBOFF(LES_LEDS_EN_SERIE::LED_BWRDEMAIN);
 			delay(150);
 			--timeout;
 		}
@@ -286,7 +292,7 @@ int myWifi::WifiHandleConn(boolean setup = false)
 		{
 			nb_reconnect++;         // increase reconnections count
 			DebuglnF("connected!");
-			WiFi.mode(WIFI_STA);
+//			WiFi.mode(WIFI_STA);
 			ad = WiFi.localIP();
 			sprintf(toprint, "%d.%d.%d.%d", ad[0], ad[1], ad[2], ad[3]);
 			DebugF("IP address   : "); Debugln(toprint);
@@ -353,5 +359,4 @@ int myWifi::WifiHandleConn(boolean setup = false)
 int myWifi::getNb_reconnect() const
 {
 	return nb_reconnect;
-
 }

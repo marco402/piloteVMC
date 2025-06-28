@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifié par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifie par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifié par marc PRIEUR 2019-03-21 ()
-//		-intégré le code dans la classe mySyslog mySyslog.h
+// Modifie par marc PRIEUR 2019-03-21 ()
+//		-integre le code dans la classe mySyslog mySyslog.h
 //********************************************************************************
 
 #ifndef MYSYSLOG_H
@@ -61,7 +61,7 @@ private:
 
 #ifdef MACRO
 	//// Versions polymorphes des appels au debugging
-	//// non liées au port Serial ou Serial1
+	//// non liees au port Serial ou Serial1
 	char logbuffer[255];
 
 #ifdef SYSLOG

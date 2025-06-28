@@ -23,7 +23,7 @@
 #define NO_DEBUGSIMU
 //OK FIXE:HHPHC,IINST,MOTDETAT,IMAX
 //OK EVOL:PTEC,DEMAIN,
-//1 seul compteur 1 fois BBRHPJR � 0
+//1 seul compteur 1 fois BBRHPJR e 0
 //pb OPTARIF:0000013081SOUSC
 //manque 5 compteurs,ADCO,ISOUSC dans OPTARIF
 //plantage au load esp8266 si tableaux dans la classe
@@ -81,13 +81,13 @@ unsigned int compteur[7] = { 0,0,0,0,0,0,0 };
 #define NO_X86   //pour x86
 
 
-//options suppl�mentaire du compilateur, ajouter -fpermissive 
+//options supplementaire du compilateur, ajouter -fpermissive 
 //ATTENTION a tabnames de webserver.cpp si version LibTeleinfo-syslog.zip
 //avec esp12 0.9
 //strapper ces 2 pins:
 //emission sur serial1 esp12-->GPIO2--->TXD1-->D4
-//r�ception sur serial apr�s le swap-->GPIO13---->RXD2--->D7
-//fonctions calcChecksum de LibTeleinfo modifi�
+//reception sur serial apres le swap-->GPIO13---->RXD2--->D7
+//fonctions calcChecksum de LibTeleinfo modifie
 unsigned char SimuTempo::calcChecksum(char *mot)
 {
 //mode standard revoir si utilisation horodate
@@ -245,7 +245,7 @@ void SimuTempo::emetTrameTempo( unsigned long secondes,int compteurCourant, unsi
 		//delay(10);//tempo inter champ
 #endif
 	}
-	//cpt += 1;  pas de test de d�bordement...
+	//cpt += 1;  pas de test de debordement...
 #ifndef X86
 	delay(10);//tempo intertrame
 #endif
@@ -257,7 +257,7 @@ void SimuTempo::traite1Trame( unsigned long secondes)
 #ifdef MODE_HISTORIQUE
 	static	int compteurCourant = CPTJBN;
 	static	unsigned int  couleurDemain = ETAT_JOUR_BLEU;
-	if (!(secondes % 5))  //�volution ptec et demain
+	if (!(secondes % 5))  //evolution ptec et demain
 	{
 		compteurCourant += 1;
 		if (compteurCourant > CPTJRJ)
@@ -266,7 +266,7 @@ void SimuTempo::traite1Trame( unsigned long secondes)
 		if (couleurDemain > ETAT_JOUR_ROUGE)
 			couleurDemain = ETAT_JOUR_BLEU;
 	}
-	if(!(secondes % 2)) //�volution compteur courant et �mission
+	if(!(secondes % 2)) //evolution compteur courant et emission
 	{
 		compteur[compteurCourant] += randMinMax(100L, 999L);
 		if (compteur[compteurCourant] > (999999999L - 999L))
@@ -282,7 +282,7 @@ void SimuTempo::traite1Trame( unsigned long secondes)
 	//S=espace dans certain cas
 	static	int compteurCourant = EASF01;
 	static	unsigned int  couleurDemain = ETAT_JOUR_BLEU;
-	if (!(secondes % 5))  //�volution ptec et demain
+	if (!(secondes % 5))  //evolution ptec et demain
 	{
 		compteurCourant += 1;
 		if (compteurCourant > EASF06)
@@ -291,7 +291,7 @@ void SimuTempo::traite1Trame( unsigned long secondes)
 		if (couleurDemain > ETAT_JOUR_ROUGE)
 			couleurDemain = ETAT_JOUR_BLEU;
 	}
-	if(!(secondes % 2)) //�volution compteur courant et �mission
+	if(!(secondes % 2)) //evolution compteur courant et emission
 	{
 		compteur[compteurCourant] += randMinMax(100L, 999L);
 		if (compteur[compteurCourant] > (999999999L - 999L))

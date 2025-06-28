@@ -18,8 +18,8 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifi� par marc Prieur 2019
-//		-V2.0.0:int�gr� le code dans la classe webClient webClient.cpp  webClient.h
+// Modifie par marc Prieur 2019
+//		-V2.0.0:integre le code dans la classe webClient webClient.cpp  webClient.h
 //		-V2.0.2:ajout de TAILLEBUFEMONCMS
 // Using library ESP8266HTTPClient version 1.1
 //
@@ -43,7 +43,7 @@ const char FP_JSON_START[] PROGMEM = "{\r\n";
 const char FP_JSON_END[] PROGMEM = "\r\n}\r\n";
 const char FP_QCQ[] PROGMEM = "\":\"";
 const char FP_QCNL[] PROGMEM = "\",\r\n\"";
-const char FP_RESTART[] PROGMEM = "OK, Red�marrage en cours\r\n";
+const char FP_RESTART[] PROGMEM = "OK, Redemarrage en cours\r\n";
 const char FP_NL[] PROGMEM = "\r\n";
 
 class webClient

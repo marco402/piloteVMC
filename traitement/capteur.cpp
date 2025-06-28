@@ -46,7 +46,7 @@ return this->correction;
 }
 /// Traitement:
 ///		mesureCycle
-///		cumul de la p�riode.
+///		cumul de la periode.
 void  capteur::traiteMesure(int16_t mesure)
 {
 	mesureCycle=mesure+ correction;   //indice pour correction+correction
@@ -55,9 +55,9 @@ void  capteur::traiteMesure(int16_t mesure)
 	if (init)
 		{
 		init = false;
-		traiteMoyennePeriode(false);//initialisation de moyenne p�riode d�s le premier cycle
-		setMoyennePourSeuil(getMoyennePeriode()-2);//initialisation de moyenne pour seuil d�s le premier traitement vmc
-		//baisse le seuil de 2% pour d�marrer
+		traiteMoyennePeriode(false);//initialisation de moyenne periode des le premier cycle
+		setMoyennePourSeuil(getMoyennePeriode()-2);//initialisation de moyenne pour seuil des le premier traitement vmc
+		//baisse le seuil de 2% pour demarrer
 	}
 	moyennePeriodeCourante = (moyennePeriodeCourante + mesureCycle) / 2;
 }
@@ -81,10 +81,10 @@ int16_t capteur::getMaxi()
 	cumulPeriode = 0;
 	return mesure;
 }
-/// appel� dans tous les modes
-	/// sur arr�t: les moyenneSeuil vont monter 
-	/// sur lent ou rapide forc�, les moyennes seuil vont descendre.
-	/// en auto, r�gulation
+/// appele dans tous les modes
+	/// sur arret: les moyenneSeuil vont monter 
+	/// sur lent ou rapide force, les moyennes seuil vont descendre.
+	/// en auto, regulation
 	/// traitement moyenne de la periode VMC
 	/// cumul moyenne pour les seuils
 void  capteur::traiteMoyennePeriode(boolean seuilDynamique)
@@ -125,14 +125,14 @@ void  capteur::traiteMoyennePeriode(boolean seuilDynamique)
 		}
 
 		if (dessous == cyclesOK)         //tous les cycles au dessous du seuil,on le baisse
-		//on pourrait tester la dur�e de marche ,d�calage ou pas de mise a jour si pas en mode auto
+		//on pourrait tester la duree de marche ,decalage ou pas de mise a jour si pas en mode auto
 			pourcentageSeuil -= 1;
 		else if (dessus == cyclesOK)         //tous les cycles au dessus du seuil,on le monte
 			pourcentageSeuil += 1;
 		TraiteTableauMoyennePourSeuil(seuil);
 }
 #else
-	//traitement pour les seuils attente de NBCYCLESOK * p�riode vmc pour valider les donn�es pour les seuils
+	//traitement pour les seuils attente de NBCYCLESOK * periode vmc pour valider les donnees pour les seuils
 	cumulMoyennePourSeuil += moyennePeriode;
 	compteurMoyennePourSeuil += 1;
 	if (moyennePeriode < moyennePourSeuil)
@@ -153,7 +153,7 @@ void  capteur::traiteMoyennePeriode(boolean seuilDynamique)
 		////////	}
 	if (compteurCycleMoyennePourSeuil > NBCYCLESOKMOINS1)
 	{	
-		//traitement dynamique pour les seuils humidit�
+		//traitement dynamique pour les seuils humidite
 		if (seuilDynamique)
 		{
 			if (dessous > NBCYCLESOKMOINS1)         //tous les cycles au dessous du seuil,on le baisse
@@ -181,8 +181,8 @@ void capteur::TraiteTableauMoyennePourSeuil(byte seuil)
 	//moyennePourSeuilCorrigee=(moyennePourSeuil+seuil-128);
 }
 #else
-//moyennePourSeuil sont les valeurs qui vont etres test�es dans TraitementVMC
-//Cette moyenne est ajust�e en permanence
+//moyennePourSeuil sont les valeurs qui vont etres testees dans TraitementVMC
+//Cette moyenne est ajustee en permanence
 void capteur::traiteMoyennePourSeuil()
 {
 	if (compteurMoyennePourSeuil > 0)				//sinon on reste sur la derniere mesure
@@ -194,8 +194,8 @@ void capteur::traiteMoyennePourSeuil()
 }
 #endif
 /// getMesureCycle():Mesure sur le cycle en cours.
-/// Ce sont les valeurs affich�es sur l'�cran oled et affich�es sur le pc.
-/// l'initialisation de mesureCycle n'est pas n�cessaire,il faut toutefois appeler clearMesure pour �viter les d�bordements
+/// Ce sont les valeurs affichees sur l'ecran oled et affichees sur le pc.
+/// l'initialisation de mesureCycle n'est pas necessaire,il faut toutefois appeler clearMesure pour eviter les debordements
 // si on appel pas traiteMoyennePeriode .
 int16_t capteur::getMesureCycle() const
 {
@@ -223,8 +223,8 @@ float capteur::getMesureCycleOled() const
 	if (ajustDecimal == 0) return 0.0f;
 	return ((float)((float)mesureCycle/(float)ajustDecimal));
 }
-/// getMoyennePeriode():Mesures moyenn�es sur la p�riode VMC �coul�e.
-/// Valeurs utilis�es pour les tests dans TraitementVMC et valeurs enregistr�es.
+/// getMoyennePeriode():Mesures moyennees sur la periode VMC ecoulee.
+/// Valeurs utilisees pour les tests dans TraitementVMC et valeurs enregistrees.
 int16_t capteur::getMoyennePeriode() const
 {
 	return moyennePeriode;
@@ -242,7 +242,7 @@ float capteur::getMoyennePeriodeOled() const
 	if (ajustDecimal == 0) return 0.0f;
 	return((float)((float)moyennePeriode/(float)ajustDecimal));
 }
-/// MoyennePourSeuil:Ajustement des seuils pour tenir compte des fluctuations normales notemment de l'humidit� g�n�rale.
+/// MoyennePourSeuil:Ajustement des seuils pour tenir compte des fluctuations normales notemment de l'humidite generale.
 int16_t capteur::getMoyennePourSeuil() const
 {
 	return moyennePourSeuil;
@@ -255,7 +255,7 @@ byte capteur::getMoyennePourSeuilLsb() const
 {
 	return moyennePourSeuil & 0xFF;
 }
-int16_t capteur::getMoyennePourSeuilOled() const     //pas en float pr�cision en entier
+int16_t capteur::getMoyennePourSeuilOled() const     //pas en float precision en entier
 {
 	if (ajustDecimal == 0) return 0.0f;
 	return (moyennePourSeuil/(int16_t)ajustDecimal);

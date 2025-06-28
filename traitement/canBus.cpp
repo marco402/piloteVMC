@@ -90,7 +90,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(boolean CgtCompteur)
    compteurErreurConsecutivesEmission = 0;
    compteurErreurConsecutivesReception = 0;    
 	 int nEssai = 10;
-	 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN,freq_can )) && nEssai > 0)              //ok a 100 pb � CAN_500KBPS   MCP_16MHZ(vitesse du quartz sur la carte can a confirmer)
+	 while ((CAN_OK != begin(MCP_ANY, VITESSE_CAN,freq_can )) && nEssai > 0)              //ok a 100 pb e CAN_500KBPS   MCP_16MHZ(vitesse du quartz sur la carte can a confirmer)
 	 {
 		 nEssai--;
 		 delay(100);
@@ -103,7 +103,7 @@ bool can_bus::TRAITEMENTEMISSIONCAN(boolean CgtCompteur)
 	 }
 	 else
 	 {
-		 init_Mask(0, 0, 0xFFFFFFFC);                // Init first mask... accept 0 � 7  
+		 init_Mask(0, 0, 0xFFFFFFFC);                // Init first mask... accept 0 e 7  
 		 init_Filt(0, 0, (unsigned char)ID_MESSAGE_TYPE_2);                // Init first filter...
 		 init_Filt(1, 0, (unsigned char)ID_MESSAGE_TYPE_3);                // Init second filter...
 		 enOneShotTX();
@@ -175,12 +175,12 @@ bool can_bus::TRAITEMENTEMISSIONCAN(boolean CgtCompteur)
 					motRecu.b[1] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_T_MSB];
 					motRecu.b[0] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_T_LSB];
 					//DHTCUISINE_T.traiteMesure(motRecu.capteur);
-					tCuis = motRecu.capteur;						//transfert des donn�es en m�me temps que lectureCapteurs
+					tCuis = motRecu.capteur;						//transfert des donnees en meme temps que lectureCapteurs
 					motRecu.capteur = 0;
 					motRecu.b[1] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_H_MSB];
 					motRecu.b[0] = rxBuf[(int)MESSAGE_TYPE_2::DHT_CUISINE_H_LSB];
 					//DHTCUISINE_H.traiteMesure(motRecu.capteur);
-					hCuis = motRecu.capteur;						//transfert des donn�es en m�me temps que lectureCapteurs
+					hCuis = motRecu.capteur;						//transfert des donnees en meme temps que lectureCapteurs
 					//DebugF("rec:DHTCUISINE_H: "); Debugln(motRecu.capteur);
 					receptionCapteurs = true;
          //DebuglnF("ID_MESSAGE_TYPE_2(reception)");
@@ -230,7 +230,7 @@ unsigned char  can_bus::mysendMsgBuf(unsigned long ident, unsigned char ext, uns
 {
 	return sendMsgBuf(ident, ext, len, buf);
 }
-//type=0:emission du temps,du mode, de l'�tat courant et du buzzer, type=1:emission de la temp�rature et humidit� SDB et temp�rature exterieur.
+//type=0:emission du temps,du mode, de l'etat courant et du buzzer, type=1:emission de la temperature et humidite SDB et temperature exterieur.
 void can_bus::traiteEmissionCan(unsigned char type, boolean CgtCompteur, unsigned char heure, unsigned char minute, unsigned char seconde)
 	{
 	byte sndStat = 0;
@@ -316,7 +316,7 @@ void can_bus::traiteEmissionCan(unsigned char type, boolean CgtCompteur, unsigne
 			compteurBuzzer = 0;
 			erreur = ERREURS::E_CAN_BUS_TRAIT;
 		}
-		DebugF("Error Sending Message..."); Debugln(sndStat);  //12/10/22 error 6(parasite?)
+//		DebugF("Error Sending Message..."); Debugln(sndStat);  //12/10/22 error 6(parasite?)
 		compteurErreurConsecutivesEmission += 1;
 	}
 	else

@@ -38,7 +38,7 @@
 //const char FP_JSON_END[] PROGMEM = "\r\n}\r\n";
 //const char FP_QCQ[] PROGMEM = "\":\"";
 //const char FP_QCNL[] PROGMEM = "\",\r\n\"";
-//const char FP_RESTART[] PROGMEM = "OK, Red�marrage en cours\r\n";
+//const char FP_RESTART[] PROGMEM = "OK, Redemarrage en cours\r\n";
 //const char FP_NL[] PROGMEM = "\r\n";
 
 

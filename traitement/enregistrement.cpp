@@ -65,7 +65,7 @@ void ICACHE_FLASH_ATTR enregistrement::stop()
 void enregistrement::TRAITEENREGISTREMENT( boolean nouvelleTrame,   boolean cgtCompteur, uint16_t dureeMax)
 {
 
-	//enregistre qu'a la premiere mise en marche relais apr�s changement de compteur???
+	//enregistre qu'a la premiere mise en marche relais apres changement de compteur???
 
 	this->dureeMax = dureeMax;
 	if ((cptSecPeriodeEnregistrement >= CONFIGURATION.config.tempo.periode_enr)  || cgtCompteur  || (premiersEnregistrement < 6)  || forceEnregistrement)   //|| nouvelleTrame
@@ -116,7 +116,7 @@ void enregistrement::enregistreMessageTempoVmc()
 		lesMessages[pointeurEcritureMessage].dureeMax = this->dureeMax;
 		lesMessages[pointeurEcritureMessage].tempExt = TEMPEXT.getMoyennePeriode();
 		lesMessages[pointeurEcritureMessage].tempSdb = DHTSDB.DHT_T.getMoyennePeriode();
-		lesMessages[pointeurEcritureMessage].humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 � 100--->7 bits
+		lesMessages[pointeurEcritureMessage].humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 e 100--->7 bits
 		lesMessages[pointeurEcritureMessage].humSdb = DHTSDB.DHT_H.getMoyennePeriodeLsb();
 #ifdef TESTVMC
 		lesMessages[pointeurEcritureMessage].iInstMax = DHTSDB.DHT_H.getPourcentageSeuil();
@@ -127,7 +127,7 @@ void enregistrement::enregistreMessageTempoVmc()
 		lesMessages[pointeurEcritureMessage].iInstMax = CAPTEURIINST.getMaxi();
 		lesMessages[pointeurEcritureMessage].tempCuis = DHTCUISINE_T.getMoyennePeriode();
 #endif
-		//lesMessages[pointeurEcritureMessage].iVmc = TA12.getMesureCycleLsb();	//maxi 1024  10 bits  8 bits doivent �tres suffisants---256  environ 600w
+		//lesMessages[pointeurEcritureMessage].iVmc = TA12.getMesureCycleLsb();	//maxi 1024  10 bits  8 bits doivent etres suffisants---256  environ 600w
 		//lesMessages[pointeurEcritureMessage].humSdb = ((uint8_t)VMC.cuisineTropHumide << 4) | ((uint8_t)VMC.moisOKentreAirFrais << 3 ) | ( (uint8_t)VMC.heureOKentreAirFrais << 2) | ((uint8_t)VMC.entreAirChaudHiver << 1) | ((uint8_t)VMC.entreAirFraisEte) ;
 		//lesMessages[pointeurEcritureMessage].etatVmc = ((uint8_t)VMC.getLeMode() << 2) | ((uint8_t)RELAIS.getEtatReelRelaisMarcheArret() << 1) | (uint8_t)RELAIS.getEtatRelaisVitesse();
 lesMessages[pointeurEcritureMessage].etatVmc =((uint8_t)VMC.getLeMode() << 2) | ((uint8_t)RELAIS.getEtatReelRelaisMarcheArret() << 1) | ((uint8_t)RELAIS.getEtatRelaisVitesse());
@@ -185,7 +185,7 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr
 				}
 				else
 				{
-					leMessage->etatTempo = HcHpCouleur | (premEnr << 3); //3 bits lsb ptec 3 bits suivant N� compteur
+					leMessage->etatTempo = HcHpCouleur | (premEnr << 3); //3 bits lsb ptec 3 bits suivant Ne compteur
 					TINFO.valueGet(&TableauTempoName[premEnr][0], &valeurs[0]);
 					if (!((valeurs != NULL) && (valeurs[0] != '\0')))
 					{
@@ -203,20 +203,20 @@ bool enregistrement::traiteCompteursTempo(ST_message *leMessage, uint8_t premEnr
 void enregistrement::traitementEmissionMessageTempoVMC()
 {
 	static bool premierMessage = true;
-	if (premierMessage)             //pour la re�mission,les pointeurs sont mis a jour au cycle suivant si acquitement
+	if (premierMessage)             //pour la reemission,les pointeurs sont mis a jour au cycle suivant si acquitement
 	{
 		emetEnregistrementTempoVmc();
 		premierMessage = false;
 	}
-	else if (dernierMessageEmisOK== ACQUITEMENT::RECUOK)  //dernier message emis valid�
+	else if (dernierMessageEmisOK== ACQUITEMENT::RECUOK)  //dernier message emis valide
 	{
 		pointeurLectureMessage += nbMessageEmis;			//mise a jour des pointeurs
 		if (pointeurLectureMessage >= NBMESSAGE)  
 			pointeurLectureMessage = 0;      //pas de retour a 0 au milieu du paquet 
 		comptMessage -= nbMessageEmis;
 #ifdef  DEBUGENREGISTREMENT
-		DebugF("pointeurLectureMessage= ");Debugln(pointeurLectureMessage);
-		DebugF("comptMessage dans lecture= ");Debugln(comptMessage);
+//		DebugF("pointeurLectureMessage= ");Debugln(pointeurLectureMessage);
+//		DebugF("comptMessage dans lecture= ");Debugln(comptMessage);
 
 #endif
 		nbMessageEmis = 0; 
@@ -228,12 +228,12 @@ void enregistrement::traitementEmissionMessageTempoVMC()
 	}
 	else if(dernierMessageEmisOK == ACQUITEMENT::RECUNOK)
 	{
-		if (comptMessage > 0)					//r�emission du message 
+		if (comptMessage > 0)					//reemission du message 
 		{
 			emetEnregistrementTempoVmc();
 #ifdef  DEBUGENREGISTREMENT
-			DebugF("reemission pointeurLectureMessage+=1= ");Debugln(pointeurLectureMessage);
-			DebugF("comptMessage apres - = ");Debugln(comptMessage);
+//			DebugF("reemission pointeurLectureMessage+=1= ");Debugln(pointeurLectureMessage);
+//			DebugF("comptMessage apres - = ");Debugln(comptMessage);
 #endif
 		}
 	}
@@ -243,7 +243,7 @@ void enregistrement::traitementEmissionMessageTempoVMC()
 void enregistrement::emetEnregistrementTempoVmc(void)
 {
 #ifdef  DEBUGENREGISTREMENT
-	DebuglnF("emetEnregistrement");
+//	DebuglnF("emetEnregistrement");
 #endif
 //#ifdef EMISSION_ENREGISTREMENT_VB
 	//#define UNMES
@@ -253,7 +253,7 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 		U_leMessage.leMessage = lesMessages[pointeurLectureMessage];
 		//#ifdef EMISSION_ENREGISTREMENT_VB
 		if (!send(CONFIGURATION.config.tempo.host_enr, (uint32)CONFIGURATION.config.tempo.portEnr, U_leMessage.leMessageChar,&memoport,udpEnr))
-			DebuglnF("pb udp.send message(vb)");
+//			DebuglnF("pb udp.send message(vb)");
 		//#else
 		//	emission http
 		//#endif
@@ -268,7 +268,7 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 		if (nbMessageEmis > limiteNbMaxMes)
 			nbMessageEmis = limiteNbMaxMes;
 		#ifdef  DEBUGENREGISTREMENT
-			DebugF("nbMessageEmis UDP=");Debugln(nbMessageEmis);
+//			DebugF("nbMessageEmis UDP=");Debugln(nbMessageEmis);
 		#endif
 		int8_t longMessage = sizeof(ST_message);
 		char *messageConcatene;
@@ -285,7 +285,7 @@ void enregistrement::emetEnregistrementTempoVmc(void)
 				indice += 1;
 		}
 		if (!send(CONFIGURATION.config.tempo.host_enr,(uint32) CONFIGURATION.config.tempo.portEnr, messageConcatene,&memoPort,udpEnr,nbMessageEmis))
-			DebuglnF("pb udp.send message(vb)");  
+//			DebuglnF("pb udp.send message(vb)");  
 		delete[] messageConcatene;
 	#endif
 //#else
@@ -322,7 +322,7 @@ bool enregistrement::send(const char* adressIP, uint32_t port, char * message, u
 #endif
 	return false;
 }
-//testAcquitementMessage appel� toutes les secondes
+//testAcquitementMessage appele toutes les secondes
 void enregistrement::testAcquitementMessage(void)
 {
 	//if(CONFIGURATION.config.tempo.acquitementEnr)
@@ -368,13 +368,13 @@ ST_message  enregistrement::getEnregistrementPourJson(void)
 {
 
 	static bool premierMessage = true;
-	if (premierMessage)             //pour la re�mission,les pointeurs sont mis a jour au cycle suivant si acquitement
+	if (premierMessage)             //pour la reemission,les pointeurs sont mis a jour au cycle suivant si acquitement
 	{
 		premierMessage = false;
 		dernierMessageEmisOK = ACQUITEMENT::NONRECU;
 		return lesMessages[pointeurLectureMessage];
 	}
-	else if (dernierMessageEmisOK)  //dernier message emis valid�
+	else if (dernierMessageEmisOK)  //dernier message emis valide
 	{
 		pointeurLectureMessage += nbMessageEmis;			//mise a jour des pointeurs
 		if (pointeurLectureMessage >= NBMESSAGE)
@@ -390,7 +390,7 @@ ST_message  enregistrement::getEnregistrementPourJson(void)
 	}
 	else
 	{
-		if (comptMessage > 0)					//r�emission du message 
+		if (comptMessage > 0)					//reemission du message 
 		{
 			return lesMessages[pointeurLectureMessage];
 #ifdef  DEBUGENREGISTREMENT
@@ -416,7 +416,7 @@ ST_message  enregistrement::getEnregistrementTempsReel(void)
 	leMessage.tempExt = TEMPEXT.getMoyennePeriode();
 	leMessage.tempCuis = DHTCUISINE_T.getMoyennePeriode();
 	leMessage.tempSdb = DHTSDB.DHT_T.getMoyennePeriode();
-	leMessage.humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 � 100--->7 bits
+	leMessage.humCuis = DHTCUISINE_H.getMoyennePeriodeLsb();//0 e 100--->7 bits
 	leMessage.humSdb = DHTSDB.DHT_H.getMoyennePeriodeLsb();
 	leMessage.etatVmc = (VMC.getLeMode() << 2) | (RELAIS.getEtatReelRelaisMarcheArret() << 1) | RELAIS.getEtatRelaisVitesse();
 	leMessage.etatWifi = WIFI.getWifiUser();

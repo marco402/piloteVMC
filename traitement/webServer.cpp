@@ -18,11 +18,11 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifi� par marc Prieur 2019
-//		-int�gr� le code dans la classe webClient webServer.cpp  webServer.h
+// Modifie par marc Prieur 2019
+//		-integre le code dans la classe webClient webServer.cpp  webServer.h
 //
 //		-V2.0.3 
-//				-v�rification du nom des champs transf�r�s dans LibTeleinfo
+//				-verification du nom des champs transferes dans LibTeleinfo
 // Using library ESP8266WebServer version 1.0
 //
 // **********************************************************************************
@@ -975,7 +975,7 @@ void webServer::getVmcJSONData(String & response)
 	response += "{\"na\":\"Nb min vmc\",\"va\":\"";
 	response += RELAIS.getNbMinuteActiveJourCourant();
 	response += "\"},\r\n";
-	//d�compte mode forc�
+	//decompte mode force
 	response += "{\"na\":\"Decompte\",\"va\":\"";
 	response += VMC.getDecompteTempoArretMarcheForce();
 	response += "\"},\r\n";
@@ -1038,7 +1038,7 @@ void webServer::getSysJSONData(String & response)
 	if (SwitchState)
 		response += F("Open");  //switch ouvert
 	else
-		response += F("Closed");  //switch ferm�
+		response += F("Closed");  //switch ferme
 
 	response += "\"},\r\n";
 #endif
@@ -1103,7 +1103,7 @@ void webServer::getSysJSONData(String & response)
 
 	response += "{\"na\":\"Analog\",\"va\":\"";
 	//adc = ((1000 * analogRead(A0)) / 1024);
-	//adc = ESP.getVcc();  //pas juste du au pont 220/100k  d'apr�s internet......
+	//adc = ESP.getVcc();  //pas juste du au pont 220/100k  d'apres internet......
 	sprintf_P(buffer, PSTR("%d mV"), (1000 * analogRead(A0) / 1024));
 	response += buffer;
 	response += "\"},\r\n";

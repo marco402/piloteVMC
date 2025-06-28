@@ -1,5 +1,5 @@
 // ***************************************************************************************
-// ESP8266 Pilotage VMC et TEMPO->Constantes commune � affichage et � traitement VMC/TEMPO
+// ESP8266 Pilotage VMC et TEMPO->Constantes commune e affichage et e traitement VMC/TEMPO
 // ***************************************************************************************
 // Creative Commons Attrib Share-Alike License
 // You are free to use/extend this library but please abide with the CC-BY-SA license:

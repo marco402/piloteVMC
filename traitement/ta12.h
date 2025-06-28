@@ -1,5 +1,5 @@
 // ***************************************************************************************************************
-// ESP8266 Pilotage VMC et TEMPO->Mesure et surveillance du courant consommé par le moteur VMC avec un TA12-200.
+// ESP8266 Pilotage VMC et TEMPO->Mesure et surveillance du courant consomme par le moteur VMC avec un TA12-200.
 // ***************************************************************************************************************
 // Creative Commons Attrib Share-Alike License
 // You are free to use/extend this library but please abide with the CC-BY-SA license:

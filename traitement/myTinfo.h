@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifi� par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifie par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifi� par marc PRIEUR 2019-05-01 ()
-//		-int�gr� le code dans la classe myTinfo myTinfo.cpp
+// Modifie par marc PRIEUR 2019-05-01 ()
+//		-integre le code dans la classe myTinfo myTinfo.cpp
 //
 //
 //********************************************************************************

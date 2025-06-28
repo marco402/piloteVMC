@@ -14,17 +14,17 @@
 // All text above must be included in any redistribution.
 //
 // **********************************************************************************
-//06/06/2018 pass� NBMESSAGE de 100 � 300     pour 5 minutes 24 heures:288
+//06/06/2018 passe NBMESSAGE de 100 e 300     pour 5 minutes 24 heures:288
 
 //avec 300 et vmc
-//Program traitement_tempo size: 372�588 bytes (used 36% of a 1�044�464 byte maximum) (121,39 secs)
+//Program traitement_tempo size: 372e588 bytes (used 36% of a 1e044e464 byte maximum) (121,39 secs)
 //Minimum Memory Usage : 63260 bytes(77 % of a 81920 byte maximum)
 //avec 500
-//Program traitement_tempo size : 372�588 bytes(used 36 % of a 1�044�464 byte maximum) (122, 30 secs)
+//Program traitement_tempo size : 372e588 bytes(used 36 % of a 1e044e464 byte maximum) (122, 30 secs)
 //Minimum Memory Usage : 75660 bytes(92 % of a 81920 byte maximum)
 
-//en version structure num�rique et 200 messages vmc+tempo:
-//Program traitement_tempo size: 371�848 bytes (used 36% of a 1�044�464 byte maximum) (126,71 secs)
+//en version structure numerique et 200 messages vmc+tempo:
+//Program traitement_tempo size: 371e848 bytes (used 36% of a 1e044e464 byte maximum) (126,71 secs)
 //Minimum Memory Usage : 49944 bytes(61 % of a 81920 byte maximum)
 
 
@@ -33,12 +33,12 @@
 
 #include <Arduino.h>
 #include <WiFiUdp.h>
-#define NBMESSAGE 200				//ATTENTION,pas confirm� mais l'OTA ne fonctionnait plus:Fatal exception 29(StoreProhibitedCause) en mettant 300.
-//le port s�rie ne fonctionnait plus sur la carte nodemcu base 1.0, ok sans la base et a nouveau ok avec la base en rechargeant la version avec 200??? � suivre.
-//� 200:7.43kb free ram sur page web
+#define NBMESSAGE 200				//ATTENTION,pas confirme mais l'OTA ne fonctionnait plus:Fatal exception 29(StoreProhibitedCause) en mettant 300.
+//le port serie ne fonctionnait plus sur la carte nodemcu base 1.0, ok sans la base et a nouveau ok avec la base en rechargeant la version avec 200??? e suivre.
+//e 200:7.43kb free ram sur page web
 
-#define NBMESSAGEEMISMAXUDP 10     //a 10 le temps de cycle d�passe la seconde 1086,1300(c'�tait pas �a � suivre) 
-//sans mail:300 (25 heures et 43(Long mes) pas de plantage mais pertes de messages et d�calage(2/12/18:delta 18963->perte:63 messages(periode d'enr:300)						50 pb 100 pb mail...		
+#define NBMESSAGEEMISMAXUDP 10     //a 10 le temps de cycle depasse la seconde 1086,1300(c'etait pas ea e suivre) 
+//sans mail:300 (25 heures et 43(Long mes) pas de plantage mais pertes de messages et decalage(2/12/18:delta 18963->perte:63 messages(periode d'enr:300)						50 pb 100 pb mail...		
 //ensuite lecture message:a 9h50 s'arrete a 3h36--->6h14-->374mn/5(300sec)=decalage:				 74 messages
 
 //4/12/18 essai avec NBMEMaxDureeSSAGE=200--->16 heures

@@ -18,10 +18,10 @@
 //
 // All text above must be included in any redistribution.
 //
-// Modifi� par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
+// Modifie par Dominique DAMBRAIN 2017-07-10 (http://www.dambrain.fr)
 //
-// Modifi� par marc PRIEUR 2019-03-21 ()
-//		-int�gr� le code dans la classe mySyslog mySyslog.cpp
+// Modifie par marc PRIEUR 2019-03-21 ()
+//		-integre le code dans la classe mySyslog mySyslog.cpp
 //********************************************************************************
 #include <Arduino.h>
 #include "Wifinfo.h"
@@ -41,7 +41,7 @@
 /////////////////////////// uniquement si DEBUGSERIAL ou SYSLOG //////////
 #ifdef MACRO
 ////// Versions polymorphes des appels au debugging
-////// non li�es au port Serial ou Serial1
+////// non liees au port Serial ou Serial1
 
 	void mySyslog::convert(const __FlashStringHelper *ifsh)
 	{
@@ -101,14 +101,14 @@ void mySyslog::Myprint(char *msg) {
 	}
 	else if (SYSLOGselected) {
 		//syslog non encore disponible
-		//stocker les messages � envoyer plus tard
+		//stocker les messages e envoyer plus tard
 		in++;
 		if (in >= 50) {
-			//table satur�e !
+			//table saturee !
 			in = 0;
 		}
 		if (lines[in]) {
-			//entr�e occup�e : l'�craser, tant pis !
+			//entree occupee : l'ecraser, tant pis !
 			free(lines[in]);
 		}
 		lines[in] = (char *)malloc(strlen(msg) + 2);
@@ -210,8 +210,8 @@ void mySyslog::Myflush() {
 	}
 	void mySyslog::setSYSLOGselected(void)
 	{
-	SYSLOGselected = true;  //Par d�faut, au moins stocker les premiers msg debug
-	//  SYSLOGusable=false;   //Tant que non connect�, ne pas �mettre sur r�seau
+	SYSLOGselected = true;  //Par defaut, au moins stocker les premiers msg debug
+	//  SYSLOGusable=false;   //Tant que non connecte, ne pas emettre sur reseau
 	}
 
 	void mySyslog::clearLinesSyslog(void)
