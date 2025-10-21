@@ -30,8 +30,8 @@
 //INT0													    2
 // marc a voir si remplacé par PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE #define PIN_DHT22										3		//inversion smt160 et mq7 voir schéma pcb
 #define TFT_RS											4	    //
-#define XXPIN_LED_JOUR_NUIT						5		//passer sur 5 manque R14 utilise R13
-
+#define XXPIN_LED_JOUR_NUIT					5		//passer sur 5 manque R14 utilise R13
+#define MAXLUMINOSITELEDS           20
 //There are six pins from the set of digital pins that are PWM (Pulse Width Modulation) pins, numbered as 3, 5, 6, 9, 10, and 11.
 #define TFT_LEDA							      5	    //PWM via 2n2222 and 2N2907   pins PWM: 3, 5, 6, 9, 10, and 11.
 #define PIN_CS_CAN								  7		//sur test receive blink 15µs haut 15µs bas

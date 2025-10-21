@@ -41,12 +41,15 @@
 //  arduino->menu outils->ESP8266 littleFS data  
 //probleme de password si port=adresse IP avec le plugin esp8266fs.jar d'origine, telecharger:
 //https://github.com/877dev/arduino-esp8266littlefs-plugin
-//**************************************************************************************************
-//plusieurs fois la programmation du programme m'a efface les fichers data????             *
+//************************************************************************************************
+//plusieurs fois la programmation du programme m'a efface les fichers data????                   *
 //  **********************************************************************************************
 //pour info le logiciel fonctionne sur une carte nodemcu nue                                     *
 //************************************************************************************************
-
+//                                 IDE arduino 2.xx                                              *
+//-ajouter la librairie syslog                                                                    *
+//-ajouter upload data plugin pour transferer DATA le menu est accessible par CTRL SHIFT P        *
+//************************************************************************************************
 
 //28/06/2025
 //passage adsl vers fibre

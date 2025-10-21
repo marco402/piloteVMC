@@ -4,6 +4,7 @@
 !/*.cpp
 !/*.h
 !/*.ino
+!/*.ino.hex
 !/.gitignore
 !/README.md
 

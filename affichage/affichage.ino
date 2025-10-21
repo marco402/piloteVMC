@@ -58,9 +58,11 @@
  //###################################include################################## 
 //programmation: interface usb serial
 //1 en bas (orange)
-//terminal à 115200
+//terminal à 9600
 //carte arduino pro ou pro mini
-//choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57600)
+//arduino 1.8.19--->C:\Users\mireille\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6
+
+//choisir le bon fichier board.txt dans C:\Program Files (x86)\Arduino\hardware\arduino\avr(57600) autre version ???
 //ou modifier board.txt
 //   carte Arduino Mini w/ ATmega328P
 //mini.menu.cpu.atmega328.upload.speed=57600 
@@ -94,7 +96,9 @@
 #endif
 #include "dht.h" 
 #include "st7735.h"
-#include "canBus.h"  //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries for mcp_can.h to canBus.h
+#include "canBus.h"  //add MCPCAN(modif chercher marc) to C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries for mcp_can.h to canBus.h->
+//10/2025 ne trouve plus canBus.h->copy C:\marc\developpement\vmc et tempo bus can\affichage\library dans arduino\CANBUS vers
+//C:\Users\mireille\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\libraries->OK  pourquoi ???
 //WARNING MVPCAN modifié chercher marc
 #include "ledsRgbSerial.h"
 //#include "ledsClassiques.h"

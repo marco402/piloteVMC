@@ -33,7 +33,7 @@
 #ifndef CANBUS_H_
 #define CANBUS_H_
 #include "constantes.h"
-#include <mcp_can.h>                 //si erreur compile, verifier outils type de carte---->il faut arduino mini atmega 328P
+#include <mcp_can.h>                 //si erreur compile, verifier outils type de carte---->il faut carte arduino pro ou pro & atmega 328P(5V,16Mhz)
 //#define xxTESTCAN
 #define CLOCKSPI 500000			//limitation � 500000 si adaptation 5v/3v3 avec bss138
 class can_bus : public MCP_CAN

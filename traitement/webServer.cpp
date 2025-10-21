@@ -215,7 +215,7 @@ webServer::webServer()
 			CONFIGURATION.config.tempo.fin_wifi = (uint8_t)(itemp > -1 && itemp < 25) ? itemp : CFG_DEF_FIN_WIFI;
 
 			itemp = arg(CFG_FORM_TEMPO_LUMINOSITE_LEDS_RGB).toInt();
-			CONFIGURATION.config.tempo.luminositeeLedsRgb = (uint8_t)(itemp >= 0 && itemp <100) ? itemp : CFG_DEF_LUM_LED_RGB;
+			CONFIGURATION.config.tempo.luminositeeLedsRgb = (uint8_t)(itemp >= 0 && itemp <20) ? itemp : CFG_DEF_LUM_LED_RGB;
 
 
 			itemp = arg(CFG_FORM_TEMPO_PORT_ENR).toInt();
