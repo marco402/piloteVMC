@@ -16,6 +16,7 @@
 //
 // **********************************************************************************
 #include "ClassMySql.h"
+#include <QDateTime>
 ClassMySql::ClassMySql(FormReceptionTempo* parent) : QObject(parent)
 {
 	laFormReceptionTempo = parent;
@@ -254,7 +255,7 @@ bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 		deltaTemps1970 = messages.last().timestamp - messages.at(0).timestamp;
 		messages[0].timestamp = premierTempsOK - deltaTemps1970 - 150;
 	//***********************************************************
-		laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(messages[0].timestamp) + "__" + QString::number(messages[0].compteur) + "__" + QString::number(messages[0].iInstMax) + "__" + QString::number(messages[0].dureeMax) + "__" + QString::number(messages[0].etatTempo) + "__" + QString::number(messages[0].etatWifi) + "__" + QString::number(messages[0].tempExt) + "__" + QString::number(messages[0].tempCuis) + "__" + QString::number(messages[0].tempSdb) + "__" + QString::number(messages[0].humCuis) + "__" + QString::number(messages[0].humSdb) + "__" + QString::number(messages[0].etatVmc));
+        laFormReceptionTempo->plainTextEditMessages->appendPlainText(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + "__" +  localTime.toString() + "__" + QString::number(messages[0].timestamp) + "__" + QString::number(messages[0].compteur) + "__" + QString::number(messages[0].iInstMax) + "__" + QString::number(messages[0].dureeMax) + "__" + QString::number(messages[0].etatTempo) + "__" + QString::number(messages[0].etatWifi) + "__" + QString::number(messages[0].tempExt) + "__" + QString::number(messages[0].tempCuis) + "__" + QString::number(messages[0].tempSdb) + "__" + QString::number(messages[0].humCuis) + "__" + QString::number(messages[0].humSdb) + "__" + QString::number(messages[0].etatVmc));
 		if (memoHeure > 0)
 			*delta = (messages[0].timestamp - memoHeure) / 2;
 		memoHeure = messages[0].timestamp;
@@ -273,7 +274,7 @@ bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 		{
 			messages[j].timestamp = messages.at(0).timestamp + (messages.at(j).timestamp - memoT0);
 			//***********************************************************
-			laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(messages[j].timestamp) + "__" + QString::number(messages[j].compteur) + "__" + QString::number(messages[j].iInstMax) + "__" + QString::number(messages[j].dureeMax) + "__" + QString::number(messages[j].etatTempo) + "__" + QString::number(messages[j].etatWifi) + "__" + QString::number(messages[j].tempExt) + "__" + QString::number(messages[j].tempCuis) + "__" + QString::number(messages[j].tempSdb) + "__" + QString::number(messages[j].humCuis) + "__" + QString::number(messages[j].humSdb) + "__" + QString::number(messages[j].etatVmc));
+            laFormReceptionTempo->plainTextEditMessages->appendPlainText(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + "__" + localTime.toString() + "__" + QString::number(messages[j].timestamp) + "__" + QString::number(messages[j].compteur) + "__" + QString::number(messages[j].iInstMax) + "__" + QString::number(messages[j].dureeMax) + "__" + QString::number(messages[j].etatTempo) + "__" + QString::number(messages[j].etatWifi) + "__" + QString::number(messages[j].tempExt) + "__" + QString::number(messages[j].tempCuis) + "__" + QString::number(messages[j].tempSdb) + "__" + QString::number(messages[j].humCuis) + "__" + QString::number(messages[j].humSdb) + "__" + QString::number(messages[j].etatVmc));
 			if (memoHeure > 0)
 				*delta = (messages[j].timestamp - memoHeure) / 2;
 			memoHeure = messages[j].timestamp;
@@ -294,7 +295,7 @@ bool  ClassMySql::traitementMessage(QByteArray  message, quint32 *delta)
 	else
 	{
 		//***************************end pb data 1970***************************************
-		laFormReceptionTempo->plainTextEditMessages->appendPlainText(localTime.toString() + "__" + QString::number(leMessageVersBase->timestamp) + "__" + QString::number(leMessageVersBase->compteur) + "__" + QString::number(leMessageVersBase->iInstMax) + "__" + QString::number(leMessageVersBase->dureeMax) + "__" + QString::number(leMessageVersBase->etatTempo) + "__" + QString::number(leMessageVersBase->etatWifi) + "__" + QString::number(leMessageVersBase->tempExt) + "__" + QString::number(leMessageVersBase->tempCuis) + "__" + QString::number(leMessageVersBase->tempSdb) + "__" + QString::number(leMessageVersBase->humCuis) + "__" + QString::number(leMessageVersBase->humSdb) + "__" + QString::number(leMessageVersBase->etatVmc));
+        laFormReceptionTempo->plainTextEditMessages->appendPlainText(QDateTime::currentDateTime().toString("hh:mm:ss.zzz") + "__" + localTime.toString() + "__" + QString::number(leMessageVersBase->timestamp) + "__" + QString::number(leMessageVersBase->compteur) + "__" + QString::number(leMessageVersBase->iInstMax) + "__" + QString::number(leMessageVersBase->dureeMax) + "__" + QString::number(leMessageVersBase->etatTempo) + "__" + QString::number(leMessageVersBase->etatWifi) + "__" + QString::number(leMessageVersBase->tempExt) + "__" + QString::number(leMessageVersBase->tempCuis) + "__" + QString::number(leMessageVersBase->tempSdb) + "__" + QString::number(leMessageVersBase->humCuis) + "__" + QString::number(leMessageVersBase->humSdb) + "__" + QString::number(leMessageVersBase->etatVmc));
 		if (memoHeure > 0)
 			*delta = (leMessageVersBase->timestamp - memoHeure) / 2;
 		memoHeure = leMessageVersBase->timestamp;

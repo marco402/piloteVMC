@@ -30,7 +30,7 @@
 #include <FS.h>
 #include "Wifinfo.h"
 
-
+#define NbLINESSYSLOG 50
 #ifdef MACRO
 class mySyslog 
 {
@@ -67,7 +67,7 @@ private:
 #ifdef SYSLOG
 	volatile boolean SYSLOGselected = false;
 	char waitbuffer[255];
-	char *lines[50];
+	char *lines[NbLINESSYSLOG];
 	int in = -1;
 	int out = -1;
 	unsigned int pending = 0;

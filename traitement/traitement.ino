@@ -50,6 +50,11 @@
 //-ajouter la librairie syslog                                                                    *
 //-ajouter upload data plugin pour transferer DATA le menu est accessible par CTRL SHIFT P        *
 //************************************************************************************************
+//26/11/2025
+//essai de relance cdg dans enregistrement emission des messages
+//pour essai sans quelquefois le programme reboot a l'emission des messages ex:reboot apres 14 paquets de 10 en 13 sec.
+
+
 
 //28/06/2025
 //passage adsl vers fibre

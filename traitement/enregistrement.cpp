@@ -242,18 +242,19 @@ void enregistrement::traitementEmissionMessageTempoVMC()
 }
 void enregistrement::emetEnregistrementTempoVmc(void)
 {
+  delay(1);   //pour essai sans quelquefois le programme reboot a l'emission des messages ex:reboot apres 14 paquets de 10 en 13 sec.
 #ifdef  DEBUGENREGISTREMENT
 //	DebuglnF("emetEnregistrement");
 #endif
 //#ifdef EMISSION_ENREGISTREMENT_VB
-	//#define UNMES
+	#define UNMES   //sans UNMES quelquefois relance par chien de garde--->test avec UNMES 
 	#ifdef UNMES
 		nbMessageEmis = 1; //limite a 1 message
 		union U_message U_leMessage;
 		U_leMessage.leMessage = lesMessages[pointeurLectureMessage];
 		//#ifdef EMISSION_ENREGISTREMENT_VB
-		if (!send(CONFIGURATION.config.tempo.host_enr, (uint32)CONFIGURATION.config.tempo.portEnr, U_leMessage.leMessageChar,&memoport,udpEnr))
-//			DebuglnF("pb udp.send message(vb)");
+ 		if (!send(CONFIGURATION.config.tempo.host_enr, (uint32)CONFIGURATION.config.tempo.portEnr, U_leMessage.leMessageChar,&memoPort,udpEnr,nbMessageEmis))
+			DebuglnF("pb udp.send message(vb)");
 		//#else
 		//	emission http
 		//#endif

@@ -4,7 +4,9 @@
  * Created: 24/02/2019 22:18:27
  *  Author: marc Prieur
  */
-
+//30/11/2025
+//supression du bip
+//supression watchdog remplacé par un restart si 20 secondes sans reception CanBus
 //20/04/24
 //affichage bloqué en attente de message, il faudrait une evolution pour voir si le micro tourne.
 //ajoute heartbeat sur l'afficheur 4 digits sans les 2 points si pas de reception can
@@ -104,6 +106,7 @@
 //#include "ledsClassiques.h"
 #include "poussoir.h"
 #include "buzzer.h"
+void(* resetFunc) (void) = 0;//declare reset function at address 0
 //###################################création des objets##################################  
 //les mesures sont envoyées a l'uc de traitement et la moyenne est retournée pour affichage
 dht DHTCUISINE( PIN_CAPTEUR_TEMP_HUMIDITE_CUISINE,0,0,10,1);   //la correction et l'ajustement décimal se font sur l'uc traitement
@@ -127,7 +130,10 @@ int memoMinute=-1;
 #endif
 ///###################################initialisations globales##################################  
 //int8_t task_1_sec = 0;
-unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrait se caler sur la reception...
+unsigned long memoTempsMilli;  //cycle de 1 seconde sans RTC,on pourrait se caler sur la reception...
+unsigned long memoTempsMilliRunWatchDog;
+//memoTempsMilliRunWatchDog:
+// restart si le bus can n'est pas connecté a traitement pendant 20 secondes
 //######################################setup#####################################
 //#ifdef  HORLOGE
   // Create array that turns all segments on:
@@ -137,7 +143,8 @@ unsigned long memoTempsMilli=millis();  //cycle de 1 seconde sans RTC,on pourrai
 //#endif
 void setup()
 {
-  wdt_enable(WDTO_8S);
+  wdt_disable();
+ // wdt_enable(WDTO_8S);
   Serial.begin(115200);
   Serial.println(F("setup"));
 
@@ -153,14 +160,15 @@ void setup()
     //display.setBrightness(memoBrightness); //0 mini  7 maxi
     //display.clear();
   AFFICHEUR.initAdafruit_ST7735();
-  wdt_enable(WDTO_8S);
+  //wdt_enable(WDTO_8S);
   LEDS_RGB_SERIAL.init();
-  BUZZER.test();
-  delay(1000);
-  BUZZER.test();
-  delay(1000);
-  BUZZER.test();
+  //BUZZER.test();
+//  delay(1000);
+//  BUZZER.test();
+//  delay(1000);
+//  BUZZER.test();
   memoTempsMilli = millis();
+  memoTempsMilliRunWatchDog = millis();
 }
 //########################################loop##########################################
 //*********************************************BOUCLE 1 Seconde*******************************************
@@ -197,20 +205,20 @@ void loop()
   if (!POUSSOIR.getTransitoirePoussoir())
   {
     //#endif
-	  BUZZER.setBuzzer(retour);
+//	  BUZZER.setBuzzer(retour);
 	  DHTCUISINE.DHT_T.clearMesure();		//n'efface pas mesure cycle,le cycle sans lecture reste sur la dernière valeur.
 	  DHTCUISINE.DHT_H.clearMesure();		// le clearMesure est nécessaire pour ne pas déborder sur les cumuls
 	  //au niveau affichage,le capteur est lu et envoyé sans correction à chaque cycle.
 	  retour = DHTCUISINE.lectureCapteur();
-	  BUZZER.setBuzzer(!retour);
+//	  BUZZER.setBuzzer(!retour);
   //########################################Traitement Affichage##########################################
 	  LEDS_RGB_SERIAL.traitement(CAN_BUS.getStructReception());  //3 appels,compteur "en dur" dans getEtatReceptionInfos
 	  //retour = LEDS_CLASSIQUES.traitement(CAN_BUS.getStructReception());
-	  BUZZER.setBuzzer(retour) ;
+//	  BUZZER.setBuzzer(retour) ;
 	  structReception.decompteTempoArretMarcheForce = POUSSOIR.getTempsMilliCommandeTemporisees();
     AFFICHEUR.affiche(structReception);
-    wdt_enable(WDTO_8S);
-    BUZZER.traitement(structReception);  //buzzer permanent si plus de réception CAN
+    //wdt_enable(WDTO_8S);
+//    BUZZER.traitement(structReception);  //buzzer permanent si plus de réception CAN
     #ifdef  HORLOGETM1637
  // Print 1234 with the center colon:
  // display.showNumberDecEx(1234, 0b11100000, false, 4, 0);
@@ -250,6 +258,8 @@ void loop()
       //display.showNumberDecEx(structReception.minutes, 0b01000000, false, 2, 2);
       }
 #endif 
+  memoTempsMilliRunWatchDog = millis();
+  //wdt_disable();
   } //getTransitoirePoussoir 
   else
   {
@@ -269,14 +279,21 @@ void loop()
  //################################################################################################################# 
 
   } //CAN_BUS.traitementReception()||(task_1_sec==3)
-// else  //passe a 2 secondes...
-// {
+ else  //passe a 2 secondes...
+ {
+     if((millis()- memoTempsMilliRunWatchDog) > 20000)
+     {
+        //wdt_enable(WDTO_8S);
+          resetFunc();
+        //memoTempsMilliRunWatchDog=millis();
+     }
+// } 
 //	 if(heartbeat)
 //		 display.showNumberDecEx(structReception.heures * 100 + structReception.minutes, 0x40, true, 4, 0);  //40 avec :   heartbeat
 //	 else
 //		 display.showNumberDecEx(structReception.heures * 100 + structReception.minutes, 0, true, 4, 0);  //0 sans :   heartbeat
 //   heartbeat = !heartbeat;
-// }
+ }
 
 //########################################Traitement durée du cycle##########################################
   if((millis()- memoTempsMilli) > 1000)

@@ -63,7 +63,7 @@
 #ifdef SYSLOG
 
 
-void mySyslog::process_line(char *msg) {
+void mySyslog:: (char *msg) {
 	strcat(waitbuffer, msg);
 	pending = strlen(waitbuffer);
 	if (waitbuffer[pending - 1] == 0x0D || waitbuffer[pending - 1] == 0x0A) {
@@ -103,7 +103,7 @@ void mySyslog::Myprint(char *msg) {
 		//syslog non encore disponible
 		//stocker les messages e envoyer plus tard
 		in++;
-		if (in >= 50) {
+		if (in >= NbLINESSYSLOG) {
 			//table saturee !
 			in = 0;
 		}
@@ -116,7 +116,6 @@ void mySyslog::Myprint(char *msg) {
 		strcpy(lines[in], msg);
 	}
 #endif
-
 }
 
 void mySyslog::Myprint() {
@@ -216,7 +215,7 @@ void mySyslog::Myflush() {
 
 	void mySyslog::clearLinesSyslog(void)
 	{
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < NbLINESSYSLOG; i++)
 		lines[i] = 0;
 	in = -1;
 	out = -1;
