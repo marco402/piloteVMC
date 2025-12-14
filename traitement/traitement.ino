@@ -53,7 +53,7 @@
 //26/11/2025
 //essai de relance cdg dans enregistrement emission des messages
 //pour essai sans quelquefois le programme reboot a l'emission des messages ex:reboot apres 14 paquets de 10 en 13 sec.
-
+//                                 12 paquets de 10 et 1 de 4-pas de manque en 13 sec.(meme prog)
 
 
 //28/06/2025

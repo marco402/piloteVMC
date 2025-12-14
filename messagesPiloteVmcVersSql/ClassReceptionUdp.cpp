@@ -57,11 +57,13 @@ void ClassReceptionUdp::donneesRecues()
 			timerDemandeMessage.start(delta * 1000, this);		//rearme le timer
 			data.append("1");
 			laFormReceptionTempo->plainTextEditMessages->appendPlainText("demande le paquet suivant");
+            Sleep(1000);
 		}
 		else
 		{
 			data.append("0");
 			laFormReceptionTempo->plainTextEditMessages->appendPlainText((QString::fromLatin1("demande un paquet")));
+            Sleep(1000);
 		}
 		acquitement(data);
 	}

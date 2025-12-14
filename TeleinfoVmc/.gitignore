@@ -1,31 +1,29 @@
-#teleinfovmc
-
+#projet  piloteVmc
+#on suprime tout
 /**
 
-!/js
-!/js/*
-!/css
-!/css/*
-!/images
-!/images/*
-
-
-!/modele config_perso.php.php
+#on ajoute ce qu'on garde
+#fichiers
 !/.gitignore
-!/*.html
-!/*.js
-!/*.xml
+!/README.md
+!/LICENSE
+!/todo.md
 
-!/json.php
-!/modele config_perso.php
-!/queries.php
-!/structure.ecodevice_tempo.php
-!/structure.timestp.php
-!/tarifs.php
-!/teleinfo.php
-!/config.php
-!/*.md
-!/*.zip
-!/*.ico
-!/*.json
+#dossiers
+!/affichage
+!/affichage/*
+!/designSpark
+!/designSpark/*
+!/messagesPiloteVmcVersSql
+!/messagesPiloteVmcVersSql/*
+!/sql
+!/sql/*
+!/TeleinfoVmc
+!/TeleinfoVmc/*
+!/traitement
+!/traitement/*
+
+*/TeleinfoVmc/config_perso.php
+*/TeleinfoVmc/composer.json
+
 
